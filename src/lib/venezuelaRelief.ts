@@ -87,5 +87,9 @@ export const VENEZUELA_RELIEF_IMAGES: readonly string[] = [
   '/hero/ve-quake-3.jpg', // severe building damage in Caracas (AFP/Getty)
 ];
 
-/** sessionStorage key tracking whether the popup has shown this session. */
-export const VENEZUELA_RELIEF_POPUP_SEEN_KEY = 'agora:venezuela-relief-popup-seen';
+/**
+ * localStorage key tracking whether the user has dismissed the popup.
+ * Once set, the popup never opens again on that device — a dismissal is
+ * an explicit "I've seen this", so we respect it across sessions.
+ */
+export const VENEZUELA_RELIEF_POPUP_DISMISSED_KEY = 'agora:venezuela-relief-popup-dismissed';

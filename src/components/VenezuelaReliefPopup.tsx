@@ -19,62 +19,83 @@ import {
   VENEZUELA_RELIEF_IMAGES,
   VENEZUELA_RELIEF_PATH,
   VENEZUELA_RELIEF_URL,
-  VENEZUELA_RELIEF_POPUP_SEEN_KEY,
+  VENEZUELA_RELIEF_POPUP_DISMISSED_KEY,
 } from '@/lib/venezuelaRelief';
 
 /**
  * Site-wide Venezuela earthquake relief popup.
  *
- * Mounted once in `App.tsx` so it surfaces on a fresh load of any route.
- * It carries the same appeal as the home-page hero
+ * Mounted once in `AppRouter.tsx` so it surfaces on a fresh load of any
+ * route. It carries the same appeal as the home-page hero
  * ({@link VenezuelaReliefBanner}): the same lead photo, headline, and
  * donate CTA, plus a share action and a link to the dedicated relief
  * page.
  *
- * Frequency: **once per browser session.** A `sessionStorage` flag
- * (`VENEZUELA_RELIEF_POPUP_SEEN_KEY`) is set the first time it shows, so
- * it won't reappear on subsequent in-session navigations or reloads, but
- * returns on the next fresh session (tab/app reopened). We deliberately
- * avoid `localStorage` so the appeal keeps reaching returning visitors.
+ * Frequency and suppression rules:
+ *
+ *  - **Dismissal is permanent.** Closing the popup (via the X, overlay,
+ *    escape, or following one of its links) writes a `localStorage` flag
+ *    (`VENEZUELA_RELIEF_POPUP_DISMISSED_KEY`); once set, the popup never
+ *    opens again on that device.
+ *  - **Direct links are respected.** If the visitor lands straight on a
+ *    shared NIP-19 URL (someone's campaign `naddr`, a profile, a note…)
+ *    or on the relief page itself, the popup stays closed — they came to
+ *    see that content, not our appeal, and the relief page already *is*
+ *    the appeal.
  *
  * When the relief response winds down, remove `<VenezuelaReliefPopup />`
- * from `App.tsx`.
+ * from `AppRouter.tsx`.
  */
 /**
  * Module-level guard so the popup's "should I open?" decision is made
  * exactly once per page load, surviving React 19 StrictMode's
  * double-mount (which unmounts and remounts the component, resetting any
- * component state / refs). Without this, the first mount would write the
- * sessionStorage "seen" flag and open, then StrictMode's remount would
- * read the freshly-written flag, decide "already seen", and leave the
- * popup closed — so it would flash open and immediately vanish.
+ * component state / refs).
  */
 let decidedThisLoad = false;
 let shouldOpenThisLoad = false;
+
+/**
+ * True when the initial URL points straight at shared content — a NIP-19
+ * entity route (`/naddr1…` campaign links, `/npub1…` profiles, notes,
+ * events) or the dedicated relief page. Visitors following such a link
+ * shouldn't be interrupted by the appeal.
+ */
+function isDirectContentVisit(pathname: string): boolean {
+  if (pathname === VENEZUELA_RELIEF_PATH) return true;
+  return /^\/(npub|nprofile|note|nevent|naddr)1[a-z0-9]+\/?$/i.test(pathname);
+}
 
 export function VenezuelaReliefPopup() {
   const { t } = useTranslation();
   const shareOrigin = useShareOrigin();
   const { toast } = useToast();
 
-  // Decide once per page load (guarded against StrictMode remounts) whether
-  // this is a fresh session that hasn't seen the popup yet. We both read and
-  // write the sessionStorage flag here, inside the one-time guard, so the
-  // decision is stable for the lifetime of the load.
+  // Decide once per page load (guarded against StrictMode remounts)
+  // whether to open: never after a prior dismissal, and never when the
+  // visitor landed directly on shared content (e.g. someone's campaign).
   if (!decidedThisLoad) {
     decidedThisLoad = true;
-    let seen = false;
+    let dismissed = false;
     try {
-      seen = sessionStorage.getItem(VENEZUELA_RELIEF_POPUP_SEEN_KEY) === '1';
-      if (!seen) sessionStorage.setItem(VENEZUELA_RELIEF_POPUP_SEEN_KEY, '1');
+      dismissed = localStorage.getItem(VENEZUELA_RELIEF_POPUP_DISMISSED_KEY) === '1';
     } catch {
-      // sessionStorage unavailable (private mode / sandbox): show once,
+      // localStorage unavailable (private mode / sandbox): show,
       // best-effort, rather than crash.
     }
-    shouldOpenThisLoad = !seen;
+    shouldOpenThisLoad = !dismissed && !isDirectContentVisit(window.location.pathname);
   }
 
   const [open, setOpen] = useState(shouldOpenThisLoad);
+
+  const dismiss = () => {
+    setOpen(false);
+    try {
+      localStorage.setItem(VENEZUELA_RELIEF_POPUP_DISMISSED_KEY, '1');
+    } catch {
+      // localStorage unavailable: dismissal just won't persist.
+    }
+  };
 
   const handleShare = async () => {
     const result = await shareOrCopy(
@@ -87,7 +108,7 @@ export function VenezuelaReliefPopup() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(next) => (next ? setOpen(true) : dismiss())}>
       <DialogContent className="overflow-hidden p-0 sm:max-w-md">
         {/* Lead photo from the appeal, with a dark scrim and the headline
             painted over it, echoing the home hero treatment. */}
@@ -128,7 +149,7 @@ export function VenezuelaReliefPopup() {
 
           <DialogFooter className="mt-5 sm:flex-row sm:justify-start sm:gap-2">
             <Button asChild className="rounded-full font-semibold [&_svg]:size-[18px]">
-              <a href={VENEZUELA_RELIEF_URL} onClick={() => setOpen(false)}>
+              <a href={VENEZUELA_RELIEF_URL} onClick={dismiss}>
                 <HeartHandshake className="mr-2" />
                 {t('campaigns.home.venezuelaRelief.donate')}
               </a>
@@ -145,7 +166,7 @@ export function VenezuelaReliefPopup() {
 
           <a
             href={VENEZUELA_RELIEF_URL}
-            onClick={() => setOpen(false)}
+            onClick={dismiss}
             className="mt-3 inline-block text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80"
           >
             {t('campaigns.home.venezuelaRelief.learnMore')}
