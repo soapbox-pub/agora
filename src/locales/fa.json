@@ -708,6 +708,8 @@
     "successCreateDesc": "کمپین تو فعال است.",
     "successEdit": "کمپین به‌روز شد",
     "successEditDesc": "تغییرات کمپین تو فعال‌اند.",
+    "categoryLimitTitle": "شما فقط می‌توانید {{count}} برچسب انتخاب کنید",
+    "categoryLimitDesc": "پیش از افزودن برچسب دیگر، یک برچسب را حذف کنید. کمپین‌ها به {{count}} برچسب محدود هستند.",
     "errorTitleCreate": "انتشار کمپین ممکن نشد",
     "errorTitleEdit": "به‌روزرسانی کمپین ممکن نشد",
     "errorLoginRequired": "برای ساخت کمپین باید وارد شوید.",

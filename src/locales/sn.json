@@ -708,6 +708,8 @@
     "successCreateDesc": "Kuunganidza kwako mari kuri kushanda.",
     "successEdit": "Campaign yavandudzwa",
     "successEditDesc": "Shanduko dzekuunganidza mari kwako dziri kushanda.",
+    "categoryLimitTitle": "Unogona kusarudza chete {{count}} matagi",
+    "categoryLimitDesc": "Bvisa tagi usati wawedzera rimwe. Campaign dzakaganhurirwa ku {{count}} matagi.",
     "errorTitleCreate": "Hatina kuburitsa campaign",
     "errorTitleEdit": "Hatina kuvandudza campaign",
     "errorLoginRequired": "Unofanira kunge wakapinda kuti ugadzire campaign.",

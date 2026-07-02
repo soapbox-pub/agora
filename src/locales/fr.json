@@ -1148,6 +1148,8 @@
     "successCreateDesc": "Votre collecte de fonds est en ligne.",
     "successEdit": "Campagne mise à jour",
     "successEditDesc": "Vos modifications de campagne sont en ligne.",
+    "categoryLimitTitle": "Vous ne pouvez sélectionner que {{count}} tags",
+    "categoryLimitDesc": "Supprimez un tag avant d'en ajouter un autre. Les campagnes sont limitées à {{count}} tags.",
     "errorTitleCreate": "Impossible de publier la campagne",
     "errorTitleEdit": "Impossible de mettre à jour la campagne",
     "errorLoginRequired": "Vous devez être connecté pour créer une campagne.",

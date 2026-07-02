@@ -708,6 +708,8 @@
     "successCreateDesc": "ستاسو تمویل ژوندی دی.",
     "successEdit": "کمپاین تازه شو",
     "successEditDesc": "ستاسو د تمویل بدلونونه ژوندي دي.",
+    "categoryLimitTitle": "تاسو یوازې کولی شئ {{count}} ټګونه غوره کړئ",
+    "categoryLimitDesc": "د بل اضافه کولو دمخه یو ټګ لرې کړئ. کمپاینونه تر {{count}} ټګونو پورې محدود دي.",
     "errorTitleCreate": "کمپاین نه خپرېدی",
     "errorTitleEdit": "کمپاین نه تازه کیږي",
     "errorLoginRequired": "د کمپاین جوړولو لپاره باید ننوځئ.",

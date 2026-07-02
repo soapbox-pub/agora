@@ -708,6 +708,8 @@
     "successCreateDesc": "Tu recaudación está activa.",
     "successEdit": "Campaña actualizada",
     "successEditDesc": "Los cambios de tu recaudación están activos.",
+    "categoryLimitTitle": "Solo puedes seleccionar {{count}} etiquetas",
+    "categoryLimitDesc": "Elimina una etiqueta antes de añadir otra. Las campañas están limitadas a {{count}} etiquetas.",
     "errorTitleCreate": "No se pudo publicar la campaña",
     "errorTitleEdit": "No se pudo actualizar la campaña",
     "errorLoginRequired": "Debes iniciar sesión para crear una campaña.",

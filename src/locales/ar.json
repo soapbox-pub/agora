@@ -708,6 +708,8 @@
     "successCreateDesc": "تمويلك مباشر الآن.",
     "successEdit": "تم تحديث الحملة",
     "successEditDesc": "تعديلات تمويلك مباشرة.",
+    "categoryLimitTitle": "يمكنك اختيار {{count}} وسوم فقط",
+    "categoryLimitDesc": "أزل وسمًا قبل إضافة وسم آخر. الحملات محدودة بـ {{count}} وسوم.",
     "errorTitleCreate": "تعذّر نشر الحملة",
     "errorTitleEdit": "تعذّر تحديث الحملة",
     "errorLoginRequired": "يجب تسجيل الدخول لإنشاء حملة.",

@@ -1150,6 +1150,8 @@
     "successCreateDesc": "Fon toplama kampanyanız yayında.",
     "successEdit": "Kampanya güncellendi",
     "successEditDesc": "Fon toplama kampanyanızdaki değişiklikler yayında.",
+    "categoryLimitTitle": "Yalnızca {{count}} etiket seçebilirsiniz",
+    "categoryLimitDesc": "Yeni bir etiket eklemeden önce bir etiketi kaldırın. Kampanyalar en fazla {{count}} etiketle sınırlıdır.",
     "errorTitleCreate": "Kampanya yayımlanamadı",
     "errorTitleEdit": "Kampanya güncellenemedi",
     "errorLoginRequired": "Kampanya oluşturmak için giriş yapmış olmanız gerekir.",

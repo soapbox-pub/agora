@@ -1150,6 +1150,8 @@
     "successCreateDesc": "Kampeni yako ya kukusanya fedha iko mtandaoni.",
     "successEdit": "Kampeni imesasishwa",
     "successEditDesc": "Mabadiliko ya kampeni yako yako mtandaoni.",
+    "categoryLimitTitle": "Unaweza kuchagua vitambulisho {{count}} pekee",
+    "categoryLimitDesc": "Ondoa kitambulisho kabla ya kuongeza kingine. Kampeni zimewekewa kikomo cha vitambulisho {{count}}.",
     "errorTitleCreate": "Haikuweza kuchapisha kampeni",
     "errorTitleEdit": "Haikuweza kusasisha kampeni",
     "errorLoginRequired": "Lazima uwe umeingia ili kuunda kampeni.",

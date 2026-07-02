@@ -1239,6 +1239,8 @@
     "successCreateDesc": "Your fundraiser is live.",
     "successEdit": "Campaign updated",
     "successEditDesc": "Your fundraiser changes are live.",
+    "categoryLimitTitle": "You can only select {{count}} tags",
+    "categoryLimitDesc": "Remove a tag before adding another. Campaigns are limited to {{count}} tags.",
     "errorTitleCreate": "Could not publish campaign",
     "errorTitleEdit": "Could not update campaign",
     "errorLoginRequired": "You must be logged in to create a campaign.",

@@ -1150,6 +1150,8 @@
     "successCreateDesc": "Sua arrecadação está no ar.",
     "successEdit": "Campanha atualizada",
     "successEditDesc": "As mudanças da sua arrecadação estão no ar.",
+    "categoryLimitTitle": "Você só pode selecionar {{count}} tags",
+    "categoryLimitDesc": "Remova uma tag antes de adicionar outra. As campanhas são limitadas a {{count}} tags.",
     "errorTitleCreate": "Não foi possível publicar a campanha",
     "errorTitleEdit": "Não foi possível atualizar a campanha",
     "errorLoginRequired": "Você precisa estar conectado para criar uma campanha.",

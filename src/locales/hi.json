@@ -1150,6 +1150,8 @@
     "successCreateDesc": "आपका फंडरेज़र लाइव है।",
     "successEdit": "कैंपेन अपडेट हो गया",
     "successEditDesc": "आपके फंडरेज़र के बदलाव लाइव हैं।",
+    "categoryLimitTitle": "आप केवल {{count}} टैग चुन सकते हैं",
+    "categoryLimitDesc": "दूसरा टैग जोड़ने से पहले एक टैग हटाएं। कैंपेन में अधिकतम {{count}} टैग हो सकते हैं।",
     "errorTitleCreate": "कैंपेन पब्लिश नहीं कर सके",
     "errorTitleEdit": "कैंपेन अपडेट नहीं कर सके",
     "errorLoginRequired": "कैंपेन बनाने के लिए लॉग इन होना ज़रूरी है।",

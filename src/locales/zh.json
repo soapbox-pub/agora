@@ -708,6 +708,8 @@
     "successCreateDesc": "你的募款已上线。",
     "successEdit": "活动已更新",
     "successEditDesc": "你的募款更改已生效。",
+    "categoryLimitTitle": "你最多只能选择 {{count}} 个标签",
+    "categoryLimitDesc": "添加新标签前请先移除一个标签。活动最多只能有 {{count}} 个标签。",
     "errorTitleCreate": "无法发布活动",
     "errorTitleEdit": "无法更新活动",
     "errorLoginRequired": "你必须登录才能创建活动。",

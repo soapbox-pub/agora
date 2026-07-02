@@ -74,6 +74,9 @@ interface EditTarget {
   relays?: string[];
 }
 
+/** Maximum number of category tags a campaign may select. */
+const MAX_CATEGORIES = 5;
+
 function getEditTarget(value: string | null): EditTarget | null {
   if (!value) return null;
 
@@ -823,6 +826,17 @@ export function CreateCampaignPage() {
       <CategoryPicker
         selected={selectedCategories}
         onToggle={(slug) => {
+          // Cap category selection at MAX_CATEGORIES. Adding a new slug
+          // beyond the cap is rejected with a toast; deselecting an
+          // already-selected slug is always allowed.
+          if (!selectedCategories.has(slug) && selectedCategories.size >= MAX_CATEGORIES) {
+            toast({
+              title: t('campaignsCreate.categoryLimitTitle', { count: MAX_CATEGORIES }),
+              description: t('campaignsCreate.categoryLimitDesc', { count: MAX_CATEGORIES }),
+              variant: 'destructive',
+            });
+            return;
+          }
           setSelectedCategories((prev) => {
             const next = new Set(prev);
             if (next.has(slug)) {

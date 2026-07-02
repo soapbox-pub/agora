@@ -1150,6 +1150,8 @@
     "successCreateDesc": "Penggalangan dana Anda sudah aktif.",
     "successEdit": "Kampanye diperbarui",
     "successEditDesc": "Perubahan penggalangan dana Anda sudah aktif.",
+    "categoryLimitTitle": "Anda hanya dapat memilih {{count}} tag",
+    "categoryLimitDesc": "Hapus satu tag sebelum menambahkan yang lain. Kampanye dibatasi hingga {{count}} tag.",
     "errorTitleCreate": "Tidak dapat memublikasikan kampanye",
     "errorTitleEdit": "Tidak dapat memperbarui kampanye",
     "errorLoginRequired": "Anda harus masuk untuk membuat kampanye.",
