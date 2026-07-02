@@ -1278,8 +1278,11 @@ function raisedUsd(sats: number, btcPrice: number | undefined): number | undefin
  * Decides between a 404 and a tombstone once the campaign coordinate no
  * longer resolves. If kind 8333 receipts reference the coordinate, the
  * donation record is preserved as a read-only archive (per NIP.md, receipts
- * MAY still be rendered against a deleted campaign coordinate); otherwise
- * the page falls back to the regular NotFound.
+ * MAY still be rendered against a deleted campaign coordinate). Even with
+ * zero receipts, the author's own kind 5 deletion proves the campaign
+ * existed and was deliberately removed — that still gets a tombstone
+ * notice, just without the archive section. Only when neither is found
+ * does the page fall back to the regular NotFound.
  */
 function CampaignTombstoneGate({ pubkey, identifier }: { pubkey: string; identifier: string }) {
   const { data, isLoading } = useCampaignTombstone({ pubkey, identifier, enabled: true });
@@ -1290,7 +1293,7 @@ function CampaignTombstoneGate({ pubkey, identifier }: { pubkey: string; identif
   );
 
   if (isLoading) return <CampaignDetailSkeleton />;
-  if (donations.length === 0) return <NotFound />;
+  if (donations.length === 0 && !data?.deletion) return <NotFound />;
 
   return <CampaignTombstoneView pubkey={pubkey} donations={donations} deletion={data?.deletion ?? null} />;
 }
@@ -1302,7 +1305,7 @@ function CampaignTombstoneView({
 }: {
   /** Campaign author hex pubkey (from the naddr). */
   pubkey: string;
-  /** Aggregated kind 8333 receipts, one synthetic event per `(txid, donor)`. */
+  /** Aggregated kind 8333 receipts, one synthetic event per `(txid, donor)`. May be empty. */
   donations: NostrEvent[];
   /** The author's NIP-09 deletion request, when a relay still serves it. */
   deletion: NostrEvent | null;
@@ -1314,7 +1317,9 @@ function CampaignTombstoneView({
 
   useSeoMeta({
     title: t('campaignsDetail.tombstone.seoTitle', { appName: config.appName }),
-    description: t('campaignsDetail.tombstone.archiveIntro'),
+    description: donations.length > 0
+      ? t('campaignsDetail.tombstone.archiveIntro')
+      : t('campaignsDetail.tombstone.unavailableNotice'),
   });
 
   const totalSats = useMemo(
@@ -1363,33 +1368,35 @@ function CampaignTombstoneView({
             <p className="text-muted-foreground">
               {deletedDate
                 ? t('campaignsDetail.tombstone.deletedNotice', { date: deletedDate })
-                : t('campaignsDetail.tombstone.unavailableNotice')}{' '}
-              {t('campaignsDetail.tombstone.archiveIntro')}
+                : t('campaignsDetail.tombstone.unavailableNotice')}
+              {donations.length > 0 && <> {t('campaignsDetail.tombstone.archiveIntro')}</>}
             </p>
             <AuthorByline pubkey={pubkey} />
           </CardContent>
         </Card>
 
-        <section aria-labelledby="tombstone-archive-heading" className="space-y-2">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 id="tombstone-archive-heading" className="text-lg font-semibold">
-              {t('campaignsDetail.tombstone.receiptsHeading')}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {t('campaignsDetail.tombstone.totalRecorded', {
-                amount: formatSatsFull(totalSats, btcPrice),
-              })}
-              {' · '}
-              {t('campaignsDetail.donationCount', { count: donations.length })}
+        {donations.length > 0 && (
+          <section aria-labelledby="tombstone-archive-heading" className="space-y-2">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h2 id="tombstone-archive-heading" className="text-lg font-semibold">
+                {t('campaignsDetail.tombstone.receiptsHeading')}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {t('campaignsDetail.tombstone.totalRecorded', {
+                  amount: formatSatsFull(totalSats, btcPrice),
+                })}
+                {' · '}
+                {t('campaignsDetail.donationCount', { count: donations.length })}
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t('campaignsDetail.tombstone.unverifiedCaveat')}
             </p>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {t('campaignsDetail.tombstone.unverifiedCaveat')}
-          </p>
-          <div className="pt-2">
-            <ThreadedReplyList roots={donationNodes} hideCommentContext leafCardClassName="py-4" />
-          </div>
-        </section>
+            <div className="pt-2">
+              <ThreadedReplyList roots={donationNodes} hideCommentContext leafCardClassName="py-4" />
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

@@ -43,6 +43,10 @@ export interface CampaignTombstoneData {
  *
  * If receipts exist, the caller renders a read-only tombstone ledger
  * instead of a 404, preserving the public donation record in the client.
+ * With zero receipts but an authored deletion, the caller still renders
+ * a tombstone notice ("removed on {date}") — the kind 5 proves the
+ * campaign existed and was deliberately taken down, which is more useful
+ * than a generic 404.
  */
 export function useCampaignTombstone({ pubkey, identifier, enabled }: UseCampaignTombstoneArgs) {
   const { nostr } = useNostr();
