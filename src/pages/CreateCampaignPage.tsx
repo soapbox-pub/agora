@@ -321,6 +321,39 @@ export function CreateCampaignPage() {
     [customSp],
   );
 
+  // Whether the wallet step ("where do donations go") has resolved at least
+  // one valid endpoint. Gates advancing past that step so users can't reach
+  // the final launch step only to hit `errorWalletRequired`. Mirrors the
+  // submit-time resolution in `submitMutation` (which stays as defense in
+  // depth).
+  const walletProvided = useMemo(() => {
+    if (walletSource === 'mine') {
+      if (!hdWalletAvailable) return false;
+      const wantsSp = mineAccept === 'all' || mineAccept === 'private';
+      // A private-only ('mine') campaign needs SP support; otherwise the
+      // on-chain HD address always resolves.
+      return wantsSp ? silentPaymentSupported : true;
+    }
+    // 'custom': every non-empty field must parse to its expected mode, and
+    // at least one field must be present. Matches the submit-time checks
+    // that throw errorOnchainInvalid / errorSpInvalid / errorWalletRequired.
+    const onchainOk = customOnchain.trim() ? parsedCustomOnchain?.mode === 'onchain' : false;
+    const onchainInvalid = customOnchain.trim() ? parsedCustomOnchain?.mode !== 'onchain' : false;
+    const spOk = customSp.trim() ? parsedCustomSp?.mode === 'sp' : false;
+    const spInvalid = customSp.trim() ? parsedCustomSp?.mode !== 'sp' : false;
+    if (onchainInvalid || spInvalid) return false;
+    return onchainOk || spOk;
+  }, [
+    walletSource,
+    hdWalletAvailable,
+    mineAccept,
+    silentPaymentSupported,
+    customOnchain,
+    customSp,
+    parsedCustomOnchain,
+    parsedCustomSp,
+  ]);
+
   useSeoMeta({
     title: `${isEditMode ? t('campaignsCreate.seoTitleEdit') : t('campaignsCreate.seoTitleCreate')} | ${config.appName}`,
     description: isEditMode
@@ -1097,12 +1130,19 @@ export function CreateCampaignPage() {
 
   // Required-field gates for the wizard's Next buttons. Profile is required
   // only for campaign creators missing name/avatar; title is always required.
-  // The wallet picker is validated at submit because its validity depends on
-  // which inputs the user touched.
+  // The wallet step ("where do donations go") must resolve at least one
+  // endpoint before the user can advance — otherwise a logged-in-with-
+  // extension user (no HD wallet, so the picker defaults to 'custom') could
+  // sail past the empty picker and only hit the wallet error at the final
+  // launch step. This mirrors the submit-time resolution in
+  // `submitMutation` (see `errorWalletRequired`); the submit check remains
+  // as defense in depth.
   const titleProvided = title.trim().length > 0;
   const profileStep = needsCampaignProfile ? 1 : null;
   const titleStep = needsCampaignProfile ? 2 : 1;
-  const launchStep = needsCampaignProfile ? 3 : 2;
+  const walletStep = needsCampaignProfile ? 3 : 2;
+  const launchStep = walletStep;
+
 
   return (
     <Wizard
@@ -1112,6 +1152,7 @@ export function CreateCampaignPage() {
       canAdvanceFromStep={(s) => {
         if (s === profileStep) return profileNameProvided && profileAvatarProvided && !profileImageUploading;
         if (s === titleStep) return titleProvided && !coverUploading;
+        if (s === walletStep) return walletProvided;
         return true;
       }}
       onBeforeAdvance={async (s) => {
