@@ -424,7 +424,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6 lg:px-0 py-6 lg:py-10">
         <div className="lg:flex lg:gap-8 lg:items-start">
           {/* Mobile-only inline donate card */}
-          <div id="campaign-donate" className="lg:hidden mb-6 scroll-mt-[4.5rem]">{donateColumn}</div>
+          <div className="lg:hidden mb-6">{donateColumn}</div>
 
           {/* Main article column */}
           <div className="flex-1 min-w-0 space-y-8">
@@ -546,7 +546,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
               content behind a second scrollbar and visually clips the
               bottom of the card. */}
           <aside className="hidden lg:block lg:w-[360px] lg:shrink-0 lg:self-start">
-            <div id="campaign-donate-desktop" className="lg:sticky lg:top-4 scroll-mt-20">{donateColumn}</div>
+            <div className="lg:sticky lg:top-4">{donateColumn}</div>
           </aside>
         </div>
       </div>
