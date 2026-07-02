@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.9.2] - 2026-07-02
+
+The Venezuela earthquake relief appeal has wound down, so the home banner, popup, and relief page have been retired — relief campaigns themselves remain open for direct donations. Deleted campaigns now leave a permanent record page that preserves their donation history, and campaign creation picks up some polish: the wallet step waits until you've entered an address, and categories are capped at five.
+
+### Added
+
+- Deleted campaigns now show a permanent record page instead of vanishing: it notes when the organizer removed the campaign and preserves the full donation ledger when donations were recorded.
+
+### Changed
+
+- The campaign wizard's wallet step now stays locked until you've provided a wallet address or endpoint.
+- Campaigns are limited to five category tags, with a notice when you hit the cap.
+- The "Open in wallet" button no longer appears when you're viewing your own campaign.
+
+### Removed
+
+- The Venezuela earthquake relief appeal — the home-page banner, one-time popup, and dedicated relief page — as the relief response winds down. The relief campaigns themselves are still live and accepting donations.
+
 ## [2.9.1] - 2026-06-27
 
 The Venezuela earthquake relief appeal now rallies behind every campaign on the ground, not just one. The home banner and relief page showcase a live, swipeable carousel of all Venezuelan relief efforts, with a running total of everything raised so far — so you can pick exactly who to help.
