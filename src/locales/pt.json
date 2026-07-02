@@ -1232,6 +1232,16 @@
       "loadMore": "Carregar mais",
       "loadingMore": "Carregando…"
     },
+    "tombstone": {
+      "seoTitle": "Campanha arquivada | {{appName}}",
+      "title": "Esta campanha não está mais disponível",
+      "deletedNotice": "O organizador removeu esta campanha em {{date}}. Ela não aceita mais doações.",
+      "unavailableNotice": "Esta campanha foi removida ou não está mais disponível nos seus relays. Ela não aceita mais doações.",
+      "archiveIntro": "Os recibos de doação publicados no Nostr estão preservados abaixo como registro público.",
+      "receiptsHeading": "Arquivo de doações",
+      "totalRecorded": "Total registrado: {{amount}}",
+      "unverifiedCaveat": "Os valores são os declarados nos recibos assinados pelos doadores. Como a campanha e o endereço da carteira foram removidos, eles não podem mais ser verificados on-chain."
+    },
     "noCommentsTitle": "Nenhum comentário ainda",
     "noCommentsHint": "Seja o primeiro a deixar uma mensagem de apoio.",
     "deleteDialogTitle": "Excluir esta campanha?",

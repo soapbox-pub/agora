@@ -1232,6 +1232,16 @@
       "loadMore": "Pakia zaidi",
       "loadingMore": "Inapakia…"
     },
+    "tombstone": {
+      "seoTitle": "Kampeni iliyohifadhiwa | {{appName}}",
+      "title": "Kampeni hii haipatikani tena",
+      "deletedNotice": "Mratibu aliondoa kampeni hii tarehe {{date}}. Haipokei tena michango.",
+      "unavailableNotice": "Kampeni hii iliondolewa au haipatikani tena kwenye relei zako. Haipokei tena michango.",
+      "archiveIntro": "Risiti za michango zilizochapishwa kwenye Nostr zimehifadhiwa hapa chini kama kumbukumbu ya umma.",
+      "receiptsHeading": "Kumbukumbu ya michango",
+      "totalRecorded": "Jumla iliyorekodiwa: {{amount}}",
+      "unverifiedCaveat": "Kiasi ni kama kilivyodaiwa katika risiti zilizotiwa saini na wachangiaji. Kwa kuwa kampeni na anwani ya pochi yake ziliondolewa, haziwezi tena kuthibitishwa kwenye mnyororo."
+    },
     "noCommentsTitle": "Hakuna maoni bado",
     "noCommentsHint": "Kuwa wa kwanza kuacha ujumbe wa msaada.",
     "deleteDialogTitle": "Futa kampeni hii?",

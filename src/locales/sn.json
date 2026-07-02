@@ -790,6 +790,16 @@
       "loadMore": "Rodha zvimwe",
       "loadingMore": "Kurodha…"
     },
+    "tombstone": {
+      "seoTitle": "Campaign yakachengetedzwa | {{appName}}",
+      "title": "Campaign iyi haichawanikwi",
+      "deletedNotice": "Murongi akabvisa campaign iyi musi wa {{date}}. Haichagamuchiri zvipo.",
+      "unavailableNotice": "Campaign iyi yakabviswa kana kuti haichawanikwi pamarelay ako. Haichagamuchiri zvipo.",
+      "archiveIntro": "Marisiti ezvipo akaburitswa paNostr akachengetedzwa pazasi senhoroondo yeruzhinji.",
+      "receiptsHeading": "Dura rezvipo",
+      "totalRecorded": "Zvakanyorwa zvose: {{amount}}",
+      "unverifiedCaveat": "Mari ndeyakataurwa mumarisiti akasainwa nevapi vezvipo. Sezvo campaign nekero yechikwama chayo zvakabviswa, hazvichakwanisi kusimbiswa pa-chain."
+    },
     "noCommentsTitle": "Hapana mhinduro parizvino",
     "noCommentsHint": "Iva wekutanga kusiya shoko rerutsigiro.",
     "deleteDialogTitle": "Bvisa campaign iyi?",

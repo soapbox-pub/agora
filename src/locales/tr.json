@@ -1232,6 +1232,16 @@
       "loadMore": "Daha fazla yükle",
       "loadingMore": "Yükleniyor…"
     },
+    "tombstone": {
+      "seoTitle": "Arşivlenmiş kampanya | {{appName}}",
+      "title": "Bu kampanya artık mevcut değil",
+      "deletedNotice": "Düzenleyici bu kampanyayı {{date}} tarihinde kaldırdı. Artık bağış kabul etmiyor.",
+      "unavailableNotice": "Bu kampanya kaldırıldı veya röleleriniz üzerinde artık mevcut değil. Artık bağış kabul etmiyor.",
+      "archiveIntro": "Nostr'da yayımlanan bağış makbuzları, herkese açık bir kayıt olarak aşağıda korunmaktadır.",
+      "receiptsHeading": "Bağış arşivi",
+      "totalRecorded": "Kaydedilen toplam: {{amount}}",
+      "unverifiedCaveat": "Tutarlar, bağışçıların imzalı makbuzlarında beyan edildiği gibidir. Kampanya ve cüzdan adresi kaldırıldığından, bunlar artık zincir üzerinde doğrulanamaz."
+    },
     "noCommentsTitle": "Henüz yorum yok",
     "noCommentsHint": "Destek mesajı bırakan ilk kişi olun.",
     "deleteDialogTitle": "Bu kampanya silinsin mi?",

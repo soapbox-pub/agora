@@ -1232,6 +1232,16 @@
       "loadMore": "Charger plus",
       "loadingMore": "Chargement…"
     },
+    "tombstone": {
+      "seoTitle": "Campagne archivée | {{appName}}",
+      "title": "Cette campagne n'est plus disponible",
+      "deletedNotice": "L'organisateur a supprimé cette campagne le {{date}}. Elle n'accepte plus de dons.",
+      "unavailableNotice": "Cette campagne a été supprimée ou n'est plus disponible sur vos relais. Elle n'accepte plus de dons.",
+      "archiveIntro": "Les reçus de dons publiés sur Nostr sont conservés ci-dessous comme registre public.",
+      "receiptsHeading": "Archives des dons",
+      "totalRecorded": "Total enregistré : {{amount}}",
+      "unverifiedCaveat": "Les montants sont ceux déclarés dans les reçus signés des donateurs. La campagne et l'adresse de son portefeuille ayant été supprimées, ils ne peuvent plus être vérifiés sur la chaîne."
+    },
     "noCommentsTitle": "Aucun commentaire pour l'instant",
     "noCommentsHint": "Soyez le premier à laisser un message de soutien.",
     "deleteDialogTitle": "Supprimer cette campagne ?",

@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation, Trans } from 'react-i18next';
 import type { NostrEvent } from '@nostrify/nostrify';
 import {
+  Archive,
   ChevronLeft,
   HandHeart,
   Pencil,
@@ -55,6 +56,7 @@ import { useAuthor } from '@/hooks/useAuthor';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaign } from '@/hooks/useCampaign';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
+import { useCampaignTombstone } from '@/hooks/useCampaignTombstone';
 import { useComments } from '@/hooks/useComments';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useDeleteEvent } from '@/hooks/useDeleteEvent';
@@ -100,6 +102,41 @@ function collectReplyEvents(nodes: ReplyNode[], out = new Map<string, NostrEvent
   return out;
 }
 
+/**
+ * Aggregate kind 8333 donation receipts by `(txid, donor)` so each donation
+ * surfaces as a single event. Legacy donations (one receipt per beneficiary
+ * sharing the same txid + donor) collapse into one card whose `amount` tag
+ * carries the summed donation total. Malformed receipts (missing txid or a
+ * positive integer amount) are dropped.
+ */
+function aggregateDonationReceipts(receipts: NostrEvent[]): NostrEvent[] {
+  type Aggregate = { canonical: NostrEvent; totalSats: number };
+  const byDonation = new Map<string, Aggregate>();
+
+  for (const receipt of receipts) {
+    const txid = receipt.tags.find(([n]) => n === 'i')?.[1]?.replace(/^bitcoin:tx:/, '');
+    const amountTag = receipt.tags.find(([n]) => n === 'amount')?.[1];
+    const amount = amountTag ? Number(amountTag) : NaN;
+    if (!txid || !Number.isFinite(amount) || amount <= 0) continue;
+
+    const key = `${txid}:${receipt.pubkey}`;
+    const prev = byDonation.get(key);
+    const totalSats = (prev?.totalSats ?? 0) + amount;
+    const canonical = prev && prev.canonical.created_at >= receipt.created_at
+      ? prev.canonical
+      : receipt;
+    byDonation.set(key, { canonical, totalSats });
+  }
+
+  return Array.from(byDonation.values()).map(({ canonical, totalSats }) => ({
+    ...canonical,
+    tags: [
+      ...canonical.tags.filter(([n]) => n !== 'amount'),
+      ['amount', String(totalSats)],
+    ],
+  }));
+}
+
 export function CampaignDetailPage({ pubkey, identifier, relays }: CampaignDetailPageProps) {
   // Drop the default 600px column cap and the default right widget sidebar
   // — this page renders its own GoFundMe-style 2-column layout (article on
@@ -112,7 +149,14 @@ export function CampaignDetailPage({ pubkey, identifier, relays }: CampaignDetai
   const { data: campaign, isLoading, isError } = useCampaign({ pubkey, identifier, relays });
 
   if (isLoading) return <CampaignDetailSkeleton />;
-  if (isError || !campaign) return <NotFound />;
+
+  // The coordinate no longer resolves to a live campaign — either it was
+  // deleted (NIP-09) or relays dropped it. Before 404ing, check whether
+  // donation receipts reference the coordinate; if so, render a read-only
+  // tombstone so the public donation record stays reachable in the client.
+  if (isError || !campaign) {
+    return <CampaignTombstoneGate pubkey={pubkey} identifier={identifier} />;
+  }
 
   return <CampaignDetailContent campaign={campaign} />;
 }
@@ -177,35 +221,10 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
   // donation surfaces as a single event in the donor list and the inline
   // reply tree. Legacy donations (one receipt per beneficiary sharing the
   // same txid + donor) collapse into one card showing the donation total.
-  const donationReceipts = useMemo((): NostrEvent[] => {
-    if (!stats?.receipts || stats.receipts.length === 0) return [];
-
-    type Aggregate = { canonical: NostrEvent; totalSats: number };
-    const byDonation = new Map<string, Aggregate>();
-
-    for (const receipt of stats.receipts) {
-      const txid = receipt.tags.find(([n]) => n === 'i')?.[1]?.replace(/^bitcoin:tx:/, '');
-      const amountTag = receipt.tags.find(([n]) => n === 'amount')?.[1];
-      const amount = amountTag ? Number(amountTag) : NaN;
-      if (!txid || !Number.isFinite(amount) || amount <= 0) continue;
-
-      const key = `${txid}:${receipt.pubkey}`;
-      const prev = byDonation.get(key);
-      const totalSats = (prev?.totalSats ?? 0) + amount;
-      const canonical = prev && prev.canonical.created_at >= receipt.created_at
-        ? prev.canonical
-        : receipt;
-      byDonation.set(key, { canonical, totalSats });
-    }
-
-    return Array.from(byDonation.values()).map(({ canonical, totalSats }) => ({
-      ...canonical,
-      tags: [
-        ...canonical.tags.filter(([n]) => n !== 'amount'),
-        ['amount', String(totalSats)],
-      ],
-    }));
-  }, [stats?.receipts]);
+  const donationReceipts = useMemo(
+    (): NostrEvent[] => aggregateDonationReceipts(stats?.receipts ?? []),
+    [stats?.receipts],
+  );
 
   const replyTree = useMemo((): ReplyNode[] => {
     const topLevelComments = commentsData?.topLevelComments ?? [];
@@ -1249,6 +1268,131 @@ function DonateColumn({
 function raisedUsd(sats: number, btcPrice: number | undefined): number | undefined {
   if (!btcPrice || !Number.isFinite(btcPrice) || btcPrice <= 0) return undefined;
   return (sats / 100_000_000) * btcPrice;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Tombstone — public donation archive for deleted campaigns
+// ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Decides between a 404 and a tombstone once the campaign coordinate no
+ * longer resolves. If kind 8333 receipts reference the coordinate, the
+ * donation record is preserved as a read-only archive (per NIP.md, receipts
+ * MAY still be rendered against a deleted campaign coordinate); otherwise
+ * the page falls back to the regular NotFound.
+ */
+function CampaignTombstoneGate({ pubkey, identifier }: { pubkey: string; identifier: string }) {
+  const { data, isLoading } = useCampaignTombstone({ pubkey, identifier, enabled: true });
+
+  const donations = useMemo(
+    () => aggregateDonationReceipts(data?.receipts ?? []),
+    [data?.receipts],
+  );
+
+  if (isLoading) return <CampaignDetailSkeleton />;
+  if (donations.length === 0) return <NotFound />;
+
+  return <CampaignTombstoneView pubkey={pubkey} donations={donations} deletion={data?.deletion ?? null} />;
+}
+
+function CampaignTombstoneView({
+  pubkey,
+  donations,
+  deletion,
+}: {
+  /** Campaign author hex pubkey (from the naddr). */
+  pubkey: string;
+  /** Aggregated kind 8333 receipts, one synthetic event per `(txid, donor)`. */
+  donations: NostrEvent[];
+  /** The author's NIP-09 deletion request, when a relay still serves it. */
+  deletion: NostrEvent | null;
+}) {
+  const { t, i18n } = useTranslation();
+  const { config } = useAppContext();
+  const { data: btcPrice } = useBtcPrice();
+  const navigate = useNavigate();
+
+  useSeoMeta({
+    title: t('campaignsDetail.tombstone.seoTitle', { appName: config.appName }),
+    description: t('campaignsDetail.tombstone.archiveIntro'),
+  });
+
+  const totalSats = useMemo(
+    () =>
+      donations.reduce((sum, ev) => {
+        const amount = Number(ev.tags.find(([n]) => n === 'amount')?.[1]);
+        return Number.isFinite(amount) && amount > 0 ? sum + amount : sum;
+      }, 0),
+    [donations],
+  );
+
+  const donationNodes = useMemo(
+    (): ReplyNode[] =>
+      donations
+        .map((event): ReplyNode => ({ event, children: [] }))
+        .sort((a, b) => b.event.created_at - a.event.created_at),
+    [donations],
+  );
+
+  const deletedDate = deletion
+    ? new Date(deletion.created_at * 1000).toLocaleDateString(i18n.language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : undefined;
+
+  return (
+    <main className="min-h-screen pb-16">
+      <div className="max-w-3xl mx-auto px-5 sm:px-6 py-6 lg:py-10 space-y-6">
+        <Button variant="ghost" size="sm" className="-ml-2" onClick={() => navigate(-1)}>
+          <ChevronLeft className="size-4 mr-1" aria-hidden="true" />
+          {t('campaignsDetail.back')}
+        </Button>
+
+        <Card className="border-dashed">
+          <CardContent className="py-8 px-6 sm:px-8 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                <Archive className="size-5 text-muted-foreground" aria-hidden="true" />
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold leading-tight">
+                {t('campaignsDetail.tombstone.title')}
+              </h1>
+            </div>
+            <p className="text-muted-foreground">
+              {deletedDate
+                ? t('campaignsDetail.tombstone.deletedNotice', { date: deletedDate })
+                : t('campaignsDetail.tombstone.unavailableNotice')}{' '}
+              {t('campaignsDetail.tombstone.archiveIntro')}
+            </p>
+            <AuthorByline pubkey={pubkey} />
+          </CardContent>
+        </Card>
+
+        <section aria-labelledby="tombstone-archive-heading" className="space-y-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 id="tombstone-archive-heading" className="text-lg font-semibold">
+              {t('campaignsDetail.tombstone.receiptsHeading')}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {t('campaignsDetail.tombstone.totalRecorded', {
+                amount: formatSatsFull(totalSats, btcPrice),
+              })}
+              {' · '}
+              {t('campaignsDetail.donationCount', { count: donations.length })}
+            </p>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {t('campaignsDetail.tombstone.unverifiedCaveat')}
+          </p>
+          <div className="pt-2">
+            <ThreadedReplyList roots={donationNodes} hideCommentContext leafCardClassName="py-4" />
+          </div>
+        </section>
+      </div>
+    </main>
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────

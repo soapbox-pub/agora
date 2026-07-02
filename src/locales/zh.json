@@ -790,6 +790,16 @@
       "loadMore": "加载更多",
       "loadingMore": "加载中……"
     },
+    "tombstone": {
+      "seoTitle": "已归档的活动 | {{appName}}",
+      "title": "此活动已不可用",
+      "deletedNotice": "发起人已于 {{date}} 删除此活动。它不再接受捐赠。",
+      "unavailableNotice": "此活动已被删除，或在您的中继上已不可用。它不再接受捐赠。",
+      "archiveIntro": "发布到 Nostr 的捐赠凭证已在下方保留，作为公开记录。",
+      "receiptsHeading": "捐赠档案",
+      "totalRecorded": "记录总额：{{amount}}",
+      "unverifiedCaveat": "金额以捐赠者签名凭证中的申报为准。由于活动及其钱包地址已被删除，这些金额已无法在链上验证。"
+    },
     "noCommentsTitle": "暂无评论",
     "noCommentsHint": "成为第一个留下支持留言的人。",
     "deleteDialogTitle": "删除此活动？",

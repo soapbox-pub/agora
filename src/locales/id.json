@@ -1232,6 +1232,16 @@
       "loadMore": "Muat lebih banyak",
       "loadingMore": "Memuat…"
     },
+    "tombstone": {
+      "seoTitle": "Kampanye terarsip | {{appName}}",
+      "title": "Kampanye ini tidak lagi tersedia",
+      "deletedNotice": "Penyelenggara menghapus kampanye ini pada {{date}}. Kampanye ini tidak lagi menerima donasi.",
+      "unavailableNotice": "Kampanye ini telah dihapus atau tidak lagi tersedia di relay Anda. Kampanye ini tidak lagi menerima donasi.",
+      "archiveIntro": "Tanda terima donasi yang diterbitkan di Nostr tersimpan di bawah sebagai catatan publik.",
+      "receiptsHeading": "Arsip donasi",
+      "totalRecorded": "Total tercatat: {{amount}}",
+      "unverifiedCaveat": "Jumlah sesuai yang diklaim dalam tanda terima yang ditandatangani donatur. Karena kampanye dan alamat dompetnya telah dihapus, jumlah tersebut tidak lagi dapat diverifikasi secara on-chain."
+    },
     "noCommentsTitle": "Belum ada komentar",
     "noCommentsHint": "Jadilah yang pertama meninggalkan pesan dukungan.",
     "deleteDialogTitle": "Hapus kampanye ini?",

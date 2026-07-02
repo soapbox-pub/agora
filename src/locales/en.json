@@ -1321,6 +1321,16 @@
       "loadMore": "Load more",
       "loadingMore": "Loading…"
     },
+    "tombstone": {
+      "seoTitle": "Archived campaign | {{appName}}",
+      "title": "This campaign is no longer available",
+      "deletedNotice": "The organizer removed this campaign on {{date}}. It no longer accepts donations.",
+      "unavailableNotice": "This campaign was removed or is no longer available from your relays. It no longer accepts donations.",
+      "archiveIntro": "The donation receipts published to Nostr are preserved below as a public record.",
+      "receiptsHeading": "Donation archive",
+      "totalRecorded": "Total recorded: {{amount}}",
+      "unverifiedCaveat": "Amounts are as claimed in donors' signed receipts. Because the campaign and its wallet address were removed, they can no longer be verified on-chain."
+    },
     "noCommentsTitle": "No comments yet",
     "noCommentsHint": "Be the first to leave a message of support.",
     "deleteDialogTitle": "Delete this campaign?",

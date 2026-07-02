@@ -790,6 +790,16 @@
       "loadMore": "載入更多",
       "loadingMore": "載入中…"
     },
+    "tombstone": {
+      "seoTitle": "已封存的活動 | {{appName}}",
+      "title": "此活動已不可用",
+      "deletedNotice": "發起人已於 {{date}} 刪除此活動。它不再接受捐贈。",
+      "unavailableNotice": "此活動已被刪除，或在您的中繼上已不可用。它不再接受捐贈。",
+      "archiveIntro": "發佈到 Nostr 的捐贈收據已保留在下方，作為公開紀錄。",
+      "receiptsHeading": "捐贈檔案",
+      "totalRecorded": "記錄總額：{{amount}}",
+      "unverifiedCaveat": "金額以捐贈者簽署收據中所申報者為準。由於活動及其錢包地址已被刪除，這些金額已無法在鏈上驗證。"
+    },
     "noCommentsTitle": "暫無評論",
     "noCommentsHint": "成為第一個留下支持留言的人。",
     "deleteDialogTitle": "刪除此活動？",
