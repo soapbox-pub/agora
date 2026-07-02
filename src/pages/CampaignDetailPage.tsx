@@ -1104,6 +1104,10 @@ function DonateColumn({
     user.pubkey !== campaign.pubkey &&
     hdAccess.status === 'available';
 
+  // The campaign author is the beneficiary, not a donor — hide the
+  // "Open in wallet" affordance when they view their own campaign.
+  const isOwner = user?.pubkey === campaign.pubkey;
+
   return (
     // On mobile we drop the surface chrome (no rounded background) so
     // the donate content flows inline with the page instead of being a
@@ -1182,6 +1186,7 @@ function DonateColumn({
           <div className="space-y-3">
             <CampaignWalletDonatePanel
               wallets={campaign.wallets}
+              hideExternalWallet={isOwner}
               primaryAction={
                 canPayInApp ? (
                   <Button

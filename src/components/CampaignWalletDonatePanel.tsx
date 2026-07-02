@@ -24,6 +24,13 @@ interface CampaignWalletDonatePanelProps {
    * and SP-only campaigns.
    */
   primaryAction?: ReactNode;
+  /**
+   * Hides the "Open in wallet" / "Open external wallet" button. Set when
+   * the logged-in user is the campaign author viewing their own
+   * campaign — they're the beneficiary, not a donor, so paying into
+   * their own campaign from an external wallet makes no sense.
+   */
+  hideExternalWallet?: boolean;
 }
 
 /**
@@ -67,6 +74,7 @@ function buildQrPayload(wallets: CampaignWallets): string {
 export function CampaignWalletDonatePanel({
   wallets,
   primaryAction,
+  hideExternalWallet,
 }: CampaignWalletDonatePanelProps) {
   const { t } = useTranslation();
   const qrPayload = buildQrPayload(wallets);
@@ -130,18 +138,20 @@ export function CampaignWalletDonatePanel({
           where we need to disambiguate between "external" and "Agora's
           own wallet". When the slot is empty the qualifier is just
           noise. */}
-      <Button
-        asChild
-        variant={primaryAction ? 'outline' : 'default'}
-        className={primaryAction ? 'w-full' : 'w-full text-white'}
-      >
-        <a href={qrPayload}>
-          <ExternalLink className="size-4 mr-1.5" />
-          {primaryAction
-            ? t('campaignsDetail.openExternalWallet')
-            : t('campaignsDetail.openInWallet')}
-        </a>
-      </Button>
+      {!hideExternalWallet && (
+        <Button
+          asChild
+          variant={primaryAction ? 'outline' : 'default'}
+          className={primaryAction ? 'w-full' : 'w-full text-white'}
+        >
+          <a href={qrPayload}>
+            <ExternalLink className="size-4 mr-1.5" />
+            {primaryAction
+              ? t('campaignsDetail.openExternalWallet')
+              : t('campaignsDetail.openInWallet')}
+          </a>
+        </Button>
+      )}
     </div>
   );
 }
