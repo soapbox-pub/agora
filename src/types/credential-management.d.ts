@@ -22,4 +22,5 @@ declare class PasswordCredential extends Credential {
 
 interface CredentialRequestOptions {
   password?: boolean;
+  mediation?: 'silent' | 'optional' | 'required' | 'conditional';
 }

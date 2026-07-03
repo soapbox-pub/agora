@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Hatina kukwanisa kudaunirodha faira rekiyi. Ndapota ikope nemaoko.",
       "secretKeyAriaLabel": "Kiyi yakavanzika"
     },
+    "verify": {
+      "title": "Simbisa kiyi yako",
+      "subtitle": "Nama kana kudaunirodha kiyi yawachengeta izvozvi. Izvi zvinoita shuwa kuti bekapu yako inoshanda usati waenderera mberi.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Nama kiyi yako yakavanzika",
+      "or": "kana",
+      "uploadButton": "Isa faira rekiyi",
+      "autofilled": "Yazadzwa kubva kumuchengeti wako wemapassword.",
+      "mismatch": "Iyi haienzani nekiyi yawachengeta izvozvi. Tarisa bekapu yako uedze zvakare.",
+      "fileInvalid": "Faira iri harina kiyi yakavanzika inoshanda.",
+      "fileReadFailed": "Hatina kukwanisa kuverenga faira iri. Ndapota edza zvakare."
+    },
     "profile": {
       "title": "Ita seyako",
       "subtitle": "Udza vamwe zvishoma pamusoro pako. Zvose zvichisarudzwa, chinja chero nguva.",

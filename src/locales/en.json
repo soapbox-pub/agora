@@ -208,6 +208,18 @@
       "downloadFailedDescription": "Could not download the key file. Please copy it manually.",
       "secretKeyAriaLabel": "Secret key"
     },
+    "verify": {
+      "title": "Confirm your key",
+      "subtitle": "Paste or upload the key you just saved. This makes sure your backup works before you continue.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Paste your secret key",
+      "or": "or",
+      "uploadButton": "Upload key file",
+      "autofilled": "Filled in from your password manager.",
+      "mismatch": "That doesn't match the key you just saved. Check your backup and try again.",
+      "fileInvalid": "That file doesn't contain a valid secret key.",
+      "fileReadFailed": "Could not read that file. Please try again."
+    },
     "profile": {
       "title": "Make it yours",
       "subtitle": "Tell others a bit about yourself. All optional, change it any time.",

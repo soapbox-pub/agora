@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Impossible de télécharger le fichier de clé. Veuillez le copier manuellement.",
       "secretKeyAriaLabel": "Clé secrète"
     },
+    "verify": {
+      "title": "Confirmez votre clé",
+      "subtitle": "Collez ou importez la clé que vous venez d'enregistrer. Cela garantit que votre sauvegarde fonctionne avant de continuer.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Collez votre clé secrète",
+      "or": "ou",
+      "uploadButton": "Importer le fichier de clé",
+      "autofilled": "Rempli depuis votre gestionnaire de mots de passe.",
+      "mismatch": "Cela ne correspond pas à la clé que vous venez d'enregistrer. Vérifiez votre sauvegarde et réessayez.",
+      "fileInvalid": "Ce fichier ne contient pas de clé secrète valide.",
+      "fileReadFailed": "Impossible de lire ce fichier. Veuillez réessayer."
+    },
     "profile": {
       "title": "Personnalisez-le",
       "subtitle": "Présentez-vous brièvement aux autres. Tout est facultatif, modifiable à tout moment.",

@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Haikuweza kupakua faili la ufunguo. Tafadhali inakili mwenyewe.",
       "secretKeyAriaLabel": "Ufunguo wa siri"
     },
+    "verify": {
+      "title": "Thibitisha ufunguo wako",
+      "subtitle": "Bandika au pakia ufunguo uliouhifadhi hivi punde. Hii inahakikisha nakala yako rejeshi inafanya kazi kabla ya kuendelea.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Bandika ufunguo wako wa siri",
+      "or": "au",
+      "uploadButton": "Pakia faili la ufunguo",
+      "autofilled": "Imejazwa kutoka kwa msimamizi wako wa manenosiri.",
+      "mismatch": "Huu haulingani na ufunguo uliouhifadhi hivi punde. Angalia nakala yako rejeshi na ujaribu tena.",
+      "fileInvalid": "Faili hilo halina ufunguo wa siri halali.",
+      "fileReadFailed": "Haikuweza kusoma faili hilo. Tafadhali jaribu tena."
+    },
     "profile": {
       "title": "Uifanye yako",
       "subtitle": "Waambie wengine kidogo kukuhusu. Yote si lazima, ibadilishe wakati wowote.",

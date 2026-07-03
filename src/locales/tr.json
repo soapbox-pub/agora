@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Anahtar dosyası indirilemedi. Lütfen elle kopyalayın.",
       "secretKeyAriaLabel": "Gizli anahtar"
     },
+    "verify": {
+      "title": "Anahtarınızı doğrulayın",
+      "subtitle": "Az önce kaydettiğiniz anahtarı yapıştırın veya yükleyin. Bu, devam etmeden önce yedeğinizin çalıştığından emin olmanızı sağlar.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Gizli anahtarınızı yapıştırın",
+      "or": "veya",
+      "uploadButton": "Anahtar dosyasını yükle",
+      "autofilled": "Parola yöneticinizden dolduruldu.",
+      "mismatch": "Bu, az önce kaydettiğiniz anahtarla eşleşmiyor. Yedeğinizi kontrol edip tekrar deneyin.",
+      "fileInvalid": "Bu dosya geçerli bir gizli anahtar içermiyor.",
+      "fileReadFailed": "Bu dosya okunamadı. Lütfen tekrar deneyin."
+    },
     "profile": {
       "title": "Profilinizi kişiselleştirin",
       "subtitle": "Başkalarına kendiniz hakkında biraz bilgi verin. Hepsi isteğe bağlı, istediğiniz zaman değiştirebilirsiniz.",

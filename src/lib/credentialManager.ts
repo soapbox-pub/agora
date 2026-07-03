@@ -80,6 +80,56 @@ async function storeNsecCredential(
 }
 
 
+/**
+ * Retrieve a previously-stored Nostr credential from the platform's
+ * password manager.
+ *
+ * On Capacitor iOS this shows the iCloud Keychain credential picker.
+ * On Chromium browsers this shows the native credential picker (or returns
+ * silently when the browser can resolve a single unambiguous credential).
+ * On unsupported platforms this resolves to `undefined` without error.
+ *
+ * @returns The stored credential, or `undefined` if unavailable / dismissed.
+ */
+export async function getNsecCredential(): Promise<
+  { npub: string; nsec: string } | undefined
+> {
+  // Capacitor native path (iOS / Android).
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const result = await SavePassword.readPassword();
+      if (result.username && result.password) {
+        return { npub: result.username, nsec: result.password };
+      }
+      return undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  // Chromium PasswordCredential path (web).
+  if (!supportsPasswordCredential()) return undefined;
+
+  try {
+    const credential = await navigator.credentials.get({
+      password: true,
+      mediation: 'optional',
+    });
+
+    if (credential && 'password' in credential) {
+      const pc = credential as PasswordCredential;
+      if (pc.id && pc.password) {
+        return { npub: pc.id, nsec: pc.password };
+      }
+    }
+
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+
 /** Result of a `saveNsec` call. */
 type SaveNsecResult = 'saved' | 'saved-to-file' | 'dismissed';
 

@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Tidak dapat mengunduh berkas kunci. Silakan salin secara manual.",
       "secretKeyAriaLabel": "Kunci rahasia"
     },
+    "verify": {
+      "title": "Konfirmasi kunci Anda",
+      "subtitle": "Tempel atau unggah kunci yang baru saja Anda simpan. Ini memastikan cadangan Anda berfungsi sebelum Anda melanjutkan.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Tempel kunci rahasia Anda",
+      "or": "atau",
+      "uploadButton": "Unggah berkas kunci",
+      "autofilled": "Diisi dari pengelola kata sandi Anda.",
+      "mismatch": "Itu tidak cocok dengan kunci yang baru saja Anda simpan. Periksa cadangan Anda dan coba lagi.",
+      "fileInvalid": "Berkas itu tidak berisi kunci rahasia yang valid.",
+      "fileReadFailed": "Tidak dapat membaca berkas itu. Silakan coba lagi."
+    },
     "profile": {
       "title": "Jadikan milik Anda",
       "subtitle": "Beri tahu orang lain sedikit tentang diri Anda. Semua opsional, bisa diubah kapan saja.",

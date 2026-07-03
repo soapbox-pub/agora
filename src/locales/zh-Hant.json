@@ -207,6 +207,18 @@
       "downloadFailedDescription": "無法下載金鑰檔案。請手動複製。",
       "secretKeyAriaLabel": "私鑰"
     },
+    "verify": {
+      "title": "確認你的金鑰",
+      "subtitle": "貼上或上傳你剛剛儲存的金鑰。這能在你繼續之前，確認你的備份可以正常使用。",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "貼上你的私鑰",
+      "or": "或",
+      "uploadButton": "上傳金鑰檔案",
+      "autofilled": "已從你的密碼管理員自動填入。",
+      "mismatch": "這與你剛剛儲存的金鑰不符。請檢查你的備份後再試一次。",
+      "fileInvalid": "該檔案不包含有效的私鑰。",
+      "fileReadFailed": "無法讀取該檔案。請再試一次。"
+    },
     "profile": {
       "title": "打造你的個人資料",
       "subtitle": "向他人簡單介紹一下你自己。全部都是選填，隨時可以修改。",

@@ -207,6 +207,18 @@
       "downloadFailedDescription": "Não foi possível baixar o arquivo da chave. Por favor, copie-a manualmente.",
       "secretKeyAriaLabel": "Chave secreta"
     },
+    "verify": {
+      "title": "Confirme sua chave",
+      "subtitle": "Cole ou envie a chave que você acabou de salvar. Assim você garante que seu backup funciona antes de continuar.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Cole sua chave secreta",
+      "or": "ou",
+      "uploadButton": "Enviar arquivo de chave",
+      "autofilled": "Preenchido pelo seu gerenciador de senhas.",
+      "mismatch": "Isso não corresponde à chave que você acabou de salvar. Verifique seu backup e tente novamente.",
+      "fileInvalid": "Esse arquivo não contém uma chave secreta válida.",
+      "fileReadFailed": "Não foi possível ler esse arquivo. Por favor, tente novamente."
+    },
     "profile": {
       "title": "Deixe do seu jeito",
       "subtitle": "Conte um pouco sobre você. Tudo opcional, você pode alterar a qualquer momento.",

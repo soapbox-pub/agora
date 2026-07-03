@@ -207,6 +207,18 @@
       "downloadFailedDescription": "无法下载密钥文件。请手动复制保存。",
       "secretKeyAriaLabel": "私钥"
     },
+    "verify": {
+      "title": "确认你的密钥",
+      "subtitle": "粘贴或上传你刚刚保存的密钥。这可以在你继续之前确保备份有效。",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "粘贴你的私钥",
+      "or": "或",
+      "uploadButton": "上传密钥文件",
+      "autofilled": "已从你的密码管理器中填入。",
+      "mismatch": "这与你刚刚保存的密钥不匹配。请检查你的备份后重试。",
+      "fileInvalid": "该文件不包含有效的私钥。",
+      "fileReadFailed": "无法读取该文件。请重试。"
+    },
     "profile": {
       "title": "打造属于你的个人资料",
       "subtitle": "向他人介绍一下你自己。全部为选填，随时可以修改。",

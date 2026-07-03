@@ -207,6 +207,18 @@
       "downloadFailedDescription": "No se pudo descargar el archivo de la clave. Por favor, cópiala manualmente.",
       "secretKeyAriaLabel": "Clave secreta"
     },
+    "verify": {
+      "title": "Confirma tu clave",
+      "subtitle": "Pega o sube la clave que acabas de guardar. Así te aseguras de que tu copia de seguridad funciona antes de continuar.",
+      "placeholder": "nsec1…",
+      "inputAriaLabel": "Pega tu clave secreta",
+      "or": "o",
+      "uploadButton": "Subir archivo de clave",
+      "autofilled": "Rellenado desde tu gestor de contraseñas.",
+      "mismatch": "Eso no coincide con la clave que acabas de guardar. Revisa tu copia de seguridad e inténtalo de nuevo.",
+      "fileInvalid": "Ese archivo no contiene una clave secreta válida.",
+      "fileReadFailed": "No se pudo leer ese archivo. Por favor, inténtalo de nuevo."
+    },
     "profile": {
       "title": "Hazlo tuyo",
       "subtitle": "Cuéntales a los demás un poco sobre ti. Todo es opcional, puedes cambiarlo en cualquier momento.",

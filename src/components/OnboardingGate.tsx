@@ -1,6 +1,8 @@
 import {
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -11,6 +13,7 @@ import {
   ArrowRight,
   BadgeCheck,
   Bitcoin,
+  CheckCircle2,
   Download,
   Eye,
   EyeOff,
@@ -18,6 +21,7 @@ import {
   Link2,
   Loader2,
   Megaphone,
+  Upload,
   User,
   X,
 } from 'lucide-react';
@@ -37,14 +41,14 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useLoginActions } from '@/hooks/useLoginActions';
 import { useOnboarding, type OnboardingRole } from '@/contexts/onboardingContextDef';
 import { useToast } from '@/hooks/useToast';
-import { downloadTextFile } from '@/lib/downloadFile';
+import { saveNsec, getNsecCredential } from '@/lib/credentialManager';
 import { cn } from '@/lib/utils';
 
 /**
  * Step state machine for the captive signup flow.
  *
  * Base order (creator / donor):
- *   keygen → secure → role
+ *   keygen → secure → verify → role
  *
  * Picking the *verifier* role doesn't navigate away — it branches into a
  * captive sub-flow that continues from the role step:
@@ -69,6 +73,7 @@ import { cn } from '@/lib/utils';
 type Step =
   | 'keygen'
   | 'secure'
+  | 'verify'
   | 'role'
   | 'orgIdentity'
   | 'orgBio'
@@ -76,7 +81,7 @@ type Step =
   | 'orgVerifyHowto';
 
 /** Base steps that count toward the progress bar for creator/donor. */
-const SIGNUP_STEPS: Step[] = ['keygen', 'secure', 'role'];
+const SIGNUP_STEPS: Step[] = ['keygen', 'secure', 'verify', 'role'];
 
 /**
  * Steps that count toward the progress bar once the user has chosen the
@@ -86,6 +91,7 @@ const SIGNUP_STEPS: Step[] = ['keygen', 'secure', 'role'];
 const VERIFIER_STEPS: Step[] = [
   'keygen',
   'secure',
+  'verify',
   'role',
   'orgIdentity',
   'orgBio',
@@ -109,7 +115,9 @@ const VERIFIER_SUBFLOW: Step[] = [
  * The flow guides a brand-new user through:
  *   1. Key generation
  *   2. Save the nsec (with inline wallet-coupling framing)
- *   3. Role pick — primary CTA navigates by intent: creator → /campaigns/new,
+ *   3. Verify the saved key (paste or upload it back; auto-filled from the
+ *      browser password manager when available)
+ *   4. Role pick — primary CTA navigates by intent: creator → /campaigns/new,
  *      donor → / (campaign grid)
  *
  * The overlay sits above all app chrome and cannot be dismissed by clicking
@@ -202,6 +210,8 @@ function CaptiveOverlay() {
       cancel();
     } else if (step === 'secure') {
       goTo('keygen');
+    } else if (step === 'verify') {
+      goTo('secure');
     } else if (VERIFIER_SUBFLOW.includes(step)) {
       // Within the verifier sub-flow: step back one screen, or back to the
       // role picker from the first sub-flow step.
@@ -210,7 +220,7 @@ function CaptiveOverlay() {
     } else {
       // role step
       if (user) cancel();
-      else goTo('secure');
+      else goTo('verify');
     }
   }, [step, user, cancel, goTo]);
 
@@ -285,17 +295,20 @@ function CaptiveOverlay() {
     }, 700);
   }, [goTo]);
 
-  // Download + install nsec into the login store ---------------------------
-  const handleDownloadAndContinue = useCallback(async () => {
+  // Save the nsec, then advance to the verification step. -----------------
+  // `saveNsec` downloads the `.nsec.txt` file (web) and, on Chromium and
+  // native platforms, offers to store the key in the browser / OS password
+  // manager. We deliberately do NOT log in here: the user proves they saved
+  // the key on the next (`verify`) step before we install it into the login
+  // store.
+  const handleSaveAndContinue = useCallback(async () => {
     try {
       const decoded = nip19.decode(nsec);
       if (decoded.type !== 'nsec') throw new Error('Invalid nsec');
       const pubkey = getPublicKey(decoded.data);
       const npub = nip19.npubEncode(pubkey);
-      const filename = `nostr-${location.hostname.replaceAll(/\./g, '-')}-${npub.slice(5, 9)}.nsec.txt`;
-      await downloadTextFile(filename, nsec);
-      login.nsec(nsec);
-      goTo('role');
+      await saveNsec(npub, nsec, 'Agora');
+      goTo('verify');
     } catch {
       toast({
         title: t('onboarding.secure.downloadFailedTitle'),
@@ -303,7 +316,17 @@ function CaptiveOverlay() {
         variant: 'destructive',
       });
     }
-  }, [nsec, login, goTo, toast, t]);
+  }, [nsec, goTo, toast, t]);
+
+  // Confirm the saved key, then install it into the login store. ------------
+  // Called by the verify step once the user has entered a value that matches
+  // the generated nsec (whether pasted, uploaded, or auto-filled from the
+  // password manager). This is the point where the account actually becomes
+  // active.
+  const handleVerified = useCallback(() => {
+    login.nsec(nsec);
+    goTo('role');
+  }, [login, nsec, goTo]);
 
   // Step renderer -----------------------------------------------------------
   const stepBody = (() => {
@@ -323,7 +346,18 @@ function CaptiveOverlay() {
             nsec={nsec}
             showKey={showKey}
             onToggleShow={() => setShowKey((v) => !v)}
-            onContinue={handleDownloadAndContinue}
+            onContinue={handleSaveAndContinue}
+          />
+        );
+      case 'verify':
+        // Prove the key was saved before it's installed into the login store.
+        // The user pastes or uploads their nsec; on Chromium / native we also
+        // try to auto-fill it from the password manager (`saveNsec` stored it
+        // on the previous step).
+        return (
+          <VerifyStep
+            expectedNsec={nsec}
+            onVerified={handleVerified}
           />
         );
       case 'role':
@@ -687,8 +721,12 @@ interface SecureStepProps {
 }
 
 /**
- * Reveals + downloads the nsec, then installs it into the login store and
- * advances.
+ * Reveals + saves the nsec, then advances to the verification step.
+ *
+ * Saving goes through `saveNsec`, which downloads the `.nsec.txt` file and,
+ * where supported, offers to store the key in the browser / OS password
+ * manager. The key is NOT installed into the login store here — the user
+ * proves they kept a copy on the following `verify` step first.
  *
  * Three stacked elements communicate the weight of saving the key:
  *   1. The key itself (revealable input + download button).
@@ -768,6 +806,183 @@ function SecureStep({ nsec, showKey, onToggleShow, onContinue }: SecureStepProps
       <Button onClick={onContinue} className="w-full h-12 text-base rounded-full">
         <Download className="w-4 h-4 mr-2" />
         {t('onboarding.secure.button')}
+      </Button>
+    </div>
+  );
+}
+
+interface VerifyStepProps {
+  /** The nsec generated earlier in the flow, to compare the entry against. */
+  expectedNsec: string;
+  /** Called once the entered / uploaded / auto-filled key matches. */
+  onVerified: () => void;
+}
+
+/** nsec bech32 shape: `nsec1` + 58 bech32 chars. */
+const NSEC_RE = /^nsec1[a-z0-9]{58}$/;
+
+/**
+ * Key-verification step. The user proves they actually kept a copy of the key
+ * they just saved by pasting it, uploading the downloaded `.nsec.txt` file, or
+ * — on Chromium / native platforms — having it auto-filled from the password
+ * manager where `saveNsec` stored it on the previous step.
+ *
+ * The entry is only accepted when it exactly matches the generated nsec, so a
+ * typo or the wrong key can't slip through. Matching triggers `onVerified`,
+ * which is where the account is finally installed into the login store.
+ */
+function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
+  const { t } = useTranslation();
+  const [value, setValue] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [autofilled, setAutofilled] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const trimmed = value.trim();
+  const matches = trimmed === expectedNsec;
+
+  // Progressive enhancement: try to pull the key back out of the platform
+  // password manager (Chromium `navigator.credentials.get`, or iCloud/Android
+  // keychain on native). If it comes back and matches, pre-fill the field so
+  // the user can confirm with a single tap. Runs once on mount.
+  useEffect(() => {
+    let cancelled = false;
+    getNsecCredential().then((cred) => {
+      if (cancelled || !cred) return;
+      if (cred.nsec === expectedNsec) {
+        setValue(cred.nsec);
+        setAutofilled(true);
+        setError(null);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [expectedNsec]);
+
+  const handleChange = useCallback((next: string) => {
+    setValue(next);
+    setAutofilled(false);
+    setError(null);
+  }, []);
+
+  const handleFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      // Reset so selecting the same file again re-fires the change event.
+      e.target.value = '';
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = (ev.target?.result as string | null)?.trim() ?? '';
+        if (NSEC_RE.test(content)) {
+          setValue(content);
+          setAutofilled(false);
+          setError(
+            content === expectedNsec
+              ? null
+              : t('onboarding.verify.mismatch'),
+          );
+        } else {
+          setError(t('onboarding.verify.fileInvalid'));
+        }
+      };
+      reader.onerror = () => setError(t('onboarding.verify.fileReadFailed'));
+      reader.readAsText(file);
+    },
+    [expectedNsec, t],
+  );
+
+  const handleContinue = useCallback(() => {
+    if (matches) {
+      onVerified();
+    } else {
+      setError(t('onboarding.verify.mismatch'));
+    }
+  }, [matches, onVerified, t]);
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2 text-center">
+        <h2 className="text-2xl font-bold tracking-tight">
+          {t('onboarding.verify.title')}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {t('onboarding.verify.subtitle')}
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <div className="relative">
+          <Input
+            type="text"
+            value={value}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder={t('onboarding.verify.placeholder')}
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            aria-invalid={!!error}
+            aria-label={t('onboarding.verify.inputAriaLabel')}
+            className={cn(
+              'pr-10 font-mono text-sm',
+              matches && 'border-primary',
+            )}
+          />
+          {matches && (
+            <CheckCircle2
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary"
+              aria-hidden
+            />
+          )}
+        </div>
+
+        {autofilled && matches && (
+          <p className="text-xs text-primary flex items-center gap-1">
+            <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+            {t('onboarding.verify.autofilled')}
+          </p>
+        )}
+        {error && (
+          <p className="text-xs text-destructive" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+
+      {/* Upload the downloaded .nsec.txt file as an alternative to pasting. */}
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="h-px flex-1 bg-border" />
+        <span>{t('onboarding.verify.or')}</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => fileInputRef.current?.click()}
+        className="w-full h-11 rounded-full"
+      >
+        <Upload className="w-4 h-4 mr-2" />
+        {t('onboarding.verify.uploadButton')}
+      </Button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".txt,text/plain"
+        className="hidden"
+        onChange={handleFile}
+      />
+
+      <Button
+        onClick={handleContinue}
+        disabled={!matches}
+        className="w-full h-12 text-base rounded-full"
+      >
+        {t('common.continue')}
+        <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180" />
       </Button>
     </div>
   );
