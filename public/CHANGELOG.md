@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.3] - 2026-07-03
+
+A behind-the-scenes maintenance release with no user-facing changes.
+
+### Fixed
+
+- Fixed a build failure in the Android release pipeline caused by a dependency variant conflict.
+
 ## [2.9.2] - 2026-07-02
 
 The Venezuela earthquake relief appeal has wound down, so the home banner, popup, and relief page have been retired — relief campaigns themselves remain open for direct donations. Deleted campaigns now leave a permanent record page that preserves their donation history, and campaign creation picks up some polish: the wallet step waits until you've entered an address, and categories are capped at five.
