@@ -214,7 +214,6 @@
       "inputAriaLabel": "Collez votre clé secrète",
       "or": "ou",
       "uploadButton": "Importer le fichier de clé",
-      "autofilled": "Rempli depuis votre gestionnaire de mots de passe.",
       "mismatch": "Cela ne correspond pas à la clé que vous venez d'enregistrer. Vérifiez votre sauvegarde et réessayez.",
       "fileInvalid": "Ce fichier ne contient pas de clé secrète valide.",
       "fileReadFailed": "Impossible de lire ce fichier. Veuillez réessayer."

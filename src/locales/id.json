@@ -214,7 +214,6 @@
       "inputAriaLabel": "Tempel kunci rahasia Anda",
       "or": "atau",
       "uploadButton": "Unggah berkas kunci",
-      "autofilled": "Diisi dari pengelola kata sandi Anda.",
       "mismatch": "Itu tidak cocok dengan kunci yang baru saja Anda simpan. Periksa cadangan Anda dan coba lagi.",
       "fileInvalid": "Berkas itu tidak berisi kunci rahasia yang valid.",
       "fileReadFailed": "Tidak dapat membaca berkas itu. Silakan coba lagi."

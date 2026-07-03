@@ -214,7 +214,6 @@
       "inputAriaLabel": "Cole sua chave secreta",
       "or": "ou",
       "uploadButton": "Enviar arquivo de chave",
-      "autofilled": "Preenchido pelo seu gerenciador de senhas.",
       "mismatch": "Isso não corresponde à chave que você acabou de salvar. Verifique seu backup e tente novamente.",
       "fileInvalid": "Esse arquivo não contém uma chave secreta válida.",
       "fileReadFailed": "Não foi possível ler esse arquivo. Por favor, tente novamente."

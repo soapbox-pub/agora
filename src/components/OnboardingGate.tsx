@@ -13,7 +13,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Bitcoin,
-  CheckCircle2,
   Download,
   Eye,
   EyeOff,
@@ -835,23 +834,37 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [autofilled, setAutofilled] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Guard so a match only ever fires `onVerified` once, even if the value
+  // effect and the credential/upload paths race.
+  const verifiedRef = useRef(false);
+  const verify = useCallback(() => {
+    if (verifiedRef.current) return;
+    verifiedRef.current = true;
+    onVerified();
+  }, [onVerified]);
 
   const trimmed = value.trim();
   const matches = trimmed === expectedNsec;
 
+  // The moment the field holds the matching key — whether typed, pasted, or
+  // auto-filled from the password manager — verify and advance. No explicit
+  // "Continue" tap needed.
+  useEffect(() => {
+    if (matches) verify();
+  }, [matches, verify]);
+
   // Progressive enhancement: try to pull the key back out of the platform
   // password manager (Chromium `navigator.credentials.get`, or iCloud/Android
-  // keychain on native). If it comes back and matches, pre-fill the field so
-  // the user can confirm with a single tap. Runs once on mount.
+  // keychain on native). A match flows into the value effect above, which
+  // advances automatically. Runs once on mount.
   useEffect(() => {
     let cancelled = false;
     getNsecCredential().then((cred) => {
       if (cancelled || !cred) return;
       if (cred.nsec === expectedNsec) {
         setValue(cred.nsec);
-        setAutofilled(true);
         setError(null);
       }
     });
@@ -862,7 +875,6 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
 
   const handleChange = useCallback((next: string) => {
     setValue(next);
-    setAutofilled(false);
     setError(null);
   }, []);
 
@@ -876,31 +888,23 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
       const reader = new FileReader();
       reader.onload = (ev) => {
         const content = (ev.target?.result as string | null)?.trim() ?? '';
-        if (NSEC_RE.test(content)) {
-          setValue(content);
-          setAutofilled(false);
-          setError(
-            content === expectedNsec
-              ? null
-              : t('onboarding.verify.mismatch'),
-          );
-        } else {
+        if (!NSEC_RE.test(content)) {
           setError(t('onboarding.verify.fileInvalid'));
+          return;
+        }
+        // A matching upload is proof enough — verify and advance without
+        // ever exposing the raw nsec in the (plaintext) input field.
+        if (content === expectedNsec) {
+          verify();
+        } else {
+          setError(t('onboarding.verify.mismatch'));
         }
       };
       reader.onerror = () => setError(t('onboarding.verify.fileReadFailed'));
       reader.readAsText(file);
     },
-    [expectedNsec, t],
+    [expectedNsec, verify, t],
   );
-
-  const handleContinue = useCallback(() => {
-    if (matches) {
-      onVerified();
-    } else {
-      setError(t('onboarding.verify.mismatch'));
-    }
-  }, [matches, onVerified, t]);
 
   return (
     <div className="space-y-6">
@@ -914,37 +918,20 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
       </div>
 
       <div className="space-y-2">
-        <div className="relative">
-          <Input
-            type="text"
-            value={value}
-            onChange={(e) => handleChange(e.target.value)}
-            placeholder={t('onboarding.verify.placeholder')}
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-            aria-invalid={!!error}
-            aria-label={t('onboarding.verify.inputAriaLabel')}
-            className={cn(
-              'pr-10 font-mono text-sm',
-              matches && 'border-primary',
-            )}
-          />
-          {matches && (
-            <CheckCircle2
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary"
-              aria-hidden
-            />
-          )}
-        </div>
+        <Input
+          type="text"
+          value={value}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder={t('onboarding.verify.placeholder')}
+          autoComplete="off"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          aria-invalid={!!error}
+          aria-label={t('onboarding.verify.inputAriaLabel')}
+          className="font-mono text-sm"
+        />
 
-        {autofilled && matches && (
-          <p className="text-xs text-primary flex items-center gap-1">
-            <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
-            {t('onboarding.verify.autofilled')}
-          </p>
-        )}
         {error && (
           <p className="text-xs text-destructive" role="alert">
             {error}
@@ -975,15 +962,6 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
         className="hidden"
         onChange={handleFile}
       />
-
-      <Button
-        onClick={handleContinue}
-        disabled={!matches}
-        className="w-full h-12 text-base rounded-full"
-      >
-        {t('common.continue')}
-        <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180" />
-      </Button>
     </div>
   );
 }

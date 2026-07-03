@@ -215,7 +215,6 @@
       "inputAriaLabel": "Paste your secret key",
       "or": "or",
       "uploadButton": "Upload key file",
-      "autofilled": "Filled in from your password manager.",
       "mismatch": "That doesn't match the key you just saved. Check your backup and try again.",
       "fileInvalid": "That file doesn't contain a valid secret key.",
       "fileReadFailed": "Could not read that file. Please try again."

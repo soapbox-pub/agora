@@ -214,7 +214,6 @@
       "inputAriaLabel": "粘贴你的私钥",
       "or": "或",
       "uploadButton": "上传密钥文件",
-      "autofilled": "已从你的密码管理器中填入。",
       "mismatch": "这与你刚刚保存的密钥不匹配。请检查你的备份后重试。",
       "fileInvalid": "该文件不包含有效的私钥。",
       "fileReadFailed": "无法读取该文件。请重试。"
