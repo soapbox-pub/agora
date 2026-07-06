@@ -1359,7 +1359,6 @@
     "ofGoal": "of {{amount}} goal",
     "donationCount_one": "{{count}} donation",
     "donationCount_other": "{{count}} donations",
-    "openExternalWallet": "Open Bitcoin wallet",
     "openInWallet": "Open Bitcoin wallet",
     "payWithAgoraWallet": "Pay with Agora",
     "payWithCard": "Pay with card"

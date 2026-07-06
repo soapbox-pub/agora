@@ -1270,10 +1270,9 @@
     "ofGoal": "kati ya lengo la {{amount}}",
     "donationCount_one": "mchango {{count}}",
     "donationCount_other": "michango {{count}}",
-    "openInWallet": "Fungua katika pochi",
+    "openInWallet": "Fungua pochi ya Bitcoin",
     "payWithAgoraWallet": "Lipa kwa Agora",
-    "payWithCard": "Lipa kwa kadi",
-    "openExternalWallet": "Fungua pochi ya nje"
+    "payWithCard": "Lipa kwa kadi"
   },
   "noBitcoin": {
     "trigger": "Huna Bitcoin?",

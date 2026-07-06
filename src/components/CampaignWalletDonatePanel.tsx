@@ -24,13 +24,6 @@ interface CampaignWalletDonatePanelProps {
    * and SP-only campaigns.
    */
   primaryAction?: ReactNode;
-  /**
-   * Hides the "Open in wallet" / "Open external wallet" button. Set when
-   * the logged-in user is the campaign author viewing their own
-   * campaign — they're the beneficiary, not a donor, so paying into
-   * their own campaign from an external wallet makes no sense.
-   */
-  hideExternalWallet?: boolean;
 }
 
 /**
@@ -74,7 +67,6 @@ function buildQrPayload(wallets: CampaignWallets): string {
 export function CampaignWalletDonatePanel({
   wallets,
   primaryAction,
-  hideExternalWallet,
 }: CampaignWalletDonatePanelProps) {
   const { t } = useTranslation();
   const qrPayload = buildQrPayload(wallets);
@@ -125,33 +117,27 @@ export function CampaignWalletDonatePanel({
           there's only ever one orange button stacked here. */}
       {primaryAction}
 
-      {/* "Open in wallet" — relies on the `bitcoin:` URI handler. SP
+      {/* "Open Bitcoin wallet" — relies on the `bitcoin:` URI handler. SP
           codes inside `bitcoin:?sp=` are still understood by BIP-352-
           aware wallets. Older wallets that don't know about SP will
           ignore the parameter and either refuse the link or show an
           error — at which point the donor falls back to copy/paste
           anyway.
 
-          The label switches to "Open external wallet" only when a
-          `primaryAction` slot is filled (i.e. the in-app "Pay with
-          Agora" button is right above it) — that's the one situation
-          where we need to disambiguate between "external" and "Agora's
-          own wallet". When the slot is empty the qualifier is just
-          noise. */}
-      {!hideExternalWallet && (
-        <Button
-          asChild
-          variant={primaryAction ? 'outline' : 'default'}
-          className={primaryAction ? 'w-full' : 'w-full text-white'}
-        >
-          <a href={qrPayload}>
-            <ExternalLink className="size-4 mr-1.5" />
-            {primaryAction
-              ? t('campaignsDetail.openExternalWallet')
-              : t('campaignsDetail.openInWallet')}
-          </a>
-        </Button>
-      )}
+          Always shown, including to the campaign owner viewing their
+          own campaign — the button just opens the address in a wallet
+          app, which is a harmless no-op for a beneficiary and still
+          useful (e.g. verifying the address, or sharing the link). */}
+      <Button
+        asChild
+        variant={primaryAction ? 'outline' : 'default'}
+        className={primaryAction ? 'w-full' : 'w-full text-white'}
+      >
+        <a href={qrPayload}>
+          <ExternalLink className="size-4 mr-1.5" />
+          {t('campaignsDetail.openInWallet')}
+        </a>
+      </Button>
     </div>
   );
 }

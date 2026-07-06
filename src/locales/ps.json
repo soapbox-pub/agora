@@ -828,10 +828,9 @@
     "ofGoal": "د {{amount}} هدف څخه",
     "donationCount_one": "{{count}} مرسته",
     "donationCount_other": "{{count}} مرستې",
-    "openInWallet": "په بټوه کې پرانیزئ",
+    "openInWallet": "د Bitcoin بټوه پرانیزئ",
     "payWithAgoraWallet": "د Agora له لارې تادیه وکړئ",
-    "payWithCard": "د کارت له لارې تادیه وکړئ",
-    "openExternalWallet": "بهرنۍ بټوه پرانیزئ"
+    "payWithCard": "د کارت له لارې تادیه وکړئ"
   },
   "noBitcoin": {
     "trigger": "Bitcoin نه لرئ؟",

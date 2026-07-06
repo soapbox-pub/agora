@@ -1270,10 +1270,9 @@
     "ofGoal": "da meta de {{amount}}",
     "donationCount_one": "{{count}} doação",
     "donationCount_other": "{{count}} doações",
-    "openInWallet": "Abrir na carteira",
+    "openInWallet": "Abrir carteira Bitcoin",
     "payWithAgoraWallet": "Pagar com Agora",
-    "payWithCard": "Pagar com cartão",
-    "openExternalWallet": "Abrir carteira externa"
+    "payWithCard": "Pagar com cartão"
   },
   "noBitcoin": {
     "trigger": "Não tem Bitcoin?",

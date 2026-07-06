@@ -828,10 +828,9 @@
     "ofGoal": "ye{{amount}} chinangwa",
     "donationCount_one": "{{count}} chipo",
     "donationCount_other": "{{count}} zvipo",
-    "openInWallet": "Vhura muchikwama",
+    "openInWallet": "Vhura chikwama cheBitcoin",
     "payWithAgoraWallet": "Bhadhara neAgora",
-    "payWithCard": "Bhadhara nekadhi",
-    "openExternalWallet": "Vhura chikwama chekunze"
+    "payWithCard": "Bhadhara nekadhi"
   },
   "noBitcoin": {
     "trigger": "Hauna Bitcoin here?",

@@ -1270,10 +1270,9 @@
     "ofGoal": "из цели {{amount}}",
     "donationCount_one": "{{count}} пожертвование",
     "donationCount_other": "{{count}} пожертвований",
-    "openInWallet": "Открыть в кошельке",
+    "openInWallet": "Открыть кошелёк Bitcoin",
     "payWithAgoraWallet": "Оплатить через Agora",
-    "payWithCard": "Оплатить картой",
-    "openExternalWallet": "Открыть внешний кошелёк"
+    "payWithCard": "Оплатить картой"
   },
   "noBitcoin": {
     "trigger": "Нет биткоина?",

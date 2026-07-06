@@ -828,10 +828,9 @@
     "ofGoal": "នៃគោលដៅ {{amount}}",
     "donationCount_one": "{{count}} ការបរិច្ចាគ",
     "donationCount_other": "{{count}} ការបរិច្ចាគ",
-    "openInWallet": "បើកក្នុងកាបូប",
+    "openInWallet": "បើកកាបូប Bitcoin",
     "payWithAgoraWallet": "បង់ដោយ Agora",
-    "payWithCard": "បង់ដោយកាត",
-    "openExternalWallet": "បើកកាបូបខាងក្រៅ"
+    "payWithCard": "បង់ដោយកាត"
   },
   "noBitcoin": {
     "trigger": "មិនមាន Bitcoin មែនទេ?",

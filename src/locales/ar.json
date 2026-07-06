@@ -830,8 +830,7 @@
     "donationCount_other": "{{count}} تبرعات",
     "openInWallet": "فتح محفظة Bitcoin",
     "payWithAgoraWallet": "الدفع عبر Agora",
-    "payWithCard": "الدفع بالبطاقة",
-    "openExternalWallet": "فتح محفظة Bitcoin"
+    "payWithCard": "الدفع بالبطاقة"
   },
   "noBitcoin": {
     "trigger": "ليس لديك بيتكوين؟",

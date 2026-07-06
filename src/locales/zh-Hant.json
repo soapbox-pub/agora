@@ -828,10 +828,9 @@
     "ofGoal": "目標 {{amount}}",
     "donationCount_one": "{{count}} 筆捐贈",
     "donationCount_other": "{{count}} 筆捐贈",
-    "openInWallet": "在錢包中開啟",
+    "openInWallet": "開啟 Bitcoin 錢包",
     "payWithAgoraWallet": "使用 Agora 支付",
-    "payWithCard": "使用銀行卡支付",
-    "openExternalWallet": "開啟外部錢包"
+    "payWithCard": "使用銀行卡支付"
   },
   "noBitcoin": {
     "trigger": "沒有比特幣？",

@@ -1125,10 +1125,6 @@ function DonateColumn({
     user.pubkey !== campaign.pubkey &&
     hdAccess.status === 'available';
 
-  // The campaign author is the beneficiary, not a donor — hide the
-  // "Open in wallet" affordance when they view their own campaign.
-  const isOwner = user?.pubkey === campaign.pubkey;
-
   // Optional fiat card-payment link (`pay` tag). Sanitized here at the
   // render site (the parser only https-filters); `undefined` for a
   // missing/invalid URL hides the button entirely. Fiat donations settle
@@ -1213,7 +1209,6 @@ function DonateColumn({
           <div className="space-y-3">
             <CampaignWalletDonatePanel
               wallets={campaign.wallets}
-              hideExternalWallet={isOwner}
               primaryAction={
                 canPayInApp ? (
                   <Button

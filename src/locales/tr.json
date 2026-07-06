@@ -1270,10 +1270,9 @@
     "ofGoal": "/ {{amount}} hedef",
     "donationCount_one": "{{count}} bağış",
     "donationCount_other": "{{count}} bağış",
-    "openInWallet": "Cüzdanda aç",
+    "openInWallet": "Bitcoin cüzdanını aç",
     "payWithAgoraWallet": "Agora ile öde",
-    "payWithCard": "Kartla öde",
-    "openExternalWallet": "Harici cüzdanı aç"
+    "payWithCard": "Kartla öde"
   },
   "noBitcoin": {
     "trigger": "Bitcoin'iniz yok mu?",

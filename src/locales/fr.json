@@ -1272,8 +1272,7 @@
     "donationCount_other": "{{count}} dons",
     "openInWallet": "Ouvrir le portefeuille Bitcoin",
     "payWithAgoraWallet": "Payer avec Agora",
-    "payWithCard": "Payer par carte",
-    "openExternalWallet": "Ouvrir le portefeuille Bitcoin"
+    "payWithCard": "Payer par carte"
   },
   "noBitcoin": {
     "trigger": "Pas de Bitcoin ?",
