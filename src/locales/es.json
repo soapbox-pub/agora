@@ -828,10 +828,10 @@
     "ofGoal": "de la meta de {{amount}}",
     "donationCount_one": "{{count}} donación",
     "donationCount_other": "{{count}} donaciones",
-    "openInWallet": "Abrir en la cartera",
+    "openInWallet": "Abrir cartera de Bitcoin",
     "payWithAgoraWallet": "Pagar con Agora",
     "payWithCard": "Pagar con tarjeta",
-    "openExternalWallet": "Abrir cartera externa"
+    "openExternalWallet": "Abrir cartera de Bitcoin"
   },
   "noBitcoin": {
     "trigger": "¿No tienes Bitcoin?",

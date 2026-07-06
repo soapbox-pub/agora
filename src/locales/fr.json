@@ -1270,10 +1270,10 @@
     "ofGoal": "sur un objectif de {{amount}}",
     "donationCount_one": "{{count}} don",
     "donationCount_other": "{{count}} dons",
-    "openInWallet": "Ouvrir dans le portefeuille",
+    "openInWallet": "Ouvrir le portefeuille Bitcoin",
     "payWithAgoraWallet": "Payer avec Agora",
     "payWithCard": "Payer par carte",
-    "openExternalWallet": "Ouvrir un portefeuille externe"
+    "openExternalWallet": "Ouvrir le portefeuille Bitcoin"
   },
   "noBitcoin": {
     "trigger": "Pas de Bitcoin ?",

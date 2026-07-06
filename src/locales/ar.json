@@ -828,10 +828,10 @@
     "ofGoal": "من هدف {{amount}}",
     "donationCount_one": "{{count}} تبرع",
     "donationCount_other": "{{count}} تبرعات",
-    "openInWallet": "فتح في المحفظة",
+    "openInWallet": "فتح محفظة Bitcoin",
     "payWithAgoraWallet": "الدفع عبر Agora",
     "payWithCard": "الدفع بالبطاقة",
-    "openExternalWallet": "فتح محفظة خارجية"
+    "openExternalWallet": "فتح محفظة Bitcoin"
   },
   "noBitcoin": {
     "trigger": "ليس لديك بيتكوين؟",

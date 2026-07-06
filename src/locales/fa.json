@@ -828,10 +828,10 @@
     "ofGoal": "از هدف {{amount}}",
     "donationCount_one": "{{count}} کمک",
     "donationCount_other": "{{count}} کمک",
-    "openInWallet": "باز کردن در کیف پول",
+    "openInWallet": "باز کردن کیف پول Bitcoin",
     "payWithAgoraWallet": "پرداخت با Agora",
     "payWithCard": "پرداخت با کارت",
-    "openExternalWallet": "باز کردن کیف پول خارجی"
+    "openExternalWallet": "باز کردن کیف پول Bitcoin"
   },
   "noBitcoin": {
     "trigger": "بیت‌کوین ندارید؟",
