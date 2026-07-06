@@ -284,7 +284,7 @@ The two zap kinds are complementary. Clients SHOULD sum verified amounts from bo
 
 ### Summary
 
-Addressable event representing a **self-authored fundraising campaign**. A campaign carries marketing-style metadata (title, summary, banner image, markdown story, optional goal, optional country) and one or two Bitcoin wallet endpoints declared in `w` tags. Each wallet endpoint is either a public on-chain bech32(m) address (`bc1q…`, `bc1p…`) or a silent-payment code (`sp1…`, per BIP-352). The mode of each endpoint is inferred from the prefix — the client renders a QR code that combines the present endpoints and adjusts the donation-progress UI accordingly. A campaign MAY declare **at most one** endpoint per mode (at most one on-chain address and at most one silent-payment code).
+Addressable event representing a **self-authored fundraising campaign**. A campaign carries marketing-style metadata (title, summary, banner image, markdown story, optional goal, optional country) and one or two Bitcoin wallet endpoints declared in `w` tags. Each wallet endpoint is either a public on-chain bech32(m) address (`bc1q…`, `bc1p…`) or a silent-payment code (`sp1…`, per BIP-352). The mode of each endpoint is inferred from the prefix — the client renders a QR code that combines the present endpoints and adjusts the donation-progress UI accordingly. A campaign MAY declare **at most one** endpoint per mode (at most one on-chain address and at most one silent-payment code). A campaign MAY additionally declare an optional `pay` tag — an external HTTPS fiat-checkout URL — as a secondary, off-Nostr donation path; fiat donations settle externally and do not count toward the campaign total. The `pay` tag never substitutes for `w`: a valid campaign MUST still carry at least one `w` tag.
 
 The author of the event is also the beneficiary. Campaigns are never authored on behalf of someone else; the event creator owns the wallet declared in `w` and receives the donations. To stop accepting donations, the creator publishes a NIP-09 kind 5 deletion request referencing the campaign's `a` coordinate.
 
@@ -315,6 +315,8 @@ The kind is addressable so the creator can edit the story, banner, goal, and wal
 
     ["w", "bc1p7w2k3xq9...xyz"],
     ["w", "sp1qq...verylongsilentpaymentcode..."],
+
+    ["pay", "https://pay.example.com/123"],
 
     ["goal", "25000"],
 
@@ -353,6 +355,7 @@ The `content` field is the **campaign story**, formatted as Markdown. Clients SH
 | `banner`  | Recommended | HTTPS URL of the wide banner image. Clients MUST sanitize the URL (see `sanitizeUrl()` in `nostr-security`) before rendering, and SHOULD pair the URL with a NIP-92 `imeta` tag for dimensions, blurhash, MIME type, and SHA-256. |
 | `imeta`   | Recommended | NIP-92 media metadata for the banner. The first `url <value>` pair MUST match the `banner` URL; clients SHOULD ignore an `imeta` whose URL does not match.                                                                  |
 | `goal`    | Optional | Fundraising goal in **integer US Dollars** (no unit suffix, no decimals). Clients MAY display an estimated sat-equivalent at view time using a live exchange rate.                                                          |
+| `pay`     | Optional | HTTPS URL of an external fiat payment page (e.g. a Stripe Checkout link). Enables donors to support the campaign in fiat by opening the URL in a browser. Fiat donations flow off-Nostr and do **not** count toward the campaign total (like silent payments). A campaign carries **at most one** `pay` tag. Clients MUST sanitize the URL (see `sanitizeUrl()` in `nostr-security`) before rendering; only well-formed `https:` URLs are honored. This tag never substitutes for `w` — a valid campaign MUST still carry at least one `w` tag. |
 | `i`       | Recommended | NIP-73 country identifier. SHOULD be `iso3166:<code>` with an uppercase ISO 3166-1 alpha-2 country code (e.g. `iso3166:VE`).                                                                                          |
 | `k`       | Recommended if `i` is present | NIP-73 external content kind. For country identifiers this SHOULD be `iso3166`.                                                                                                              |
 | `t`       | Optional | User-entered discovery/category tags. Agora also adds `t:agora` as the app marker; other `t` values are freeform topics such as `legal-defense` or `mutual-aid`. |
@@ -424,6 +427,18 @@ For campaigns with **only** a silent-payment endpoint (no on-chain endpoint), cl
 
 Silent-payment unlinkability is the entire point of this mode. Clients MUST NOT publish receipts, MUST NOT advertise the donation in any other Nostr event (replies, mentions, etc.) on the donor's behalf, and MUST NOT correlate the donor's pubkey with the campaign in any persisted client telemetry.
 
+### Donation Flow — Fiat (`pay`)
+
+The optional `pay` tag adds a secondary, off-Nostr fiat path alongside the Bitcoin endpoints. It is a convenience for donors who prefer to pay with a card or other fiat rail via a hosted checkout page (e.g. Stripe Checkout, BTCPay Server's fiat flow, or any external payment processor the campaign owner operates).
+
+1. Donor opens the campaign and selects the fiat option.
+2. Donor's client sanitizes the `pay` URL and opens it in a browser (via `openUrl()` for Capacitor compatibility — see the `capacitor-compat` skill). The client hands off to the external checkout page and plays no further part in the payment.
+3. **No Nostr event is published.** Settlement happens entirely on the external payment processor; Agora never sees the funds and cannot verify them on-chain.
+
+Because fiat donations settle off-chain and off-Nostr, they are **not verifiable** by any client and MUST NOT be counted toward the headline "raised" total or the donation list — exactly like silent-payment donations. The `pay` link is purely a hand-off affordance. Clients SHOULD indicate that fiat contributions are not reflected in the on-chain totals, mirroring the silent-payment privacy notice.
+
+The `pay` tag is strictly additive and never replaces the Bitcoin endpoints: a campaign that carries a `pay` tag but no `w` tag is **invalid** and MUST NOT render (see *Client Behavior* below). Agora remains a non-custodial, peer-to-peer app — the fiat path is an external link the donor follows at their own discretion, not a channel Agora custodies or converts through.
+
 ### Querying
 
 **List campaigns (newest first):**
@@ -490,7 +505,8 @@ The `pinnedEvents` array is ordered newest pin first. Pinning an already-pinned 
 
 ### Client Behavior
 
-- **Wallet validity:** clients MUST reject events that carry no `w` tag, that carry more than one `w` tag of the same mode (e.g., two `bc1…` addresses), or whose `w` values fail bech32(m) checksum validation for one of the supported prefixes. Invalid campaigns do not render.
+- **Wallet validity:** clients MUST reject events that carry no `w` tag, that carry more than one `w` tag of the same mode (e.g., two `bc1…` addresses), or whose `w` values fail bech32(m) checksum validation for one of the supported prefixes. Invalid campaigns do not render. The optional `pay` tag does **not** satisfy this requirement — a campaign carrying a `pay` tag but no valid `w` tag is invalid and MUST NOT render.
+- **Fiat pay link:** clients MAY render a fiat-donation affordance when a valid `pay` tag is present. The URL MUST be sanitized (`sanitizeUrl()`) before it lands in any `href` or is passed to `openUrl()`; a `pay` value that is not a well-formed `https:` URL MUST be ignored (the rest of the campaign still renders). At most one `pay` tag is honored; if multiple are present, clients SHOULD use the first valid one. Fiat donations MUST NOT be counted toward the campaign's "raised" total or donation list (see *Donation Flow — Fiat* above).
 - **Editability:** the creator MAY republish the same `(33863, pubkey, d)` triple to update any field, including the `w` wallet endpoint. Clients SHOULD keep `published_at` from the first publish on subsequent edits (NIP-23 convention).
 - **Closing a campaign:** there is no `status` tag. To stop accepting donations, the creator publishes a NIP-09 kind 5 deletion request referencing the campaign's `a` coordinate. Clients SHOULD honor the deletion by removing the campaign from discovery feeds. Historical kind 8333 receipts MAY still be rendered against the (now-deleted) campaign coordinate so donors can find their past donations.
 - **Categories:** clients MAY use user-entered `t` tags for topic filtering and discovery. Agora reserves `t:agora` as its app marker but does not reserve any other topic namespace.
