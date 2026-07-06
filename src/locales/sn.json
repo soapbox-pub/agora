@@ -709,6 +709,10 @@
     "goal": "Chinangwa",
     "goalPlaceholder": "25,000",
     "goalNote": "Madhora eUS chete. Vapi vebhadhara muBitcoin; vatengi vanofungidzira mucherechedzo weUSD panguva yokutarisa.",
+    "payUrl": "Chinongedzo chokubhadhara nekadhi",
+    "payUrlOptional": "(kusarudza)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Peji rokubhadhara rokunze (semuenzaniso Stripe) apo vapi vinogona kubhadhara nekadhi. Zvipo zvekadhi zvinogadziriswa kunze kweAgora uye hazviverengwi muhuwandu hwako hwakaunganidzwa.",
     "submitCreate": "Burisa campaign",
     "submitEdit": "Vandudza campaign",
     "publishing": "Kuburitsa…",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "Kodhi yemubhadharo unyararo haisi kodhi yeBIP-352 inozivikanwa (sp1…).",
     "errorWalletRequired": "Ipa zvirinani imwechete chinangwa chechikwama — kero yeBitcoin mainnet (bc1q… / bc1p…) kana kodhi yemubhadharo unyararo (sp1…).",
     "errorGoalInvalid": "Chinangwa chinofanira kunge chiri madhora akakwana anopfuura zero.",
+    "errorPayUrlInvalid": "Chinongedzo chokubhadhara nekadhi chinofanira kunge chiri URL ye https:// inoshanda.",
     "errorEditLatestMissing": "Hatina kuwana shanduro yazvino yecampaign iyi kuti tirivandudze.",
     "errorSlugCollision": "Une kare campaign ine kupiwa zita kwe«{{slug}}». Sarudza rimwe.",
     "errorBannerInvalid": "Bhana inofanira kuva URL ye https:// chaiyo.",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} zvipo",
     "openInWallet": "Vhura muchikwama",
     "payWithAgoraWallet": "Bhadhara neAgora",
+    "payWithCard": "Bhadhara nekadhi",
     "openExternalWallet": "Vhura chikwama chekunze"
   },
   "noBitcoin": {

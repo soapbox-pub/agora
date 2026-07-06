@@ -709,6 +709,10 @@
     "goal": "Meta",
     "goalPlaceholder": "25.000",
     "goalNote": "Dólares estadounidenses enteros. Las personas donan en Bitcoin; los clientes calculan el equivalente en USD al momento de ver.",
+    "payUrl": "Enlace de pago con tarjeta",
+    "payUrlOptional": "(opcional)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Una página de pago externa (p. ej. Stripe) donde las personas pueden pagar con tarjeta. Las donaciones con tarjeta se liquidan fuera de Agora y no cuentan para tu total recaudado.",
     "submitCreate": "Lanzar campaña",
     "submitEdit": "Actualizar campaña",
     "publishing": "Publicando…",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "El código de pago silencioso no es un código BIP-352 reconocido (sp1…).",
     "errorWalletRequired": "Proporciona al menos un punto de cartera: una dirección Bitcoin mainnet (bc1q… / bc1p…) o un código de pago silencioso (sp1…).",
     "errorGoalInvalid": "La meta debe ser una cantidad positiva en dólares enteros.",
+    "errorPayUrlInvalid": "El enlace de pago con tarjeta debe ser una URL https:// válida.",
     "errorEditLatestMissing": "No se pudo encontrar la última versión de esta campaña para actualizarla.",
     "errorSlugCollision": "Ya tienes una campaña con el identificador «{{slug}}». Elige otro.",
     "errorBannerInvalid": "La portada debe ser una URL https:// válida.",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} donaciones",
     "openInWallet": "Abrir en la cartera",
     "payWithAgoraWallet": "Pagar con Agora",
+    "payWithCard": "Pagar con tarjeta",
     "openExternalWallet": "Abrir cartera externa"
   },
   "noBitcoin": {

@@ -709,6 +709,10 @@
     "goal": "هدف",
     "goalPlaceholder": "۲۵٬۰۰۰",
     "goalNote": "دلار آمریکای صحیح. اهداکنندگان با بیت‌کوین می‌پردازند؛ کلاینت‌ها معادل دلاری را در زمان نمایش تخمین می‌زنند.",
+    "payUrl": "پیوند پرداخت با کارت",
+    "payUrlOptional": "(اختیاری)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "یک صفحهٔ پرداخت خارجی (مثلاً Stripe) که اهداکنندگان می‌توانند با کارت بپردازند. اهدای با کارت خارج از Agora تسویه می‌شود و در مجموع مبلغ جمع‌آوری‌شدهٔ شما به حساب نمی‌آید.",
     "submitCreate": "راه‌اندازی کمپین",
     "submitEdit": "به‌روزرسانی کمپین",
     "publishing": "در حال انتشار…",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "کد پرداخت بی‌صدا یک کد BIP-352 شناخته‌شده نیست (sp1…).",
     "errorWalletRequired": "حداقل یک نقطهٔ کیف پول وارد کن — یک نشانی بیت‌کوین شبکهٔ اصلی (bc1q… / bc1p…) یا یک کد پرداخت بی‌صدا (sp1…).",
     "errorGoalInvalid": "هدف باید یک مقدار مثبت به دلار صحیح باشد.",
+    "errorPayUrlInvalid": "پیوند پرداخت با کارت باید یک نشانی https:// معتبر باشد.",
     "errorEditLatestMissing": "آخرین نسخهٔ این کمپین برای به‌روزرسانی یافت نشد.",
     "errorSlugCollision": "از قبل کمپینی با شناسهٔ «{{slug}}» داری. شناسهٔ دیگری انتخاب کن.",
     "errorBannerInvalid": "بنر باید یک نشانی https:// معتبر باشد.",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} کمک",
     "openInWallet": "باز کردن در کیف پول",
     "payWithAgoraWallet": "پرداخت با Agora",
+    "payWithCard": "پرداخت با کارت",
     "openExternalWallet": "باز کردن کیف پول خارجی"
   },
   "noBitcoin": {

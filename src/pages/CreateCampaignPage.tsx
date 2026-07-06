@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Bitcoin,
   Check,
+  CreditCard,
   EyeOff,
   Globe,
   HandHeart,
@@ -183,6 +184,13 @@ export function CreateCampaignPage() {
   );
   const [customOnchain, setCustomOnchain] = useState('');
   const [customSp, setCustomSp] = useState('');
+  /**
+   * Optional external fiat card-payment URL (the `pay` tag). A secondary,
+   * off-Nostr donation path (e.g. a Stripe Checkout link) that never
+   * substitutes for a `w` wallet endpoint and does not count toward the
+   * campaign total. Only offered in the "Custom wallet" branch.
+   */
+  const [payUrl, setPayUrl] = useState('');
   const [goalUsd, setGoalUsd] = useState('');
   const [countryQuery, setCountryQuery] = useState('');
   const [countryCode, setCountryCode] = useState('');
@@ -321,6 +329,18 @@ export function CreateCampaignPage() {
     [customSp],
   );
 
+  // Live-parsed fiat pay URL. Empty parses to `null` (no error). A
+  // non-empty value that isn't a well-formed https URL surfaces an inline
+  // error and blocks submit. Mirrors the banner sanitization.
+  const sanitizedPayUrl = useMemo(
+    () => (payUrl.trim() ? sanitizeUrl(payUrl.trim()) : undefined),
+    [payUrl],
+  );
+  const payUrlInvalid = useMemo(
+    () => !!payUrl.trim() && !sanitizedPayUrl,
+    [payUrl, sanitizedPayUrl],
+  );
+
   // Whether the wallet step ("where do donations go") has resolved at least
   // one valid endpoint. Gates advancing past that step so users can't reach
   // the final launch step only to hit `errorWalletRequired`. Mirrors the
@@ -379,6 +399,7 @@ export function CreateCampaignPage() {
     setWalletSource('custom');
     setCustomOnchain(editCampaign.wallets.onchain?.value ?? '');
     setCustomSp(editCampaign.wallets.sp?.value ?? '');
+    setPayUrl(editCampaign.payUrl ?? '');
     setWalletDefaultsApplied(true);
     setGoalUsd(editCampaign.goalUsd !== undefined ? String(editCampaign.goalUsd) : '');
     const editCountryCode = editCampaign.countryCode ?? '';
@@ -505,6 +526,18 @@ export function CreateCampaignPage() {
         goalNum = n;
       }
 
+      // Optional fiat card-payment URL (`pay` tag). Must be a well-formed
+      // https URL. Never substitutes for a `w` endpoint (the wallet gate
+      // above already guarantees at least one).
+      let sanitizedPay: string | undefined;
+      const trimmedPay = payUrl.trim();
+      if (trimmedPay) {
+        sanitizedPay = sanitizeUrl(trimmedPay);
+        if (!sanitizedPay) {
+          throw new Error(t('campaignsCreate.errorPayUrlInvalid'));
+        }
+      }
+
       const resolvedCountryCode = countryCode;
       // Iterate the canonical category list (not the Set) so the tag
       // order on the event is stable and matches the picker's display
@@ -596,6 +629,7 @@ export function CreateCampaignPage() {
       if (onchainWallet) tags.push(['w', onchainWallet.value]);
       if (spWallet) tags.push(['w', spWallet.value]);
       if (goalNum !== undefined) tags.push(['goal', String(goalNum)]);
+      if (sanitizedPay) tags.push(['pay', sanitizedPay]);
       if (resolvedCountryCode) {
         tags.push(['i', createCountryIdentifier(resolvedCountryCode)]);
         tags.push(['k', 'iso3166']);
@@ -825,6 +859,9 @@ export function CreateCampaignPage() {
         customSp={customSp}
         onCustomSpChange={setCustomSp}
         parsedCustomSp={parsedCustomSp}
+        payUrl={payUrl}
+        onPayUrlChange={setPayUrl}
+        payUrlInvalid={payUrlInvalid}
       />
     </FormSection>
   );
@@ -1218,6 +1255,9 @@ function WalletPicker({
   customSp,
   onCustomSpChange,
   parsedCustomSp,
+  payUrl,
+  onPayUrlChange,
+  payUrlInvalid,
 }: {
   hdWalletAvailable: boolean;
   silentPaymentSupported: boolean;
@@ -1237,6 +1277,11 @@ function WalletPicker({
   customSp: string;
   onCustomSpChange: (value: string) => void;
   parsedCustomSp: ReturnType<typeof parseCampaignWallet>;
+  /** Optional fiat card-payment URL (the `pay` tag). */
+  payUrl: string;
+  onPayUrlChange: (value: string) => void;
+  /** True when a non-empty {@link payUrl} isn't a valid https URL. */
+  payUrlInvalid: boolean;
 }) {
   const { t } = useTranslation();
   const { data: btcPrice } = useBtcPrice();
@@ -1272,6 +1317,7 @@ function WalletPicker({
           parsed={parsedCustomSp}
           expectedMode="sp"
         />
+        <PayUrlInput value={payUrl} onChange={onPayUrlChange} invalid={payUrlInvalid} />
       </div>
     );
   }
@@ -1407,6 +1453,7 @@ function WalletPicker({
             parsed={parsedCustomSp}
             expectedMode="sp"
           />
+          <PayUrlInput value={payUrl} onChange={onPayUrlChange} invalid={payUrlInvalid} />
         </>
       )}
     </div>
@@ -1586,6 +1633,62 @@ function CustomWalletInput({
         <p className="text-xs text-destructive">{errorMessage}</p>
       ) : (
         <p className="text-xs leading-relaxed text-muted-foreground">{meaning}</p>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Optional "Card payment" URL field for the custom-wallet branch.
+ *
+ * The `pay` tag is a secondary, off-Nostr fiat path (e.g. a Stripe
+ * Checkout link). It never substitutes for a `w` wallet endpoint and
+ * fiat donations don't count toward the campaign total — the caption
+ * says so plainly so a creator doesn't expect the "Raised" bar to move.
+ *
+ * The inline error fires only when a non-empty value fails the https
+ * sanitization ({@link invalid}); an empty field is valid (the tag is
+ * optional).
+ */
+function PayUrlInput({
+  value,
+  onChange,
+  invalid,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  invalid: boolean;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5">
+        <CreditCard className="size-3.5 shrink-0 text-muted-foreground" />
+        <label htmlFor="campaign-pay-url" className="text-xs font-medium">
+          {t('campaignsCreate.payUrl')}
+        </label>
+        <span className="text-xs text-muted-foreground">{t('campaignsCreate.payUrlOptional')}</span>
+      </div>
+      <div className="relative">
+        <CreditCard className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          id="campaign-pay-url"
+          type="url"
+          inputMode="url"
+          value={value}
+          onChange={(e) => onChange(e.target.value.trim())}
+          placeholder={t('campaignsCreate.payUrlPlaceholder')}
+          className={cn('pl-9 text-xs', invalid && 'border-destructive focus-visible:ring-destructive')}
+          spellCheck={false}
+          autoComplete="off"
+          autoCorrect="off"
+          aria-invalid={invalid}
+        />
+      </div>
+      {invalid ? (
+        <p className="text-xs text-destructive">{t('campaignsCreate.errorPayUrlInvalid')}</p>
+      ) : (
+        <p className="text-xs leading-relaxed text-muted-foreground">{t('campaignsCreate.payUrlNote')}</p>
       )}
     </div>
   );

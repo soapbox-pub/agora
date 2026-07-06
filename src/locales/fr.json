@@ -1149,6 +1149,10 @@
     "goal": "Objectif",
     "goalPlaceholder": "25 000",
     "goalNote": "Dollars américains entiers. Les donateurs paient en Bitcoin ; les clients estiment l'équivalent en USD au moment de la consultation.",
+    "payUrl": "Lien de paiement par carte",
+    "payUrlOptional": "(facultatif)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Une page de paiement externe (par ex. Stripe) où les donateurs peuvent payer par carte. Les dons par carte sont réglés en dehors d'Agora et ne comptent pas dans votre total collecté.",
     "submitCreate": "Lancer la campagne",
     "submitEdit": "Mettre à jour la campagne",
     "publishing": "Publication…",
@@ -1175,6 +1179,7 @@
     "errorSpInvalid": "Le code de paiement silencieux n'est pas un code BIP-352 reconnu (sp1…).",
     "errorWalletRequired": "Fournissez au moins un point de terminaison de portefeuille — une adresse mainnet Bitcoin (bc1q… / bc1p…) ou un code de paiement silencieux (sp1…).",
     "errorGoalInvalid": "L'objectif doit être un montant entier positif en dollars.",
+    "errorPayUrlInvalid": "Le lien de paiement par carte doit être une URL https:// valide.",
     "errorEditLatestMissing": "Impossible de trouver la dernière version de cette campagne à mettre à jour.",
     "errorSlugCollision": "Vous avez déjà une campagne avec l'identifiant « {{slug}} ». Choisissez-en une autre.",
     "errorBannerInvalid": "La bannière doit être une URL https:// valide.",
@@ -1267,6 +1272,7 @@
     "donationCount_other": "{{count}} dons",
     "openInWallet": "Ouvrir dans le portefeuille",
     "payWithAgoraWallet": "Payer avec Agora",
+    "payWithCard": "Payer par carte",
     "openExternalWallet": "Ouvrir un portefeuille externe"
   },
   "noBitcoin": {

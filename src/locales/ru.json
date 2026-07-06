@@ -1149,6 +1149,10 @@
     "goal": "Цель",
     "goalPlaceholder": "25 000",
     "goalNote": "Целые доллары США. Жертвователи платят в Bitcoin; клиенты оценивают эквивалент в USD во время просмотра.",
+    "payUrl": "Ссылка для оплаты картой",
+    "payUrlOptional": "(необязательно)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Внешняя страница оплаты (например, Stripe), где жертвователи могут заплатить картой. Пожертвования картой обрабатываются вне Agora и не учитываются в вашей собранной сумме.",
     "submitCreate": "Запустить кампанию",
     "submitEdit": "Обновить кампанию",
     "publishing": "Публикация…",
@@ -1175,6 +1179,7 @@
     "errorSpInvalid": "Код тихого платежа не является распознанным кодом BIP-352 (sp1…).",
     "errorWalletRequired": "Укажите хотя бы один эндпойнт кошелька — Bitcoin-адрес mainnet (bc1q… / bc1p…) или код тихого платежа (sp1…).",
     "errorGoalInvalid": "Цель должна быть положительной целой суммой в долларах.",
+    "errorPayUrlInvalid": "Ссылка для оплаты картой должна быть действительным URL-адресом https://.",
     "errorEditLatestMissing": "Не удалось найти последнюю версию этой кампании для обновления.",
     "errorSlugCollision": "У вас уже есть кампания с идентификатором «{{slug}}». Выберите другой.",
     "errorBannerInvalid": "Баннер должен быть валидной URL https://.",
@@ -1267,6 +1272,7 @@
     "donationCount_other": "{{count}} пожертвований",
     "openInWallet": "Открыть в кошельке",
     "payWithAgoraWallet": "Оплатить через Agora",
+    "payWithCard": "Оплатить картой",
     "openExternalWallet": "Открыть внешний кошелёк"
   },
   "noBitcoin": {

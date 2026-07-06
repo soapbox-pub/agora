@@ -709,6 +709,10 @@
     "goal": "هدف",
     "goalPlaceholder": "25,000",
     "goalNote": "ټول امریکايي ډالر. ډونرز په بټ‌کوین پیسې ورکوي؛ کلائنټونه د لیدلو په وخت کې د ډالر معادل اټکل کوي.",
+    "payUrl": "د کارت د تادیې لینک",
+    "payUrlOptional": "(اختیاري)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "یو بهرنی د پیرود پاڼه (لکه Stripe) چیرته چې ډونرز کولی شي د کارت له لارې تادیه وکړي. د کارت ډونیشنونه د Agora څخه بهر تسویه کیږي او ستاسو د راټول شوي مجموعې په حساب کې نه شمیرل کیږي.",
     "submitCreate": "کمپاین پیلول",
     "submitEdit": "د کمپاین تازه کول",
     "publishing": "خپرول…",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "د چپ پیسو کوډ د پېژندل شوي BIP-352 کوډ نه دی (sp1…).",
     "errorWalletRequired": "لږ تر لږه یوه د پاکټ نقطه ورکړئ — د بټ‌کوین mainnet پته (bc1q… / bc1p…) یا د چپ پیسو کوډ (sp1…).",
     "errorGoalInvalid": "هدف باید د ډالر مثبته بشپړه اندازه وي.",
+    "errorPayUrlInvalid": "د کارت د تادیې لینک باید یو سم https:// URL وي.",
     "errorEditLatestMissing": "د دې کمپاین وروستۍ نسخه د تازه کولو لپاره ونه موندل شوه.",
     "errorSlugCollision": "تاسو لا دمخه «{{slug}}» پېژندونکی کمپاین لرئ. بل وټاکئ.",
     "errorBannerInvalid": "بنر باید د https:// سمه نښه وي.",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} مرستې",
     "openInWallet": "په بټوه کې پرانیزئ",
     "payWithAgoraWallet": "د Agora له لارې تادیه وکړئ",
+    "payWithCard": "د کارت له لارې تادیه وکړئ",
     "openExternalWallet": "بهرنۍ بټوه پرانیزئ"
   },
   "noBitcoin": {

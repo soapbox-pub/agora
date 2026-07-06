@@ -709,6 +709,10 @@
     "goal": "الهدف",
     "goalPlaceholder": "25,000",
     "goalNote": "دولارات أمريكية صحيحة. المتبرعون يدفعون بالبيتكوين؛ يقدّر العملاء المعادل بالدولار وقت العرض.",
+    "payUrl": "رابط الدفع بالبطاقة",
+    "payUrlOptional": "(اختياري)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "صفحة دفع خارجية (مثل Stripe) حيث يمكن للمتبرعين الدفع بالبطاقة. تتم تسوية التبرعات بالبطاقة خارج Agora ولا تُحتسب ضمن إجمالي مبلغك المُجمَّع.",
     "submitCreate": "إطلاق الحملة",
     "submitEdit": "تحديث الحملة",
     "publishing": "جارٍ النشر…",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "رمز الدفع الصامت ليس رمز BIP-352 معروفًا (sp1…).",
     "errorWalletRequired": "أدخل نقطة محفظة واحدة على الأقل — عنوان بيتكوين شبكة رئيسية (bc1q… / bc1p…) أو رمز دفع صامت (sp1…).",
     "errorGoalInvalid": "يجب أن يكون الهدف مبلغًا موجبًا بالدولار الصحيح.",
+    "errorPayUrlInvalid": "يجب أن يكون رابط الدفع بالبطاقة رابط https:// صالحًا.",
     "errorEditLatestMissing": "تعذّر العثور على أحدث نسخة لهذه الحملة لتحديثها.",
     "errorSlugCollision": "لديك بالفعل حملة بالمعرّف «{{slug}}». اختر معرّفًا آخر.",
     "errorBannerInvalid": "يجب أن يكون البانر رابط https:// صالحًا.",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} تبرعات",
     "openInWallet": "فتح في المحفظة",
     "payWithAgoraWallet": "الدفع عبر Agora",
+    "payWithCard": "الدفع بالبطاقة",
     "openExternalWallet": "فتح محفظة خارجية"
   },
   "noBitcoin": {

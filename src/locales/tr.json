@@ -1151,6 +1151,10 @@
     "goal": "Hedef",
     "goalPlaceholder": "25.000",
     "goalNote": "Tam ABD Doları. Bağışçılar Bitcoin ile öder; istemciler görüntüleme anında USD karşılığını tahmin eder.",
+    "payUrl": "Kartla ödeme bağlantısı",
+    "payUrlOptional": "(isteğe bağlı)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Bağışçıların kartla ödeme yapabileceği harici bir ödeme sayfası (ör. Stripe). Kartla yapılan bağışlar Agora dışında gerçekleşir ve toplanan tutarınıza dahil edilmez.",
     "submitCreate": "Kampanyayı başlat",
     "submitEdit": "Kampanyayı güncelle",
     "publishing": "Yayımlanıyor…",
@@ -1177,6 +1181,7 @@
     "errorSpInvalid": "Sessiz ödeme kodu tanınan bir BIP-352 kodu değil (sp1…).",
     "errorWalletRequired": "En az bir cüzdan uç noktası sağlayın — bir Bitcoin mainnet adresi (bc1q… / bc1p…) ya da bir sessiz ödeme kodu (sp1…).",
     "errorGoalInvalid": "Hedef pozitif bir tam dolar tutarı olmalıdır.",
+    "errorPayUrlInvalid": "Kartla ödeme bağlantısı geçerli bir https:// URL'si olmalıdır.",
     "errorEditLatestMissing": "Bu kampanyanın güncellemek için en son sürümü bulunamadı.",
     "errorSlugCollision": "\"{{slug}}\" tanımlayıcısına sahip bir kampanyanız zaten var. Başkasını seçin.",
     "errorBannerInvalid": "Pankart geçerli bir https:// URL'i olmalıdır.",
@@ -1267,6 +1272,7 @@
     "donationCount_other": "{{count}} bağış",
     "openInWallet": "Cüzdanda aç",
     "payWithAgoraWallet": "Agora ile öde",
+    "payWithCard": "Kartla öde",
     "openExternalWallet": "Harici cüzdanı aç"
   },
   "noBitcoin": {

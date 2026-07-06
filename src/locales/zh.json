@@ -709,6 +709,10 @@
     "goal": "目标",
     "goalPlaceholder": "25,000",
     "goalNote": "整数美元。捐赠者以比特币支付；客户端在查看时估算美元等值。",
+    "payUrl": "银行卡支付链接",
+    "payUrlOptional": "（可选）",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "一个外部结账页面（例如 Stripe），捐赠者可在此使用银行卡付款。银行卡捐款在 Agora 之外结算，不计入您的筹款总额。",
     "submitCreate": "发起活动",
     "submitEdit": "更新活动",
     "publishing": "发布中……",
@@ -735,6 +739,7 @@
     "errorSpInvalid": "静默支付代码不是已识别的 BIP-352 代码（sp1…）。",
     "errorWalletRequired": "至少提供一个钱包端点 — 一个比特币主网地址（bc1q… / bc1p…）或一个静默支付代码（sp1…）。",
     "errorGoalInvalid": "目标必须是正整数美元金额。",
+    "errorPayUrlInvalid": "银行卡支付链接必须是有效的 https:// URL。",
     "errorEditLatestMissing": "找不到此活动的最新版本以更新。",
     "errorSlugCollision": "你已有一个标识符为「{{slug}}」的活动。请选择其他。",
     "errorBannerInvalid": "横幅必须是有效的 https:// URL。",
@@ -825,6 +830,7 @@
     "donationCount_other": "{{count}} 笔捐赠",
     "openInWallet": "在钱包中打开",
     "payWithAgoraWallet": "使用 Agora 支付",
+    "payWithCard": "使用银行卡支付",
     "openExternalWallet": "打开外部钱包"
   },
   "noBitcoin": {

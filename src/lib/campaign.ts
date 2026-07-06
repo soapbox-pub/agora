@@ -90,6 +90,13 @@ export interface ParsedCampaign {
   wallets: CampaignWallets;
   /** Fundraising goal in **integer US Dollars**, or `undefined` if not set. */
   goalUsd?: number;
+  /**
+   * External fiat card-payment URL from the optional `pay` tag, or
+   * `undefined` if missing/invalid. Fiat donations settle off-Nostr and do
+   * NOT count toward the campaign total. Only well-formed https URLs are
+   * kept; the formal `sanitizeUrl()` pass happens at the render site.
+   */
+  payUrl?: string;
   /** ISO 3166-1 alpha-2 country code parsed from a NIP-73 `i` tag. */
   countryCode?: string;
   /** Created-at from the event. */
@@ -245,6 +252,11 @@ export function parseCampaign(event: NostrEvent): ParsedCampaign | null {
   const banner = rawBanner && /^https:\/\//i.test(rawBanner) ? rawBanner : undefined;
   const bannerImeta = getBannerImeta(event, banner);
 
+  // Optional fiat card-payment URL. Same https-only filter as the banner;
+  // the formal sanitizeUrl() pass happens at the render site.
+  const rawPay = getTag(event, 'pay');
+  const payUrl = rawPay && /^https:\/\//i.test(rawPay) ? rawPay : undefined;
+
   return {
     event,
     pubkey: event.pubkey,
@@ -257,6 +269,7 @@ export function parseCampaign(event: NostrEvent): ParsedCampaign | null {
     bannerImeta,
     wallets,
     goalUsd: parsePositiveInt(getTag(event, 'goal')),
+    payUrl,
     countryCode: getCountryCode(event),
     createdAt: event.created_at,
   };

@@ -1151,6 +1151,10 @@
     "goal": "लक्ष्य",
     "goalPlaceholder": "25,000",
     "goalNote": "पूरे US डॉलर। डोनर Bitcoin में भुगतान करते हैं; क्लाइंट देखने के समय USD-समकक्ष का अनुमान लगाते हैं।",
+    "payUrl": "कार्ड भुगतान लिंक",
+    "payUrlOptional": "(वैकल्पिक)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "एक बाहरी चेकआउट पेज (जैसे Stripe) जहाँ डोनर कार्ड से भुगतान कर सकते हैं। कार्ड दान Agora के बाहर निपटाए जाते हैं और आपके जुटाए गए कुल में नहीं गिने जाते।",
     "submitCreate": "कैंपेन लॉन्च करें",
     "submitEdit": "कैंपेन अपडेट करें",
     "publishing": "पब्लिश हो रहा है…",
@@ -1177,6 +1181,7 @@
     "errorSpInvalid": "साइलेंट-पेमेंट कोड कोई पहचाना BIP-352 कोड नहीं है (sp1…)।",
     "errorWalletRequired": "कम से कम एक वॉलेट endpoint दें — एक Bitcoin mainnet एड्रेस (bc1q… / bc1p…) या एक साइलेंट-पेमेंट कोड (sp1…)।",
     "errorGoalInvalid": "लक्ष्य एक धनात्मक पूर्ण-डॉलर राशि होनी चाहिए।",
+    "errorPayUrlInvalid": "कार्ड भुगतान लिंक एक मान्य https:// URL होना चाहिए।",
     "errorEditLatestMissing": "इस कैंपेन का सबसे नया संस्करण अपडेट करने के लिए नहीं मिला।",
     "errorSlugCollision": "आपके पास पहले से \"{{slug}}\" पहचानकर्ता वाला कैंपेन है। दूसरा चुनें।",
     "errorBannerInvalid": "बैनर एक मान्य https:// URL होना चाहिए।",
@@ -1267,6 +1272,7 @@
     "donationCount_other": "{{count}} डोनेशन",
     "openInWallet": "वॉलेट में खोलें",
     "payWithAgoraWallet": "Agora से भुगतान करें",
+    "payWithCard": "कार्ड से भुगतान करें",
     "openExternalWallet": "बाहरी वॉलेट खोलें"
   },
   "noBitcoin": {

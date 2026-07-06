@@ -1240,6 +1240,10 @@
     "goal": "Goal",
     "goalPlaceholder": "25,000",
     "goalNote": "Whole US Dollars. Donors pay in Bitcoin; clients estimate the USD-equivalent at view time.",
+    "payUrl": "Card payment link",
+    "payUrlOptional": "(optional)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "An external checkout page (e.g. Stripe) where donors can pay by card. Card donations settle off-Agora and don't count toward your raised total.",
     "submitCreate": "Launch campaign",
     "submitEdit": "Update campaign",
     "publishing": "Publishing…",
@@ -1266,6 +1270,7 @@
     "errorSpInvalid": "The silent-payment code is not a recognized BIP-352 code (sp1…).",
     "errorWalletRequired": "Provide at least one wallet endpoint — a Bitcoin mainnet address (bc1q… / bc1p…) or a silent-payment code (sp1…).",
     "errorGoalInvalid": "Goal must be a positive whole-dollar amount.",
+    "errorPayUrlInvalid": "Card payment link must be a valid https:// URL.",
     "errorEditLatestMissing": "Could not find the latest version of this campaign to update.",
     "errorSlugCollision": "You already have a campaign with the identifier \"{{slug}}\". Choose another.",
     "errorBannerInvalid": "Banner must be a valid https:// URL.",
@@ -1356,7 +1361,8 @@
     "donationCount_other": "{{count}} donations",
     "openExternalWallet": "Open external wallet",
     "openInWallet": "Open in wallet",
-    "payWithAgoraWallet": "Pay with Agora"
+    "payWithAgoraWallet": "Pay with Agora",
+    "payWithCard": "Pay with card"
   },
   "noBitcoin": {
     "trigger": "Don't have Bitcoin?",

@@ -8,6 +8,7 @@ import type { NostrEvent } from '@nostrify/nostrify';
 import {
   Archive,
   ChevronLeft,
+  CreditCard,
   HandHeart,
   Pencil,
   Share2,
@@ -76,6 +77,7 @@ import { satsToUSDWhole } from '@/lib/bitcoin';
 import { formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { formatNumber } from '@/lib/formatNumber';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
+import { openUrl } from '@/lib/downloadFile';
 import NotFound from './NotFound';
 
 interface CampaignDetailPageProps {
@@ -1127,6 +1129,12 @@ function DonateColumn({
   // "Open in wallet" affordance when they view their own campaign.
   const isOwner = user?.pubkey === campaign.pubkey;
 
+  // Optional fiat card-payment link (`pay` tag). Sanitized here at the
+  // render site (the parser only https-filters); `undefined` for a
+  // missing/invalid URL hides the button entirely. Fiat donations settle
+  // off-Nostr and never count toward the raised total.
+  const payUrl = useMemo(() => sanitizeUrl(campaign.payUrl), [campaign.payUrl]);
+
   return (
     // On mobile we drop the surface chrome (no rounded background) so
     // the donate content flows inline with the page instead of being a
@@ -1219,6 +1227,17 @@ function DonateColumn({
                 ) : null
               }
             />
+            {payUrl && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full border-green-600/40 bg-green-600 text-white hover:bg-green-700 hover:text-white dark:border-green-500/40"
+                onClick={() => void openUrl(payUrl)}
+              >
+                <CreditCard className="size-5 mr-2" />
+                {t('campaignsDetail.payWithCard')}
+              </Button>
+            )}
             <Button variant="outline" size="lg" className="w-full" onClick={onShare}>
               <Share2 className="size-4 mr-2" />
               {t('campaignsDetail.share')}

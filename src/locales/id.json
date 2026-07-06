@@ -1151,6 +1151,10 @@
     "goal": "Target",
     "goalPlaceholder": "25,000",
     "goalNote": "Dalam USD utuh. Donatur membayar dalam Bitcoin; klien memperkirakan nilai setara USD saat dilihat.",
+    "payUrl": "Tautan pembayaran kartu",
+    "payUrlOptional": "(opsional)",
+    "payUrlPlaceholder": "https://pay.example.com/your-campaign",
+    "payUrlNote": "Halaman checkout eksternal (mis. Stripe) tempat donatur dapat membayar dengan kartu. Donasi kartu diselesaikan di luar Agora dan tidak dihitung dalam total yang Anda kumpulkan.",
     "submitCreate": "Luncurkan kampanye",
     "submitEdit": "Perbarui kampanye",
     "publishing": "Memublikasikan…",
@@ -1177,6 +1181,7 @@
     "errorSpInvalid": "Kode silent-payment bukan kode BIP-352 yang dikenal (sp1…).",
     "errorWalletRequired": "Sediakan setidaknya satu titik dompet — alamat Bitcoin mainnet (bc1q… / bc1p…) atau kode silent-payment (sp1…).",
     "errorGoalInvalid": "Target harus berupa nilai dolar utuh yang positif.",
+    "errorPayUrlInvalid": "Tautan pembayaran kartu harus berupa URL https:// yang valid.",
     "errorEditLatestMissing": "Tidak dapat menemukan versi terbaru kampanye ini untuk diperbarui.",
     "errorSlugCollision": "Anda sudah memiliki kampanye dengan pengenal \"{{slug}}\". Pilih yang lain.",
     "errorBannerInvalid": "Banner harus berupa URL https:// yang valid.",
@@ -1267,6 +1272,7 @@
     "donationCount_other": "{{count}} donasi",
     "openInWallet": "Buka di dompet",
     "payWithAgoraWallet": "Bayar dengan Agora",
+    "payWithCard": "Bayar dengan kartu",
     "openExternalWallet": "Buka dompet eksternal"
   },
   "noBitcoin": {
