@@ -298,20 +298,8 @@ function Hero() {
               className="rounded-full text-white font-semibold text-base h-12 px-7 [&_svg]:size-[18px] motion-safe:transition-colors"
             >
               <StartCampaignLink>
-                <PlusCircle className="mr-2" />
                 {t('campaigns.home.startCampaign')}
               </StartCampaignLink>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="rounded-full h-12 px-6 text-base border-white/30 bg-white/5 text-white hover:bg-white/10 hover:text-white hover:border-white/50 [&_svg]:size-[18px]"
-            >
-              <Link to="/verify">
-                <BadgeCheck className="mr-2" />
-                {t('campaigns.home.verifyCampaigns')}
-              </Link>
             </Button>
             <Button
               variant="outline"
