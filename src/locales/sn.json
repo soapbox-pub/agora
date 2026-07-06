@@ -295,13 +295,13 @@
       "homeOther": "Hapana chokuratidza. Tarisa hukama hwerelay yako kana kuedza zvakare munguva pfupi.",
       "follows": "Feed yako haina chinhu. Tevera vamwe vanhu kuti uone zvinyorwa zvavo pano.",
       "global": "Hapana zvinyorwa zvakawanikwa. Tarisa hukama hwerelay yako kana kudzoka manje.",
-      "browseAgora": "Tarisa Feed yeAgora",
+      "browseAgora": "Tarisa Feed yezvichangoburwa",
       "browseGlobal": "Tarisa Feed yePasi rose",
       "discoverPeople": "Tsvaga vanhu vokutevera",
       "logIn": "Pinda"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Zvichangoburwa",
       "allNostr": "Pasi rose",
       "following": "Kutevera",
       "ariaLabel": "Mamiriro eFeed: {{label}}. Dzvanya kushandura.",

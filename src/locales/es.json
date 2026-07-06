@@ -295,13 +295,13 @@
       "homeOther": "Nada que mostrar. Comprueba tus conexiones de relays o vuelve a intentarlo en un momento.",
       "follows": "Tu feed está vacío. Sigue a algunas personas para ver sus publicaciones aquí.",
       "global": "No se encontraron publicaciones. Comprueba tus conexiones de relays o vuelve pronto.",
-      "browseAgora": "Ver el feed de Agora",
+      "browseAgora": "Ver el feed de lo último",
       "browseGlobal": "Ver el feed Global",
       "discoverPeople": "Descubre personas a quienes seguir",
       "logIn": "Iniciar sesión"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Lo último",
       "allNostr": "Global",
       "following": "Siguiendo",
       "ariaLabel": "Modo del feed: {{label}}. Haz clic para cambiar.",

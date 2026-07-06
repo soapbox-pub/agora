@@ -295,13 +295,13 @@
       "homeOther": "Hakuna cha kuonyesha. Angalia muunganisho wako wa relei au jaribu tena baadaye.",
       "follows": "Mlisho wako ni tupu. Fuata watu kuona machapisho yao hapa.",
       "global": "Hakuna machapisho yaliyopatikana. Angalia muunganisho wako wa relei au rudi tena baadaye.",
-      "browseAgora": "Vinjari mlisho wa Agora",
+      "browseAgora": "Vinjari mlisho wa mpya zaidi",
       "browseGlobal": "Vinjari mlisho wa Kimataifa",
       "discoverPeople": "Gundua watu wa kufuata",
       "logIn": "Ingia"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Mpya zaidi",
       "allNostr": "Kimataifa",
       "following": "Unafuata",
       "ariaLabel": "Hali ya mlisho: {{label}}. Bonyeza kubadilisha.",

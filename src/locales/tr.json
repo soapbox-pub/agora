@@ -295,13 +295,13 @@
       "homeOther": "Gösterilecek bir şey yok. Röle bağlantılarınızı kontrol edin ya da biraz sonra tekrar deneyin.",
       "follows": "Akışınız boş. Gönderilerini burada görmek için birilerini takip edin.",
       "global": "Gönderi bulunamadı. Röle bağlantılarınızı kontrol edin ya da yakında tekrar gelin.",
-      "browseAgora": "Agora akışına göz at",
+      "browseAgora": "En yeni akışına göz at",
       "browseGlobal": "Küresel akışa göz at",
       "discoverPeople": "Takip edilecek insanları keşfet",
       "logIn": "Giriş yap"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "En yeni",
       "allNostr": "Küresel",
       "following": "Takip ediliyor",
       "ariaLabel": "Akış modu: {{label}}. Değiştirmek için tıklayın.",

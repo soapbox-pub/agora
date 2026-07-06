@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Globe, Users } from 'lucide-react';
+import { Check, ChevronDown, Globe, Radio, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -29,15 +29,7 @@ const OPTIONS: FeedModeOption[] = [
 
 function FeedModeIcon({ mode, className }: { mode: FeedMode; className?: string }) {
   if (mode === 'agora') {
-    return (
-      <span
-        className={cn(
-          "inline-block shrink-0 bg-current [mask-image:url('/logo.svg')] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]",
-          className,
-        )}
-        aria-hidden
-      />
-    );
+    return <Radio className={cn('shrink-0', className)} aria-hidden />;
   }
 
   const Icon = mode === 'following' ? Users : Globe;
@@ -88,11 +80,10 @@ export function FeedModeSwitcher({
       >
         <FeedModeIcon
           mode={active.mode}
-          className={cn('size-6 sm:size-7', active.mode === 'agora' ? 'text-primary' : 'text-muted-foreground')}
+          className="size-6 text-primary sm:size-7"
         />
         <span className={cn(
-          'text-2xl sm:text-3xl font-bold tracking-tight leading-none',
-          active.mode === 'agora' && 'text-primary',
+          'text-2xl sm:text-3xl font-bold tracking-tight leading-none text-primary',
         )}>
           {activeLabel}
         </span>
@@ -129,9 +120,9 @@ export function FeedModeSwitcher({
             >
               <FeedModeIcon
                 mode={opt.mode}
-                className={cn('size-4', opt.mode === 'agora' ? 'text-primary' : 'text-muted-foreground')}
+                className={cn('size-4', isActive ? 'text-primary' : 'text-muted-foreground')}
               />
-              <span className={cn('flex-1 text-sm font-medium', opt.mode === 'agora' && 'text-primary')}>{label}</span>
+              <span className={cn('flex-1 text-sm font-medium', isActive && 'text-primary')}>{label}</span>
               {isActive && <Check className="size-4 shrink-0 text-primary" aria-hidden />}
             </DropdownMenuItem>
           );

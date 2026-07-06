@@ -295,13 +295,13 @@
       "homeOther": "Rien à afficher. Vérifiez vos connexions aux relais ou réessayez dans un instant.",
       "follows": "Votre fil est vide. Suivez quelques personnes pour voir leurs publications ici.",
       "global": "Aucune publication trouvée. Vérifiez vos connexions aux relais ou revenez bientôt.",
-      "browseAgora": "Parcourir le fil Agora",
+      "browseAgora": "Parcourir le fil des dernières nouveautés",
       "browseGlobal": "Parcourir le fil Global",
       "discoverPeople": "Découvrir des personnes à suivre",
       "logIn": "Se connecter"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Dernières",
       "allNostr": "Global",
       "following": "Abonnements",
       "ariaLabel": "Mode du fil : {{label}}. Cliquez pour changer.",

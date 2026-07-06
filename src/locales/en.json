@@ -296,13 +296,13 @@
       "homeOther": "Nothing to show. Check your relay connections or try again in a moment.",
       "follows": "Your feed is empty. Follow some people to see their posts here.",
       "global": "No posts found. Check your relay connections or come back soon.",
-      "browseAgora": "Browse the Agora feed",
+      "browseAgora": "Browse the Latest feed",
       "browseGlobal": "Browse the Global feed",
       "discoverPeople": "Discover people to follow",
       "logIn": "Log in"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Latest",
       "allNostr": "Global",
       "following": "Following",
       "ariaLabel": "Feed mode: {{label}}. Click to change.",

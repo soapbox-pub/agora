@@ -295,13 +295,13 @@
       "homeOther": "Tidak ada yang ditampilkan. Periksa koneksi relay Anda atau coba lagi sebentar lagi.",
       "follows": "Feed Anda kosong. Ikuti beberapa orang untuk melihat unggahan mereka di sini.",
       "global": "Tidak ada unggahan ditemukan. Periksa koneksi relay Anda atau kembali lagi nanti.",
-      "browseAgora": "Jelajahi feed Agora",
+      "browseAgora": "Jelajahi feed Terbaru",
       "browseGlobal": "Jelajahi feed Global",
       "discoverPeople": "Temukan orang untuk diikuti",
       "logIn": "Masuk"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "Terbaru",
       "allNostr": "Global",
       "following": "Mengikuti",
       "ariaLabel": "Mode feed: {{label}}. Klik untuk mengubah.",

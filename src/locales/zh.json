@@ -295,13 +295,13 @@
       "homeOther": "暂无内容。请检查你的中继连接，或稍后再试。",
       "follows": "你的 Feed 为空。关注一些人，以便在此处看到他们的帖子。",
       "global": "未找到帖子。请检查你的中继连接，或稍后再来。",
-      "browseAgora": "浏览 Agora Feed",
+      "browseAgora": "浏览最新 Feed",
       "browseGlobal": "浏览全球 Feed",
       "discoverPeople": "发现可关注的人",
       "logIn": "登录"
     },
     "modeSwitcher": {
-      "agora": "Agora",
+      "agora": "最新",
       "allNostr": "全球",
       "following": "关注中",
       "ariaLabel": "Feed 模式：{{label}}。点击更改。",
