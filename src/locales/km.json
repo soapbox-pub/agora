@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "បានទទួលការទូទាត់",
+    "successDescription": "សូមអរគុណសម្រាប់ការបរិច្ចាគរបស់អ្នក! វានឹងបង្ហាញឆាប់ៗនេះ។",
+    "cancelTitle": "បានលុបចោលការទូទាត់",
+    "cancelDescription": "ការបរិច្ចាគរបស់អ្នកមិនបានបញ្ចប់ទេ។"
+  },
   "tor": {
     "status": {
       "disabled": "បិទ",

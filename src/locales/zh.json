@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "已收到付款",
+    "successDescription": "感谢您的捐赠！稍后即可显示。",
+    "cancelTitle": "付款已取消",
+    "cancelDescription": "您的捐赠未完成。"
+  },
   "tor": {
     "status": {
       "disabled": "已关闭",

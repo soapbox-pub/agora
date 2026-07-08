@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Ödeme alındı",
+    "successDescription": "Bağışınız için teşekkürler! Kısa süre içinde görünecek.",
+    "cancelTitle": "Ödeme iptal edildi",
+    "cancelDescription": "Bağışınız tamamlanmadı."
+  },
   "tor": {
     "status": {
       "disabled": "Kapalı",

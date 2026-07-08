@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "تم استلام الدفعة",
+    "successDescription": "شكرًا على تبرعك! سيظهر قريبًا.",
+    "cancelTitle": "تم إلغاء الدفعة",
+    "cancelDescription": "لم يكتمل تبرعك."
+  },
   "tor": {
     "status": {
       "disabled": "متوقف",

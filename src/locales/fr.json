@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Paiement reçu",
+    "successDescription": "Merci pour votre don ! Il apparaîtra bientôt.",
+    "cancelTitle": "Paiement annulé",
+    "cancelDescription": "Votre don n'a pas été finalisé."
+  },
   "tor": {
     "status": {
       "disabled": "Désactivé",

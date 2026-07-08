@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Платёж получен",
+    "successDescription": "Спасибо за ваше пожертвование! Оно скоро появится.",
+    "cancelTitle": "Платёж отменён",
+    "cancelDescription": "Ваше пожертвование не было завершено."
+  },
   "tor": {
     "status": {
       "disabled": "Выключено",

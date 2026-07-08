@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Pembayaran diterima",
+    "successDescription": "Terima kasih atas donasi Anda! Akan segera muncul.",
+    "cancelTitle": "Pembayaran dibatalkan",
+    "cancelDescription": "Donasi Anda tidak selesai."
+  },
   "tor": {
     "status": {
       "disabled": "Mati",

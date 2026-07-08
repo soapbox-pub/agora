@@ -64,6 +64,7 @@ const WalletRecoveryPage = lazy(() => import("./pages/WalletRecoveryPage").then(
 const WalletSettingsPage = lazy(() => import("./pages/WalletSettingsPage").then(m => ({ default: m.WalletSettingsPage })));
 const LegacyWalletRecoveryPage = lazy(() => import("./pages/LegacyWalletRecoveryPage").then(m => ({ default: m.LegacyWalletRecoveryPage })));
 const RemoteLoginSuccessPage = lazy(() => import("./pages/RemoteLoginSuccessPage").then(m => ({ default: m.RemoteLoginSuccessPage })));
+const DonateCallbackPage = lazy(() => import("./pages/DonateCallbackPage").then(m => ({ default: m.DonateCallbackPage })));
 
 /** Redirects /profile to the user's canonical profile URL (nip05 or npub). */
 function ProfileRedirect() {
@@ -198,6 +199,9 @@ export function AppRouter() {
           <Route path="/settings/verifier" element={<Navigate to="/verify" replace />} />
           {/* Callback target for remote signers (e.g. Amber, Primal) after NIP-46 approval */}
           <Route path="/remoteloginsuccess" element={<RemoteLoginSuccessPage />} />
+          {/* Callback target the agora-pay fiat service redirects donors to
+              after Stripe checkout. Toasts the outcome and bounces to /:naddr. */}
+          <Route path="/donate/callback" element={<DonateCallbackPage />} />
         </Route>
 
         <Route element={<FundraiserLayout narrow={false} hideFooter />}>

@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "भुगतान प्राप्त हुआ",
+    "successDescription": "आपके दान के लिए धन्यवाद! यह जल्द ही दिखाई देगा।",
+    "cancelTitle": "भुगतान रद्द किया गया",
+    "cancelDescription": "आपका दान पूरा नहीं हुआ।"
+  },
   "tor": {
     "status": {
       "disabled": "बंद",

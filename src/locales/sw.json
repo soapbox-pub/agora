@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Malipo yamepokelewa",
+    "successDescription": "Asante kwa mchango wako! Utaonekana hivi karibuni.",
+    "cancelTitle": "Malipo yameghairiwa",
+    "cancelDescription": "Mchango wako haukukamilika."
+  },
   "tor": {
     "status": {
       "disabled": "Imezimwa",

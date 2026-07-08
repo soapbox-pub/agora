@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "پرداخت دریافت شد",
+    "successDescription": "از کمک شما سپاسگزاریم! به‌زودی نمایش داده می‌شود.",
+    "cancelTitle": "پرداخت لغو شد",
+    "cancelDescription": "کمک مالی شما تکمیل نشد."
+  },
   "tor": {
     "status": {
       "disabled": "خاموش",

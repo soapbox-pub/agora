@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "تادیه ترلاسه شوه",
+    "successDescription": "ستاسو د بښنې لپاره مننه! ژر به ښکاره شي.",
+    "cancelTitle": "تادیه لغوه شوه",
+    "cancelDescription": "ستاسو بښنه بشپړه نشوه."
+  },
   "tor": {
     "status": {
       "disabled": "بند",

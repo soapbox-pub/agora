@@ -1,4 +1,10 @@
 {
+  "donateCallback": {
+    "successTitle": "Mubhadharo wagamuchirwa",
+    "successDescription": "Tinotenda nechipo chenyu! Chichaonekwa munguva pfupi.",
+    "cancelTitle": "Mubhadharo wakadzimwa",
+    "cancelDescription": "Chipo chenyu hachina kupera."
+  },
   "tor": {
     "status": {
       "disabled": "Dzimwa",
