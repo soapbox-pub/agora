@@ -1109,8 +1109,9 @@ function DonateColumn({
 
   // Optional fiat card-payment link (`pay` tag). Sanitized here at the
   // render site (the parser only https-filters); `undefined` for a
-  // missing/invalid URL hides the button entirely. Fiat donations settle
-  // off-Nostr and never count toward the raised total.
+  // missing/invalid URL hides the button entirely. When the endpoint
+  // reports a JSON total it's folded into the raised figure by
+  // useCampaignDonations; the button itself is just the hand-off link.
   const payUrl = useMemo(() => sanitizeUrl(campaign.payUrl), [campaign.payUrl]);
 
   return (

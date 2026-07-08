@@ -3,19 +3,32 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import type { NostrEvent } from '@nostrify/nostrify';
 
 import { useAppContext } from '@/hooks/useAppContext';
+import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { verifyOnchainZap, extractOnchainZapTxid, type OnchainZapEntry } from '@/hooks/useOnchainZaps';
-import { fetchAddressData } from '@/lib/bitcoin';
-import type { ParsedCampaign } from '@/lib/campaign';
+import { fetchAddressData, usdToSats } from '@/lib/bitcoin';
+import { fetchCampaignFiatReceived, type ParsedCampaign } from '@/lib/campaign';
 
 interface CampaignDonationStats {
   /**
-   * Total satoshis raised, sourced from the cumulative on-chain amount
-   * ever received by the campaign's `w` address (`chain_stats.funded_txo_sum`
-   * from Esplora). This is independent of Nostr donation receipts —
-   * any payment to the address counts, and beneficiary payouts do not
-   * reduce the number.
+   * Total satoshis raised. This is the sum of:
+   *
+   * - the cumulative on-chain amount ever received by the campaign's `w`
+   *   address (`chain_stats.funded_txo_sum` from Esplora), independent of
+   *   Nostr donation receipts — any payment to the address counts, and
+   *   beneficiary payouts do not reduce it; and
+   * - the off-Nostr fiat total raised via the campaign's optional `pay`
+   *   URL (see {@link fiatSats}), converted to sats at the current
+   *   BTC price.
    */
   totalSats: number;
+  /**
+   * The fiat portion of {@link totalSats}, in sats. Sourced from the
+   * campaign's `pay` endpoint (`{ received }`, in the currency's minor
+   * unit — treated as USD cents) and converted at the live BTC/USD price.
+   * `0` when the campaign has no `pay` URL, the endpoint returns no JSON,
+   * or the BTC price is unavailable.
+   */
+  fiatSats: number;
   /**
    * Mempool delta in sats — the net unconfirmed amount currently sitting
    * in the mempool for the campaign's `w` address. Sourced from Esplora's
@@ -118,6 +131,7 @@ export function useCampaignDonations(
   const { nostr } = useNostr();
   const { config } = useAppContext();
   const { esploraApis } = config;
+  const { data: btcPrice } = useBtcPrice();
 
   const aTag = campaign?.aTag;
   const wallets = campaign?.wallets;
@@ -127,6 +141,7 @@ export function useCampaignDonations(
   const onchainWallet = wallets?.onchain;
   const hasOnchain = !!onchainWallet;
   const walletValue = onchainWallet?.value;
+  const payUrl = campaign?.payUrl;
 
   // Headline number: query the address balance directly from Esplora.
   // `totalReceived` is `chain_stats.funded_txo_sum` — sats ever sent to
@@ -141,6 +156,23 @@ export function useCampaignDonations(
     queryKey: ['bitcoin-balance', 'campaign', esploraApis, walletValue ?? ''],
     queryFn: ({ signal }) => fetchAddressData(walletValue!, esploraApis, signal),
     enabled: enabled && !!walletValue && hasOnchain,
+    staleTime: 60_000,
+    refetchInterval,
+  });
+
+  // Off-Nostr fiat total: campaigns with a `pay` tag expose their raised
+  // fiat amount as JSON (`{ received }`, in the currency's minor unit —
+  // treated as USD cents) when the URL is fetched with `Accept:
+  // application/json`. We fold it into the headline total below.
+  //
+  // Only fetched for on-chain (or dual-endpoint) campaigns: silent-payment
+  // campaigns hide all aggregate UI by design, so surfacing a fiat number
+  // there would break that contract. `refetchInterval` mirrors the address
+  // balance so the detail page keeps the fiat total live too.
+  const fiatQuery = useQuery({
+    queryKey: ['campaign-donations', 'fiat', payUrl ?? ''],
+    queryFn: ({ signal }) => fetchCampaignFiatReceived(payUrl, signal),
+    enabled: enabled && !!payUrl && hasOnchain,
     staleTime: 60_000,
     refetchInterval,
   });
@@ -194,8 +226,16 @@ export function useCampaignDonations(
     .map((v) => v.data)
     .filter((v): v is OnchainZapEntry => !!v);
 
-  const totalSats = hasOnchain ? (addressQuery.data?.totalReceived ?? 0) : 0;
+  const onchainSats = hasOnchain ? (addressQuery.data?.totalReceived ?? 0) : 0;
   const pendingSats = hasOnchain ? (addressQuery.data?.pendingBalance ?? 0) : 0;
+
+  // Fiat raised (USD cents from the `pay` endpoint) → USD → sats at the
+  // live BTC price. Without a price we can't convert, so it contributes 0
+  // rather than a bogus number.
+  const fiatCents = hasOnchain ? (fiatQuery.data ?? 0) : 0;
+  const fiatSats = usdToSats(fiatCents / 100, btcPrice);
+
+  const totalSats = onchainSats + fiatSats;
 
   const txids = new Set<string>();
   const donors = new Set<string>();
@@ -217,12 +257,14 @@ export function useCampaignDonations(
     hasOnchain &&
     (!enabled ||
       addressQuery.isLoading ||
+      (!!payUrl && fiatQuery.isLoading) ||
       (fetchReceipts &&
         (receiptsQuery.isLoading || verifications.some((v) => v.isLoading))));
 
   return {
     data: {
       totalSats,
+      fiatSats,
       pendingSats,
       txCount: txids.size,
       donorCount: donors.size,

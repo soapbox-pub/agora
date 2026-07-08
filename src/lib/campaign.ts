@@ -5,6 +5,7 @@ import slugify from 'slugify';
 import { COUNTRIES } from '@/lib/countries';
 import { parseCountryIdentifier } from '@/lib/countryIdentifiers';
 import { validateBitcoinAddress } from '@/lib/bitcoin';
+import { sanitizeUrl } from '@/lib/sanitizeUrl';
 
 /**
  * Addressable kind number for fundraising campaigns (see NIP.md, Kind 33863).
@@ -403,4 +404,72 @@ function randomHex(bytes: number): string {
   const buf = new Uint8Array(bytes);
   crypto.getRandomValues(buf);
   return Array.from(buf, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Fetch the fiat amount raised off-Nostr for a campaign via its optional
+ * `pay` tag (an external checkout service such as Agora Pay).
+ *
+ * The `pay` URL doubles as a JSON info endpoint: requesting it with
+ * `Accept: application/json` returns `{ "received": <number> }`, where
+ * `received` is the total completed fiat donations in the currency's
+ * **minor unit** (e.g. US cents). Agora Pay defaults to USD, and campaign
+ * goals are denominated in USD, so callers treat `received` as USD cents.
+ *
+ * Returns the raw `received` integer (minor units), or `undefined` when:
+ * - the campaign has no (valid https) `pay` URL,
+ * - the endpoint doesn't answer with JSON (a plain checkout page that
+ *   ignores the `Accept` header just redirects — `Content-Type` won't be
+ *   JSON, so we bail rather than parse an HTML body),
+ * - the response is missing a numeric `received` field, or
+ * - the request fails / is aborted.
+ *
+ * The `pay` URL comes from event data, so it's run through `sanitizeUrl`
+ * (https-only, well-formed) before we ever `fetch` it.
+ */
+export async function fetchCampaignFiatReceived(
+  payUrl: string | undefined,
+  signal?: AbortSignal,
+): Promise<number | undefined> {
+  const safeUrl = sanitizeUrl(payUrl);
+  if (!safeUrl) return undefined;
+
+  let response: Response;
+  try {
+    response = await fetch(safeUrl, {
+      headers: { accept: 'application/json' },
+      signal,
+    });
+  } catch {
+    // Network error, CORS rejection, or abort — treat as "no fiat data".
+    return undefined;
+  }
+
+  if (!response.ok) return undefined;
+
+  // A checkout page that ignores `Accept` redirects to HTML; only parse
+  // when the server actually committed to JSON.
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!/\bapplication\/(?:\w[\w.-]*\+)?json\b/i.test(contentType)) {
+    return undefined;
+  }
+
+  let body: unknown;
+  try {
+    body = await response.json();
+  } catch {
+    return undefined;
+  }
+
+  if (
+    typeof body === 'object' &&
+    body !== null &&
+    'received' in body &&
+    typeof (body as { received: unknown }).received === 'number'
+  ) {
+    const received = (body as { received: number }).received;
+    return Number.isFinite(received) && received > 0 ? received : 0;
+  }
+
+  return undefined;
 }
