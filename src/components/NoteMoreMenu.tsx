@@ -18,6 +18,9 @@ import {
   Check,
   Radio,
   ShieldBan,
+  BadgeCheck,
+  EyeOff,
+  Eye,
 } from 'lucide-react';
 import {
   Dialog,
@@ -45,10 +48,13 @@ import { ReportDialog } from '@/components/ReportDialog';
 import { CommunityReportDialog } from '@/components/CommunityReportDialog';
 import { AddToListDialog } from '@/components/AddToListDialog';
 import { CampaignListMembershipDialog } from '@/components/campaign-lists/CampaignListMembershipDialog';
+import { VerificationDialog } from '@/components/VerificationDialog';
 import { useNostr } from '@nostrify/react';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { usePinnedNotes } from '@/hooks/usePinnedNotes';
 import { useCampaignListActions } from '@/hooks/useCampaignListActions';
+import { useCampaignModeration } from '@/hooks/useCampaignModeration';
+import { useCampaignVerifications } from '@/hooks/useCampaignVerifications';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useAuthor } from '@/hooks/useAuthor';
 import { useMuteList } from '@/hooks/useMuteList';
@@ -214,6 +220,7 @@ export function NoteMoreMenu({ event, open, onOpenChange }: NoteMoreMenuProps) {
   const [banContentOpen, setBanContentOpen] = useState(false);
   const [addToListOpen, setAddToListOpen] = useState(false);
   const [addToCampaignListOpen, setAddToCampaignListOpen] = useState(false);
+  const [verifyConfirmOpen, setVerifyConfirmOpen] = useState(false);
   const [eventJsonOpen, setEventJsonOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
@@ -245,6 +252,26 @@ export function NoteMoreMenu({ event, open, onOpenChange }: NoteMoreMenuProps) {
     ? `${CAMPAIGN_KIND}:${event.pubkey}:${campaignDTag}`
     : '';
   const campaignTitle = event.tags.find(([n]) => n === 'title')?.[1] ?? '';
+
+  // Verification lives here (not in NoteMoreMenuContent) so the confirm
+  // dialog and its publish survive the menu closing — same pattern as
+  // report / delete above. Gated identically to the old hero kebab:
+  // `useCampaignVerifications().canVerify` (moderators OR verifiers).
+  const { verify } = useCampaignVerifications();
+
+  const handleConfirmVerify = async () => {
+    try {
+      await verify.mutateAsync({ coord: campaignCoord });
+      toast({ title: t('campaignVerification.verified'), description: campaignTitle });
+      setVerifyConfirmOpen(false);
+    } catch (error) {
+      toast({
+        title: t('campaignVerification.actionFailed'),
+        description: error instanceof Error ? error.message : undefined,
+        variant: 'destructive',
+      });
+    }
+  };
 
   const handleDelete = () => {
     const dTag = event.tags.find(([name]) => name === 'd')?.[1];
@@ -285,6 +312,10 @@ export function NoteMoreMenu({ event, open, onOpenChange }: NoteMoreMenuProps) {
           onAddToCampaignList={() => {
             onOpenChange(false);
             setTimeout(() => setAddToCampaignListOpen(true), 150);
+          }}
+          onRequestVerify={() => {
+            onOpenChange(false);
+            setTimeout(() => setVerifyConfirmOpen(true), 150);
           }}
           onViewEventJson={() => {
             onOpenChange(false);
@@ -333,6 +364,16 @@ export function NoteMoreMenu({ event, open, onOpenChange }: NoteMoreMenuProps) {
         />
       )}
 
+      {isCampaign && (
+        <VerificationDialog
+          open={verifyConfirmOpen}
+          onOpenChange={setVerifyConfirmOpen}
+          campaignTitle={campaignTitle}
+          isPending={verify.isPending}
+          onConfirm={handleConfirmVerify}
+        />
+      )}
+
       <EventJsonDialog
         event={event}
         nip19Id={nip19Id}
@@ -374,11 +415,13 @@ interface NoteMoreMenuContentProps extends NoteMoreMenuProps {
   onBanContent: () => void;
   onAddToList: () => void;
   onAddToCampaignList: () => void;
+  /** Open the campaign verification confirmation dialog (hoisted to the menu host). */
+  onRequestVerify: () => void;
   onViewEventJson: () => void;
   onDelete: () => void;
 }
 
-function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onReport, onBanContent, onAddToList, onAddToCampaignList, onViewEventJson, onDelete }: NoteMoreMenuContentProps) {
+function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onReport, onBanContent, onAddToList, onAddToCampaignList, onRequestVerify, onViewEventJson, onDelete }: NoteMoreMenuContentProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useCurrentUser();
@@ -584,13 +627,6 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
               onClick={() => { onAddToList(); }}
             />
           )}
-          {canManageCampaignLists && (
-            <MenuItem
-              icon={<ListPlus className="size-5" />}
-              label={t('campaigns.lists.membershipTitle')}
-              onClick={() => { onAddToCampaignList(); }}
-            />
-          )}
           {!isCampaign && (
             <MenuItem
               icon={isInSidebar ? <Trash2 className="size-5" /> : <PanelLeft className="size-5" />}
@@ -652,6 +688,17 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
           )}
         </div>
 
+        {isCampaign && user && (
+          <CampaignModeratorMenuItems
+            coord={`${CAMPAIGN_KIND}:${event.pubkey}:${event.tags.find(([n]) => n === 'd')?.[1] ?? ''}`}
+            entityTitle={event.tags.find(([n]) => n === 'title')?.[1] ?? ''}
+            canManageCampaignLists={canManageCampaignLists}
+            onAddToCampaignList={onAddToCampaignList}
+            onRequestVerify={onRequestVerify}
+            onClose={close}
+          />
+        )}
+
         <Separator />
 
         <div className="py-1">
@@ -665,5 +712,148 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+interface CampaignModeratorMenuItemsProps {
+  /** Addressable coordinate (`kind:pubkey:d`) of the campaign. */
+  coord: string;
+  /** Campaign title, used for toast feedback. */
+  entityTitle: string;
+  /** Whether the viewer may manage curated campaign lists (moderator only). */
+  canManageCampaignLists: boolean;
+  /** Open the campaign list membership dialog (hoisted to the menu host). */
+  onAddToCampaignList: () => void;
+  /** Open the verification confirmation dialog (hoisted to the menu host). */
+  onRequestVerify: () => void;
+  /** Close the more-menu after a self-contained action (hide / unhide / unverify). */
+  onClose: () => void;
+}
+
+/**
+ * Campaign moderator actions, rendered inside the {@link NoteMoreMenu}
+ * dialog below "Report" and above "Close". This is the dialog-flavored
+ * counterpart of the dropdown `ModerationMenu` that used to overlay the
+ * campaign hero — same permission gates, same underlying hooks
+ * (`useCampaignVerifications`, `useCampaignModeration`,
+ * `useCampaignListActions`), just laid out as dialog `MenuItem` rows.
+ *
+ * Renders `null` (no label, no separator) unless the viewer can perform at
+ * least one moderator action:
+ * - **Verify / Remove verification** — moderators OR self-declared verifiers.
+ * - **Add to list…** and **Hide / Unhide** — moderators only.
+ */
+function CampaignModeratorMenuItems({
+  coord,
+  entityTitle,
+  canManageCampaignLists,
+  onAddToCampaignList,
+  onRequestVerify,
+  onClose,
+}: CampaignModeratorMenuItemsProps) {
+  const { t } = useTranslation();
+  const { user } = useCurrentUser();
+  const {
+    data: verificationData,
+    canVerify,
+    unverify,
+  } = useCampaignVerifications();
+  const { data: moderationData, moderate } = useCampaignModeration();
+
+  // Moderator-only structural actions (hide) piggyback on
+  // `canManageCampaignLists`, which is itself derived from the same
+  // moderator allowlist that gates the moderation label writes.
+  const isModerator = canManageCampaignLists;
+
+  // Nothing to show unless the viewer can verify or moderate.
+  if (!canVerify && !isModerator) return null;
+
+  const mine = user
+    ? (verificationData.byCoord.get(coord) ?? []).find((v) => v.pubkey === user.pubkey)
+    : undefined;
+  const isHidden = moderationData.hiddenCoords.has(coord);
+
+  const handleUnverify = async () => {
+    if (!mine) return;
+    try {
+      await unverify.mutateAsync({ verification: mine });
+      toast({ title: t('campaignVerification.unverified'), description: entityTitle });
+    } catch (error) {
+      toast({
+        title: t('campaignVerification.actionFailed'),
+        description: error instanceof Error ? error.message : undefined,
+        variant: 'destructive',
+      });
+    }
+    onClose();
+  };
+
+  const handleToggleHide = async () => {
+    try {
+      await moderate.mutateAsync({
+        coord,
+        action: isHidden ? 'unhidden' : 'hidden',
+      });
+      toast({
+        title: isHidden ? t('moderation.menu.toastUnhidden') : t('moderation.menu.toastHidden'),
+        description: entityTitle,
+      });
+    } catch (error) {
+      toast({
+        title: t('moderation.menu.failedAction', { action: isHidden ? 'unhidden' : 'hidden' }),
+        description: error instanceof Error ? error.message : undefined,
+        variant: 'destructive',
+      });
+    }
+    onClose();
+  };
+
+  return (
+    <>
+      <Separator />
+      <div className="py-1">
+        <p className="px-5 pt-2 pb-1 text-xs font-medium text-muted-foreground">
+          {t('moderation.menu.label')}
+        </p>
+        {canVerify && (
+          mine ? (
+            <MenuItem
+              icon={<BadgeCheck className="size-5" />}
+              label={t('campaignVerification.removeVerification')}
+              onClick={handleUnverify}
+            />
+          ) : (
+            <MenuItem
+              icon={<BadgeCheck className="size-5" />}
+              label={t('campaignVerification.verifyCampaign')}
+              onClick={onRequestVerify}
+            />
+          )
+        )}
+        {isModerator && (
+          <MenuItem
+            icon={<ListPlus className="size-5" />}
+            label={t('campaigns.lists.membershipTitle')}
+            onClick={onAddToCampaignList}
+          />
+        )}
+        {isModerator && (
+          isHidden ? (
+            <MenuItem
+              icon={<Eye className="size-5" />}
+              label={t('moderation.menu.unhide')}
+              onClick={handleToggleHide}
+            />
+          ) : (
+            <MenuItem
+              icon={<EyeOff className="size-5" />}
+              label={t('moderation.menu.hide')}
+              onClick={handleToggleHide}
+              destructive
+            />
+          )
+        )}
+      </div>
+    </>
   );
 }
