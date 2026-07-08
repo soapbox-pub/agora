@@ -1,11 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { nip19 } from 'nostr-tools';
-import { UserRoundCheck } from 'lucide-react';
+import { UserRoundCheck, HandHeart } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { EmojifiedText } from '@/components/CustomEmoji';
 import { useSearchProfiles, type SearchProfile } from '@/hooks/useSearchProfiles';
+import { useSearchCampaigns } from '@/hooks/useSearchCampaigns';
+import { encodeCampaignNaddr, type ParsedCampaign } from '@/lib/campaign';
 import { genUserName } from '@/lib/genUserName';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
+import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { cn } from '@/lib/utils';
 import { usePortalDropdown } from '@/hooks/usePortalDropdown';
 
@@ -14,6 +18,11 @@ interface MentionAutocompleteProps {
   content: string;
   onInsertMention: (params: { start: number; end: number; replacement: string }) => void;
 }
+
+/** A single row in the `@` autocomplete — either a profile or a campaign. */
+type AutocompleteItem =
+  | { type: 'profile'; profile: SearchProfile }
+  | { type: 'campaign'; campaign: ParsedCampaign };
 
 /** CSS properties that affect text layout and must be copied to the mirror element. */
 const MIRROR_PROPS = [
@@ -100,6 +109,21 @@ export function MentionAutocomplete({
   const { data: profiles, followedPubkeys } = useSearchProfiles(
     isOpen ? mentionQuery : '',
   );
+  const { data: campaigns } = useSearchCampaigns(isOpen ? mentionQuery : '');
+
+  // Flat, ordered list the dropdown renders and keyboard-navigates:
+  // people first, then campaigns. A single index walks both sections.
+  const items = useMemo<AutocompleteItem[]>(() => {
+    const people: AutocompleteItem[] = (profiles ?? []).map((profile) => ({
+      type: 'profile',
+      profile,
+    }));
+    const camps: AutocompleteItem[] = (campaigns ?? []).map((campaign) => ({
+      type: 'campaign',
+      campaign,
+    }));
+    return [...people, ...camps];
+  }, [profiles, campaigns]);
 
   // Detect @mention query at cursor.
   // Accepts explicit text/cursor values so callers don't have to rely on
@@ -197,7 +221,7 @@ export function MentionAutocomplete({
 
   // Handle keyboard navigation within the dropdown
   useEffect(() => {
-    if (!isOpen || !profiles || profiles.length === 0) return;
+    if (!isOpen || items.length === 0) return;
 
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -206,17 +230,17 @@ export function MentionAutocomplete({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => (prev < (profiles?.length ?? 1) - 1 ? prev + 1 : 0));
+          setSelectedIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : (profiles?.length ?? 1) - 1));
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
           break;
         case 'Enter':
         case 'Tab':
-          if (profiles && profiles.length > 0) {
+          if (items.length > 0) {
             e.preventDefault();
-            selectProfile(profiles[selectedIndex]);
+            selectItem(items[selectedIndex]);
           }
           break;
         case 'Escape':
@@ -228,7 +252,7 @@ export function MentionAutocomplete({
 
     textarea.addEventListener('keydown', handleKeyDown);
     return () => textarea.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, profiles, selectedIndex, textareaRef]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen, items, selectedIndex, textareaRef]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll selected item into view
   useEffect(() => {
@@ -238,23 +262,29 @@ export function MentionAutocomplete({
     }
   }, [selectedIndex]);
 
-  const selectProfile = useCallback((profile: SearchProfile) => {
-    const npub = nip19.npubEncode(profile.pubkey);
-    const replacement = `nostr:${npub} `;
+  const insertReplacement = useCallback((replacement: string) => {
     const cursor = textareaRef.current?.selectionStart ?? mentionStart + mentionQuery.length + 1;
-
     onInsertMention({
       start: mentionStart,
       end: cursor,
       replacement,
     });
-
     setIsOpen(false);
     setMentionQuery('');
     setMentionStart(-1);
   }, [mentionStart, mentionQuery, textareaRef, onInsertMention]);
 
-  if (!isOpen || !dropdownPos || !profiles || profiles.length === 0) {
+  const selectItem = useCallback((item: AutocompleteItem) => {
+    if (item.type === 'profile') {
+      const npub = nip19.npubEncode(item.profile.pubkey);
+      insertReplacement(`nostr:${npub} `);
+    } else {
+      const naddr = encodeCampaignNaddr(item.campaign);
+      insertReplacement(`nostr:${naddr} `);
+    }
+  }, [insertReplacement]);
+
+  if (!isOpen || !dropdownPos || items.length === 0) {
     return null;
   }
 
@@ -262,19 +292,28 @@ export function MentionAutocomplete({
     <div
       ref={dropdownRef}
       data-autocomplete-dropdown
-      className="fixed z-[300] w-[280px] rounded-xl border border-border bg-popover shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-150 pointer-events-auto"
+      className="fixed z-[300] w-[300px] rounded-xl border border-border bg-popover shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-150 pointer-events-auto"
       style={{ top: dropdownPos.top, left: dropdownPos.left }}
     >
       <div ref={listRef} className="max-h-[240px] overflow-y-auto py-1">
-        {profiles.map((profile, index) => (
-          <MentionItem
-            key={profile.pubkey}
-            profile={profile}
-            isSelected={index === selectedIndex}
-            isFollowed={followedPubkeys.has(profile.pubkey)}
-            onClick={() => selectProfile(profile)}
-          />
-        ))}
+        {items.map((item, index) =>
+          item.type === 'profile' ? (
+            <MentionItem
+              key={`p:${item.profile.pubkey}`}
+              profile={item.profile}
+              isSelected={index === selectedIndex}
+              isFollowed={followedPubkeys.has(item.profile.pubkey)}
+              onClick={() => selectItem(item)}
+            />
+          ) : (
+            <CampaignItem
+              key={`c:${item.campaign.aTag}`}
+              campaign={item.campaign}
+              isSelected={index === selectedIndex}
+              onClick={() => selectItem(item)}
+            />
+          ),
+        )}
       </div>
     </div>
   );
@@ -341,6 +380,49 @@ function MentionItem({
           ) : (
             <span className="truncate font-mono text-[11px]">{identifier}</span>
           )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/** Campaign row in the `@` autocomplete — inserts a `nostr:naddr…` URI. */
+function CampaignItem({
+  campaign,
+  isSelected,
+  onClick,
+}: {
+  campaign: ParsedCampaign;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const { t } = useTranslation();
+  const cover = sanitizeUrl(campaign.banner);
+
+  return (
+    <button
+      data-mention-item
+      className={cn(
+        'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors cursor-pointer',
+        isSelected ? 'bg-accent text-accent-foreground' : 'hover:bg-secondary/60',
+      )}
+      onClick={onClick}
+      onMouseDown={(e) => e.preventDefault()}
+    >
+      <div className="relative size-8 shrink-0 rounded-md overflow-hidden bg-primary/10 flex items-center justify-center">
+        {cover ? (
+          <img src={cover} alt="" className="size-full object-cover" loading="lazy" />
+        ) : (
+          <HandHeart className="size-4 text-primary" />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="font-semibold text-sm truncate">{campaign.title}</span>
+        </div>
+        <div className="text-xs text-muted-foreground truncate">
+          {campaign.summary || t('compose.autocomplete.campaignFallback')}
         </div>
       </div>
     </button>

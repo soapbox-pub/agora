@@ -2259,6 +2259,9 @@
       "edit": "سمول",
       "previewMode": "مخکتنه"
     },
+    "autocomplete": {
+      "campaignFallback": "کمپاین"
+    },
     "poll": {
       "addOption": "اختیار اضافه کړئ",
       "optionLabel": "اختیار {{number}}",

@@ -2259,6 +2259,9 @@
       "edit": "تحرير",
       "previewMode": "معاينة"
     },
+    "autocomplete": {
+      "campaignFallback": "حملة"
+    },
     "poll": {
       "addOption": "إضافة خيار",
       "optionLabel": "الخيار {{number}}",

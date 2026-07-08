@@ -2259,6 +2259,9 @@
       "edit": "ویرایش",
       "previewMode": "پیش‌نمایش"
     },
+    "autocomplete": {
+      "campaignFallback": "کمپین"
+    },
     "poll": {
       "addOption": "افزودن گزینه",
       "optionLabel": "گزینه {{number}}",

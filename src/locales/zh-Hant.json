@@ -2187,6 +2187,9 @@
       "edit": "編輯",
       "previewMode": "預覽"
     },
+    "autocomplete": {
+      "campaignFallback": "活動"
+    },
     "poll": {
       "addOption": "新增選項",
       "optionLabel": "選項 {{number}}",

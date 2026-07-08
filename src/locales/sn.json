@@ -2259,6 +2259,9 @@
       "edit": "Gadzirisa",
       "previewMode": "Tarisa"
     },
+    "autocomplete": {
+      "campaignFallback": "Mushandirapamwe"
+    },
     "poll": {
       "addOption": "Wedzera sarudzo",
       "optionLabel": "Sarudzo {{number}}",

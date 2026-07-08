@@ -69,6 +69,7 @@ import { resizeImage } from '@/lib/resizeImage';
 import { extractHashtags } from '@/lib/hashtag';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { AGORA_DEFAULT_NOTE_TAGS } from '@/lib/agoraNoteTags';
+import { rewriteAgoraLinksToNostrUris } from '@/lib/appUrls';
 
 const MAX_CHARS = 5000;
 
@@ -610,8 +611,13 @@ export function ComposeBox({
   // Create mock event for preview
   const mockEvent = useMemo(() => {
     if (!user || !content) return null;
-    
-    const hashtags = extractHashtags(content);
+
+    // Preview the note as it will actually be published: Agora app links are
+    // rewritten to nostr: URIs so the preview shows the same rich embeds
+    // (campaign cards, mentions, quotes) the published note will render.
+    const previewContent = rewriteAgoraLinksToNostrUris(content);
+
+    const hashtags = extractHashtags(previewContent);
     const tags: string[][] = hashtags.map((t) => ['t', t]);
 
     // NIP-30: Add emoji tags for custom emojis referenced in content
@@ -620,7 +626,7 @@ export function ComposeBox({
       const shortcodeRegex = /:([a-zA-Z0-9_-]+):/g;
       const usedEmojis = new Set<string>();
       let match;
-      while ((match = shortcodeRegex.exec(content)) !== null) {
+      while ((match = shortcodeRegex.exec(previewContent)) !== null) {
         const shortcode = match[1];
         if (emojiMap.has(shortcode) && !usedEmojis.has(shortcode)) {
           usedEmojis.add(shortcode);
@@ -630,7 +636,7 @@ export function ComposeBox({
     }
 
     // NIP-92: Build imeta tags for uploaded media so preview can render them
-    const mediaUrlMatches = content.matchAll(new RegExp(IMETA_MEDIA_URL_REGEX.source, 'gi'));
+    const mediaUrlMatches = previewContent.matchAll(new RegExp(IMETA_MEDIA_URL_REGEX.source, 'gi'));
     const processedUrls = new Set<string>();
     for (const m of mediaUrlMatches) {
       const url = m[0];
@@ -646,11 +652,11 @@ export function ComposeBox({
         tags.push(['imeta', `url ${url}`, `m ${mimeType}`]);
       }
     }
-    
+
     return {
       id: 'preview',
       pubkey: user.pubkey,
-      content: content.trim(),
+      content: previewContent.trim(),
       created_at: Math.floor(Date.now() / 1000),
       kind: 1,
       tags,
@@ -878,11 +884,16 @@ export function ComposeBox({
     if (!content.trim() || !user || charCount > MAX_CHARS) return;
 
     try {
-      const hashtags = extractHashtags(content);
+      // Rewrite Agora app links (agora.spot/:nip19) into canonical nostr:
+      // URIs so the published note carries portable references that any
+      // Nostr client can resolve — and so mention/quote tag extraction below
+      // sees the npub/note/naddr identifiers.
+      const rewrittenContent = rewriteAgoraLinksToNostrUris(content);
+      const hashtags = extractHashtags(rewrittenContent);
       const tags: string[][] = hashtags.map((t) => ['t', t]);
 
       // NIP-27 mention p tags — extract nostr:npub1... from content
-      const mentionMatches = content.matchAll(/nostr:(npub1[023456789acdefghjklmnpqrstuvwxyz]+)/g);
+      const mentionMatches = rewrittenContent.matchAll(/nostr:(npub1[023456789acdefghjklmnpqrstuvwxyz]+)/g);
       const mentionedPubkeys = new Set<string>();
       for (const match of mentionMatches) {
         try {
@@ -934,7 +945,7 @@ export function ComposeBox({
       // Per NIP-18, quotes should use the q tag and include the nostr: URI in content.
       // For addressable events (kinds 30000-39999), use event address coordinates
       // so the reference stays stable across event updates.
-      let finalContent = content.trim();
+      let finalContent = rewrittenContent.trim();
       if (showQuotedEvent && quotedEvent && quotedEventNip19) {
         if (quotedEvent.kind >= 30000 && quotedEvent.kind < 40000) {
           const dTag = quotedEvent.tags.find(([name]) => name === 'd')?.[1] ?? '';
@@ -1227,31 +1238,37 @@ export function ComposeBox({
 
   return (
     <div className={cn(
-      "px-4 pt-3 bg-background/85 flex flex-col",
+      "relative px-4 pt-3 bg-background/85 flex flex-col",
       forceExpanded ? "flex-1 min-h-0 rounded-2xl" : "",
       pickerOpen ? "pb-0" : "pb-3",
       !forceExpanded && !hideBorder && "border-b border-border",
       className,
     )}>
-      {/* Preview toggle at top when not controlled and has previewable content */}
-      {hasPreviewableContent && controlledPreviewMode === undefined && (
-        <div className="flex items-center justify-end mb-3">
-          <div className="inline-flex items-center gap-0.5 p-1 bg-muted/50 rounded-lg">
+      {/* Preview / Edit toggle — pinned to the top-right corner of the
+          editor. Shown for the uncontrolled composer (the modal drives its
+          own toggle) whenever there's content worth previewing. Sits on top
+          of the editor via absolute positioning so it stays out of the
+          text-entry flow while remaining a persistent affordance. */}
+      {content.trim().length > 0 && controlledPreviewMode === undefined && (
+        <div className="absolute right-3 top-3 z-20">
+          <div className="inline-flex items-center gap-0.5 p-1 bg-muted/70 backdrop-blur-sm rounded-lg shadow-sm border border-border/60">
             <button
+              type="button"
               onClick={() => setInternalPreviewMode(false)}
               className={cn(
-                "px-3.5 py-1.5 text-xs font-medium rounded-md transition-all",
-                !previewMode 
-                  ? "bg-background text-foreground shadow-sm" 
+                "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                !previewMode
+                  ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               {t('compose.preview.edit')}
             </button>
             <button
+              type="button"
               onClick={() => setInternalPreviewMode(true)}
               className={cn(
-                "px-3.5 py-1.5 text-xs font-medium rounded-md transition-all",
+                "px-3 py-1 text-xs font-medium rounded-md transition-all",
                 previewMode 
                   ? "bg-background text-foreground shadow-sm" 
                   : "text-muted-foreground hover:text-foreground"

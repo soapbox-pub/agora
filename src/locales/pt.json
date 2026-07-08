@@ -334,6 +334,9 @@
       "edit": "Editar",
       "previewMode": "Pré-visualizar"
     },
+    "autocomplete": {
+      "campaignFallback": "Campanha"
+    },
     "poll": {
       "addOption": "Adicionar opção",
       "optionLabel": "Opção {{number}}",

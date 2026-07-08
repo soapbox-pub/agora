@@ -334,6 +334,9 @@
       "edit": "एडिट करें",
       "previewMode": "प्रीव्यू"
     },
+    "autocomplete": {
+      "campaignFallback": "अभियान"
+    },
     "poll": {
       "addOption": "विकल्प जोड़ें",
       "optionLabel": "विकल्प {{number}}",

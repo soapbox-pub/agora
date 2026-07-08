@@ -11,6 +11,8 @@ import { ActionContent } from '@/components/ActionContent';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmojifiedText } from '@/components/CustomEmoji';
 import { EmbeddedCardShell } from '@/components/EmbeddedCardShell';
+import { EmbeddedCampaign } from '@/components/EmbeddedCampaign';
+import { CAMPAIGN_KIND, parseCampaign } from '@/lib/campaign';
 import { parseBadgeDefinition, type BadgeData } from '@/lib/parseBadgeDefinition';
 import { BadgeThumbnail } from '@/components/BadgeThumbnail';
 import { parseProfileBadges } from '@/lib/parseProfileBadges';
@@ -92,6 +94,13 @@ export function EmbeddedNaddr({ addr, className, disableHoverCards }: EmbeddedNa
 
   if (event.kind === 36639) {
     return <ActionContent event={event} />;
+  }
+
+  // Fundraising campaigns (kind 33863) render as a full campaign card,
+  // matching how campaigns look everywhere else on the site. Falls back to
+  // the generic naddr card if the event fails campaign validation.
+  if (event.kind === CAMPAIGN_KIND && parseCampaign(event)) {
+    return <EmbeddedCampaign event={event} className={className} />;
   }
 
   return <EmbeddedNaddrCard event={event} className={className} disableHoverCards={disableHoverCards} />;

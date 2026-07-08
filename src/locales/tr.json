@@ -334,6 +334,9 @@
       "edit": "Düzenle",
       "previewMode": "Önizleme"
     },
+    "autocomplete": {
+      "campaignFallback": "Kampanya"
+    },
     "poll": {
       "addOption": "Seçenek ekle",
       "optionLabel": "Seçenek {{number}}",

@@ -2259,6 +2259,9 @@
       "edit": "កែសម្រួល",
       "previewMode": "មើលជាមុន"
     },
+    "autocomplete": {
+      "campaignFallback": "យុទ្ធនាការ"
+    },
     "poll": {
       "addOption": "បន្ថែមជម្រើស",
       "optionLabel": "ជម្រើស {{number}}",

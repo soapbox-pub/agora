@@ -2259,6 +2259,9 @@
       "edit": "编辑",
       "previewMode": "预览"
     },
+    "autocomplete": {
+      "campaignFallback": "活动"
+    },
     "poll": {
       "addOption": "添加选项",
       "optionLabel": "选项 {{number}}",

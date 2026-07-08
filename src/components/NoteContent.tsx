@@ -24,6 +24,7 @@ import { IMAGE_URL_REGEX, EMBED_MEDIA_URL_REGEX } from '@/lib/mediaUrls';
 import { parseImetaMap } from '@/lib/imeta';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { HASHTAG_PATTERN } from '@/lib/hashtag';
+import { rewriteAgoraLinksToNostrUris } from '@/lib/appUrls';
 import { cn } from '@/lib/utils';
 import type { AddrCoords } from '@/hooks/useEvent';
 
@@ -263,7 +264,10 @@ export function NoteContent({
   as: Wrapper = 'div',
 }: NoteContentProps) {
   const tokens = useMemo(() => {
-    const text = event.content;
+    // Rewrite Agora app links (e.g. `https://agora.spot/naddr1…`) into their
+    // canonical `nostr:` URIs so they render as rich embeds (campaign cards,
+    // profile mentions, quoted notes) instead of plain external links.
+    const text = rewriteAgoraLinksToNostrUris(event.content);
     // Match: BOLT11 invoices | URLs | nostr:-prefixed NIP-19 ids | @-prefixed or bare NIP-19 ids | hashtags
     // BOLT11: optional "lightning:" prefix + lnbc/lntb/lnbcrt/lntbs + bech32 data (case-insensitive)
     // NIP-19 ids can appear anywhere (with optional @ prefix that gets consumed)

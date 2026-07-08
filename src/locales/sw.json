@@ -334,6 +334,9 @@
       "edit": "Hariri",
       "previewMode": "Hakiki"
     },
+    "autocomplete": {
+      "campaignFallback": "Kampeni"
+    },
     "poll": {
       "addOption": "Ongeza chaguo",
       "optionLabel": "Chaguo {{number}}",

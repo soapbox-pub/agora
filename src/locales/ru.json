@@ -334,6 +334,9 @@
       "edit": "Изменить",
       "previewMode": "Предпросмотр"
     },
+    "autocomplete": {
+      "campaignFallback": "Кампания"
+    },
     "poll": {
       "addOption": "Добавить вариант",
       "optionLabel": "Вариант {{number}}",

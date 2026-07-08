@@ -334,6 +334,9 @@
       "edit": "Ubah",
       "previewMode": "Pratinjau"
     },
+    "autocomplete": {
+      "campaignFallback": "Kampanye"
+    },
     "poll": {
       "addOption": "Tambah opsi",
       "optionLabel": "Opsi {{number}}",
