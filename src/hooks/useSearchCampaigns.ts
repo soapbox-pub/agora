@@ -8,11 +8,18 @@ import { CAMPAIGN_KIND, parseCampaign, type ParsedCampaign } from '@/lib/campaig
 /**
  * NIP-50 search over kind 33863 campaigns for the compose `@` autocomplete.
  *
- * Campaigns keep their human-readable label in the `title` tag rather than
- * `content`, and most NIP-50 relays only match `content`. We therefore ask
- * the search-capable Ditto relay group for candidate campaigns and then
- * re-filter client-side against the title/summary tags so typing part of a
- * campaign name surfaces it even when the relay's index missed it.
+ * ## Prefix matching via `autocomplete:true`
+ *
+ * relay.ditto.pub's default NIP-50 index only matches **whole words** — a
+ * partial word returns nothing (`"wome"` → 0 results; only the completed
+ * `"women"` matches). Autocomplete queries partial words on every keystroke,
+ * so a plain `search` comes back empty until the user finishes a word, which
+ * reads as "campaigns never show up".
+ *
+ * The NIP-50 `autocomplete:true` extension switches the relay into
+ * prefix-matching mode (`"wome autocomplete:true"` → 3 results), which is
+ * exactly what a type-ahead needs. We append it to the search token so every
+ * keystroke returns prefix matches.
  *
  * Results are deduped to the newest revision per `(pubkey, d)` coordinate,
  * parsed/validated through {@link parseCampaign} (invalid campaigns are
@@ -20,7 +27,7 @@ import { CAMPAIGN_KIND, parseCampaign, type ParsedCampaign } from '@/lib/campaig
  */
 export function useSearchCampaigns(query: string, limit = 6) {
   const { nostr } = useNostr();
-  const debouncedQuery = useDebounce(query, 300);
+  const debouncedQuery = useDebounce(query, 200);
   const trimmed = debouncedQuery.trim();
 
   return useQuery<ParsedCampaign[]>({
@@ -31,7 +38,9 @@ export function useSearchCampaigns(query: string, limit = 6) {
     queryFn: async ({ signal }) => {
       const group = nostr.group(DITTO_RELAYS);
       const events = await group.query(
-        [{ kinds: [CAMPAIGN_KIND], search: trimmed, limit: 40 }],
+        // `autocomplete:true` enables prefix matching so partial words (every
+        // keystroke) return results instead of only completed words.
+        [{ kinds: [CAMPAIGN_KIND], search: `${trimmed} autocomplete:true`, limit: 40 }],
         { signal: AbortSignal.any([signal, AbortSignal.timeout(6000)]) },
       );
 
@@ -52,15 +61,24 @@ export function useSearchCampaigns(query: string, limit = 6) {
       for (const event of latestByCoord.values()) {
         const campaign = parseCampaign(event);
         if (!campaign) continue;
-        // Client-side keyword match against the fields the relay's `content`
-        // index tends to miss (title/summary live in tags).
-        const haystack = `${campaign.title} ${campaign.summary} ${campaign.story}`.toLowerCase();
-        if (!haystack.includes(keyword)) continue;
         results.push(campaign);
       }
 
-      // Newest campaigns first, then trim to the dropdown limit.
-      results.sort((a, b) => b.createdAt - a.createdAt);
+      // Prefer title-prefix matches, then title matches, then everything
+      // else; newest first within each tier.
+      results.sort((a, b) => {
+        const rank = (c: ParsedCampaign) => {
+          const title = c.title.toLowerCase();
+          if (title.startsWith(keyword)) return 0;
+          if (title.includes(keyword)) return 1;
+          return 2;
+        };
+        const ra = rank(a);
+        const rb = rank(b);
+        if (ra !== rb) return ra - rb;
+        return b.createdAt - a.createdAt;
+      });
+
       return results.slice(0, limit);
     },
   });
