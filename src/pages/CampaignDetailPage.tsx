@@ -913,7 +913,12 @@ function CampaignHero({
             </button>
           </>
         ) : (
-          <div className="flex items-center justify-center aspect-[16/9] bg-gradient-to-br from-primary/30 via-primary/10 to-secondary">
+          // No banner: a full-bleed decorative placeholder. Its height is a
+          // fixed responsive band capped at 40vh rather than a width-driven
+          // aspect ratio — on a wide desktop a `16/9` full-bleed region grows
+          // taller than the viewport, so use an explicit, screen-relative
+          // height instead.
+          <div className="flex items-center justify-center h-48 sm:h-56 md:h-64 max-h-[40vh] bg-gradient-to-br from-primary/30 via-primary/10 to-secondary">
             <HandHeart className="size-20 text-primary" />
           </div>
         )}
