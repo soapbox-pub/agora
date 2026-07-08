@@ -6,6 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { EmojifiedText } from '@/components/CustomEmoji';
 import { useSearchProfiles, type SearchProfile } from '@/hooks/useSearchProfiles';
 import { useSearchCampaigns } from '@/hooks/useSearchCampaigns';
+import { useCampaignVerifications } from '@/hooks/useCampaignVerifications';
 import { encodeCampaignNaddr, type ParsedCampaign } from '@/lib/campaign';
 import { genUserName } from '@/lib/genUserName';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
@@ -110,20 +111,26 @@ export function MentionAutocomplete({
     isOpen ? mentionQuery : '',
   );
   const { data: campaigns } = useSearchCampaigns(isOpen ? mentionQuery : '');
+  const { data: verifications } = useCampaignVerifications();
 
   // Flat, ordered list the dropdown renders and keyboard-navigates:
   // people first, then campaigns. A single index walks both sections.
+  //
+  // Filtering rules:
+  //  - People: only accounts the user follows. Autocomplete is a
+  //    convenience for tagging people you know, not a directory of
+  //    strangers, so non-followed profiles are dropped entirely.
+  //  - Campaigns: only moderator-verified campaigns. `verifications.byCoord`
+  //    holds a non-empty verifier list for each verified coordinate.
   const items = useMemo<AutocompleteItem[]>(() => {
-    const people: AutocompleteItem[] = (profiles ?? []).map((profile) => ({
-      type: 'profile',
-      profile,
-    }));
-    const camps: AutocompleteItem[] = (campaigns ?? []).map((campaign) => ({
-      type: 'campaign',
-      campaign,
-    }));
+    const people: AutocompleteItem[] = (profiles ?? [])
+      .filter((profile) => followedPubkeys.has(profile.pubkey))
+      .map((profile) => ({ type: 'profile', profile }));
+    const camps: AutocompleteItem[] = (campaigns ?? [])
+      .filter((campaign) => (verifications.byCoord.get(campaign.aTag)?.length ?? 0) > 0)
+      .map((campaign) => ({ type: 'campaign', campaign }));
     return [...people, ...camps];
-  }, [profiles, campaigns]);
+  }, [profiles, campaigns, followedPubkeys, verifications]);
 
   // Detect @mention query at cursor.
   // Accepts explicit text/cursor values so callers don't have to rely on
