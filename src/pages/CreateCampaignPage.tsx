@@ -36,6 +36,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CampaignStoryEditor } from '@/components/CampaignStoryEditor';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAppContext } from '@/hooks/useAppContext';
@@ -1087,15 +1088,35 @@ export function CreateCampaignPage() {
         <form className="max-w-3xl mx-auto px-4 sm:px-6 py-8 lg:py-10 space-y-5" onSubmit={handleSubmit}>
           {header}
 
-          <div className="rounded-2xl bg-card/50 p-2">
-            {titleSection}
-            {walletSection}
-            {countrySection}
-            {tagsSection}
-            {bannerSection}
-            {storySection}
-            {goalSection}
-          </div>
+          <Tabs defaultValue="details" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="details">{t('campaignsCreate.editTabs.details')}</TabsTrigger>
+              <TabsTrigger value="funding">{t('campaignsCreate.editTabs.funding')}</TabsTrigger>
+              <TabsTrigger value="discovery">{t('campaignsCreate.editTabs.discovery')}</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="details">
+              <div className="rounded-2xl bg-card/50 p-2">
+                {titleSection}
+                {bannerSection}
+                {storySection}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="funding">
+              <div className="rounded-2xl bg-card/50 p-2">
+                {walletSection}
+                {goalSection}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="discovery">
+              <div className="rounded-2xl bg-card/50 p-2">
+                {countrySection}
+                {tagsSection}
+              </div>
+            </TabsContent>
+          </Tabs>
 
           {errorAlert}
 

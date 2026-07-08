@@ -653,6 +653,11 @@
     "cannotEditBody": "یوازې د کمپاین لیکوال یې سملای شي.",
     "headingCreate": "د کمپاین پیلول",
     "headingEdit": "د کمپاین سمول",
+    "editTabs": {
+      "details": "توضیحات",
+      "funding": "تمویل",
+      "discovery": "کشف"
+    },
     "title": "سرلیک",
     "titlePlaceholder": "د وروستي کتاب‌پلورنځي ژغورل",
     "wallet": "د بټ‌کوین پاکټ",

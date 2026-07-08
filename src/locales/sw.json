@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Mwandishi wa kampeni hii pekee ndiye anayeweza kuisasisha.",
     "headingCreate": "Anza kampeni",
     "headingEdit": "Hariri kampeni",
+    "editTabs": {
+      "details": "Maelezo",
+      "funding": "Ufadhili",
+      "discovery": "Ugunduzi"
+    },
     "title": "Kichwa",
     "titlePlaceholder": "Okoa Duka la Vitabu la Mwisho",
     "wallet": "Pochi ya Bitcoin",

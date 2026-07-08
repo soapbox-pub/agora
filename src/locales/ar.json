@@ -653,6 +653,11 @@
     "cannotEditBody": "يمكن لصاحب الحملة فقط تحديثها.",
     "headingCreate": "بدء حملة",
     "headingEdit": "تعديل الحملة",
+    "editTabs": {
+      "details": "التفاصيل",
+      "funding": "التمويل",
+      "discovery": "الاكتشاف"
+    },
     "title": "العنوان",
     "titlePlaceholder": "أنقذوا آخر مكتبة",
     "wallet": "محفظة بيتكوين",

@@ -653,6 +653,11 @@
     "cannotEditBody": "تنها نویسندهٔ این کمپین می‌تواند آن را به‌روز کند.",
     "headingCreate": "شروع کمپین",
     "headingEdit": "ویرایش کمپین",
+    "editTabs": {
+      "details": "جزئیات",
+      "funding": "تأمین مالی",
+      "discovery": "کشف"
+    },
     "title": "عنوان",
     "titlePlaceholder": "آخرین کتاب‌فروشی را نجات بدهیم",
     "wallet": "کیف پول بیت‌کوین",

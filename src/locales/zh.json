@@ -653,6 +653,11 @@
     "cannotEditBody": "只有此活动的作者可以更新它。",
     "headingCreate": "发起活动",
     "headingEdit": "编辑活动",
+    "editTabs": {
+      "details": "详情",
+      "funding": "资金",
+      "discovery": "发现"
+    },
     "title": "标题",
     "titlePlaceholder": "拯救最后一家书店",
     "wallet": "比特币钱包",

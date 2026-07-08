@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Bu kampanyayı yalnızca yazarı güncelleyebilir.",
     "headingCreate": "Kampanya başlat",
     "headingEdit": "Kampanyayı düzenle",
+    "editTabs": {
+      "details": "Ayrıntılar",
+      "funding": "Finansman",
+      "discovery": "Keşfet"
+    },
     "title": "Başlık",
     "titlePlaceholder": "Son Kitapçıyı Kurtarın",
     "wallet": "Bitcoin cüzdanı",

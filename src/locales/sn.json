@@ -653,6 +653,11 @@
     "cannotEditBody": "Munyori wecampaign chete ndiye anogona kuvandudza.",
     "headingCreate": "Tanga campaign",
     "headingEdit": "Gadzirisa campaign",
+    "editTabs": {
+      "details": "Ruzivo",
+      "funding": "Mari",
+      "discovery": "Kutsvaga"
+    },
     "title": "Musoro",
     "titlePlaceholder": "Chengeta Chitoro chekupedzisira chemabhuku",
     "wallet": "Chikwama cheBitcoin",

@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Только автор этой кампании может её обновлять.",
     "headingCreate": "Запустить кампанию",
     "headingEdit": "Изменить кампанию",
+    "editTabs": {
+      "details": "Детали",
+      "funding": "Финансирование",
+      "discovery": "Обзор"
+    },
     "title": "Название",
     "titlePlaceholder": "Спасти последний книжный магазин",
     "wallet": "Bitcoin-кошелёк",

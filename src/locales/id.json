@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Hanya penulis kampanye ini yang dapat memperbaruinya.",
     "headingCreate": "Mulai kampanye",
     "headingEdit": "Ubah kampanye",
+    "editTabs": {
+      "details": "Detail",
+      "funding": "Pendanaan",
+      "discovery": "Temukan"
+    },
     "title": "Judul",
     "titlePlaceholder": "Selamatkan Toko Buku Terakhir",
     "wallet": "Dompet Bitcoin",

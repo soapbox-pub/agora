@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Seul l'auteur de cette campagne peut la mettre à jour.",
     "headingCreate": "Démarrer une campagne",
     "headingEdit": "Modifier la campagne",
+    "editTabs": {
+      "details": "Détails",
+      "funding": "Financement",
+      "discovery": "Découverte"
+    },
     "title": "Titre",
     "titlePlaceholder": "Sauver la dernière librairie",
     "wallet": "Portefeuille Bitcoin",

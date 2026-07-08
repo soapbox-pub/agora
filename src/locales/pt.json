@@ -1098,6 +1098,11 @@
     "cannotEditBody": "Apenas o autor desta campanha pode atualizá-la.",
     "headingCreate": "Iniciar uma campanha",
     "headingEdit": "Editar campanha",
+    "editTabs": {
+      "details": "Detalhes",
+      "funding": "Financiamento",
+      "discovery": "Descoberta"
+    },
     "title": "Título",
     "titlePlaceholder": "Salvar a Última Livraria",
     "wallet": "Carteira Bitcoin",

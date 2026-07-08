@@ -653,6 +653,11 @@
     "cannotEditBody": "只有此活動的作者可以更新它。",
     "headingCreate": "發起活動",
     "headingEdit": "編輯活動",
+    "editTabs": {
+      "details": "詳情",
+      "funding": "資金",
+      "discovery": "探索"
+    },
     "title": "標題",
     "titlePlaceholder": "拯救最後一家書店",
     "wallet": "比特幣錢包",

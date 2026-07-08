@@ -1098,6 +1098,11 @@
     "cannotEditBody": "केवल इस कैंपेन का लेखक इसे अपडेट कर सकता है।",
     "headingCreate": "कैंपेन शुरू करें",
     "headingEdit": "कैंपेन एडिट करें",
+    "editTabs": {
+      "details": "विवरण",
+      "funding": "फंडिंग",
+      "discovery": "खोज"
+    },
     "title": "शीर्षक",
     "titlePlaceholder": "Save the Last Bookstore",
     "wallet": "Bitcoin वॉलेट",

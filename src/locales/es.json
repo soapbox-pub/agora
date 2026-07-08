@@ -653,6 +653,11 @@
     "cannotEditBody": "Solo el autor de esta campaña puede actualizarla.",
     "headingCreate": "Iniciar una campaña",
     "headingEdit": "Editar campaña",
+    "editTabs": {
+      "details": "Detalles",
+      "funding": "Financiación",
+      "discovery": "Descubrimiento"
+    },
     "title": "Título",
     "titlePlaceholder": "Salvar la última librería",
     "wallet": "Cartera Bitcoin",

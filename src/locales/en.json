@@ -1187,6 +1187,11 @@
     "cannotEditBody": "Only the author of this campaign can update it.",
     "headingCreate": "Start a campaign",
     "headingEdit": "Edit campaign",
+    "editTabs": {
+      "details": "Details",
+      "funding": "Funding",
+      "discovery": "Discovery"
+    },
     "title": "Title",
     "titlePlaceholder": "Save the Last Bookstore",
     "wallet": "Bitcoin wallet",
