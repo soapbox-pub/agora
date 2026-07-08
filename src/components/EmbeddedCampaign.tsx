@@ -27,7 +27,10 @@ export function EmbeddedCampaign({ event, className }: EmbeddedCampaignProps) {
 
   return (
     <div
-      className={cn('not-prose', className)}
+      // Cap the width to match a small homepage campaign card (a quarter of
+      // the max-w-7xl grid ≈ 290px) so an attached campaign reads as a
+      // compact card, not a full-width banner stretching the whole note.
+      className={cn('not-prose w-full max-w-[300px]', className)}
       // Stop clicks from bubbling to an enclosing clickable note card
       // (feed items navigate on their own onClick). The CampaignCard's inner
       // <Link> handles navigation to the campaign page itself.
