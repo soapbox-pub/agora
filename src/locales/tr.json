@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "İçeriğin senin. Tarzın senin. Kuralların senin.",
+    "indexTagline": "Sınır Tanımadan Ver.",
     "getApp": {
       "eyebrow": "Uygulamayı edinin",
       "title": "Android için {{appName}}",
@@ -629,13 +629,13 @@
   },
   "about": {
     "seoTitle": "Hakkında",
-    "seoDescription": "{{appName}} nasıl çalışır: Bitcoin ve Nostr aracılığıyla alıcıları durdurulamaz finansmana bağlamak.",
+    "seoDescription": "{{appName}}, dünyanın ilk Sınırsız Mikro-Hayırseverlik Ağıdır — Bitcoin ve Nostr ile güçlendirilen doğrudan, kişiden kişiye bağış.",
     "hero": {
       "eyebrow": "{{appName}} hakkında",
       "headlinePart1": "",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "nasıl çalışır.",
-      "body": "{{appName}}, Nostr ve Bitcoin üzerine kurulu sansüre dayanıklı bir bağış platformudur. Dondurulmuş banka hesapları yok. Kurumsal kapatmalar yok. Sadece davanıza inanan insanlardan doğrudan destek.",
+      "body": "{{appName}}, dünyanın ilk Sınırsız Mikro-Hayırseverlik Ağıdır. Herkesin, her yerden, dünyanın dört bir yanındaki insanlara ve davalara Bitcoin ile doğrudan bağış yapmasını sağlar — sınır yok, aracı yok, platform ücreti yok. Dondurulmuş banka hesapları yok, kurumsal kapatmalar yok. Sadece davanıza inanan insanlardan doğrudan destek.",
       "trustChips": {
         "decentralized": "Merkeziyetsiz",
         "openSource": "Açık kaynak",
@@ -1386,9 +1386,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Fon Toplama Kampanyaları",
-      "seoDescription": "Dünyayı durdurulamaz finansmana bağlıyoruz.",
-      "heroTagline": "Dünyayı<1></1><0>durdurulamaz</0> finansmana bağlıyoruz.",
-      "heroBody": "Bitcoin'i doğrudan dünyanın her yerindeki destekçilerden toplayın. Her bağış cüzdanınıza doğrudan ulaşır; aracı yok, geri ödeme yok, fonlarınızı tutan bir platform yok.",
+      "seoDescription": "Sınır Tanımadan Ver. Bitcoin ve Nostr ile güçlendirilen doğrudan, kişiden kişiye bağış.",
+      "heroTagline": "Sınır tanımadan<1></1><0>ver.</0>",
+      "heroBody": "Dünyanın her yerindeki insanları ve davaları Bitcoin ile destekleyin. Her bağış doğrudan alıcının cüzdanına ulaşır — sınır yok, aracı yok, geri ödeme yok ve fonları tutan bir platform yok.",
       "startCampaign": "Kampanya başlat",
       "howItWorks": "Nasıl çalışır",
       "featuredTitle": "Öne çıkan kampanyalar",
@@ -2646,7 +2646,7 @@
       "what-is-ditto": {
         "question": "{{appName}} nedir?",
         "answer": [
-          "{{appName}}, doğrudan alıcılara — açık ya da gizli — Bitcoin bağışları göndermek için bir platformdur. Arada hiçbir aracı, ödeme işlemcisi ya da dondurulabilecek bir hesap yoktur.",
+          "{{appName}}, dünyanın ilk Sınırsız Mikro-Hayırseverlik Ağıdır — dünyanın her yerindeki insanlara ve davalara, açık ya da gizli olarak, doğrudan Bitcoin bağışı yapabileceğiniz bir yer. Sınır yok, aracı yok, ödeme işlemcisi yok ve dondurulabilecek bir hesap yok.",
           "{{appName}} Nostr üzerine kuruludur, bu yüzden kimliğiniz bu siteye kilitli değildir — size aittir."
         ]
       },

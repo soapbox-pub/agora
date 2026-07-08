@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "Maudhui yako. Mtindo wako. Sheria zako.",
+    "indexTagline": "Toa Bila Mipaka.",
     "getApp": {
       "eyebrow": "Pata programu",
       "title": "{{appName}} kwa Android",
@@ -629,13 +629,13 @@
   },
   "about": {
     "seoTitle": "Kuhusu",
-    "seoDescription": "Jinsi {{appName}} inavyofanya kazi: kuwaunganisha wapokeaji na ufadhili usiozuilika kupitia Bitcoin na Nostr.",
+    "seoDescription": "{{appName}} ni Mtandao wa kwanza duniani wa Uhisani Mdogo Usio na Mipaka — utoaji wa moja kwa moja, mtu kwa mtu, unaowezeshwa na Bitcoin na Nostr.",
     "hero": {
       "eyebrow": "Kuhusu {{appName}}",
       "headlinePart1": "Jinsi",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "inavyofanya kazi.",
-      "body": "{{appName}} ni jukwaa la michango linalostahimili udhibiti lililojengwa kwenye Nostr na Bitcoin. Hakuna akaunti za benki zilizofungwa. Hakuna kufungwa kwa mashirika. Ni msaada wa moja kwa moja tu kutoka kwa watu wanaoamini lengo lako.",
+      "body": "{{appName}} ni Mtandao wa kwanza duniani wa Uhisani Mdogo Usio na Mipaka. Unamruhusu mtu yeyote, popote alipo, kutoa moja kwa moja kwa watu na malengo popote duniani kwa kutumia Bitcoin — bila mipaka, bila wapatanishi, bila ada za jukwaa. Hakuna akaunti za benki zilizofungwa, hakuna kufungwa kwa mashirika. Ni msaada wa moja kwa moja tu kutoka kwa watu wanaoamini lengo lako.",
       "trustChips": {
         "decentralized": "Iliyogawanywa",
         "openSource": "Chanzo wazi",
@@ -1386,9 +1386,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Wakusanyaji wa fedha",
-      "seoDescription": "Kuunganisha dunia na ufadhili usiozuilika.",
-      "heroTagline": "Kuunganisha dunia na<1></1><0>ufadhili usiozuilika.</0>",
-      "heroBody": "Kusanya Bitcoin moja kwa moja kutoka kwa wafuasi kote duniani. Kila mchango huingia moja kwa moja kwenye pochi yako, bila wapatanishi, bila marejesho, na bila jukwaa kushikilia fedha zako.",
+      "seoDescription": "Toa Bila Mipaka. Utoaji wa moja kwa moja, mtu kwa mtu, unaowezeshwa na Bitcoin na Nostr.",
+      "heroTagline": "Toa bila<1></1><0>mipaka.</0>",
+      "heroBody": "Unga mkono watu na malengo popote duniani kwa kutumia Bitcoin. Kila zawadi huenda moja kwa moja kwenye pochi ya mpokeaji — bila mipaka, bila wapatanishi, bila marejesho, na bila jukwaa kushikilia fedha.",
       "startCampaign": "Anza kampeni",
       "howItWorks": "Jinsi inavyofanya kazi",
       "featuredTitle": "Kampeni Maarufu",
@@ -2603,7 +2603,7 @@
       "what-is-ditto": {
         "question": "{{appName}} ni nini?",
         "answer": [
-          "{{appName}} ni jukwaa la kutuma michango ya Bitcoin — ya umma au ya faragha — moja kwa moja kwa wapokeaji. Hakuna mpatanishi, hakuna mchakataji wa malipo, na hakuna akaunti inayoweza kufungwa.",
+          "{{appName}} ni Mtandao wa kwanza duniani wa Uhisani Mdogo Usio na Mipaka — mahali pa kutoa Bitcoin moja kwa moja kwa watu na malengo popote duniani, kwa umma au kwa faragha. Bila mipaka, bila mpatanishi, bila mchakataji wa malipo, na bila akaunti inayoweza kufungwa.",
           "{{appName}} imejengwa kwenye Nostr, kwa hivyo utambulisho wako haujafungwa kwenye tovuti hii — wewe ndiye unayemiliki."
         ]
       },

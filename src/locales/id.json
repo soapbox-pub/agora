@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "Konten Anda. Gaya Anda. Aturan Anda.",
+    "indexTagline": "Memberi Tanpa Batas.",
     "getApp": {
       "eyebrow": "Dapatkan aplikasi",
       "title": "{{appName}} untuk Android",
@@ -629,13 +629,13 @@
   },
   "about": {
     "seoTitle": "Tentang",
-    "seoDescription": "Cara kerja {{appName}}: menghubungkan penerima dengan pendanaan tak terbendung melalui Bitcoin dan Nostr.",
+    "seoDescription": "{{appName}} adalah Jaringan Mikrofilantropi Tanpa Batas pertama di dunia — pemberian langsung antar sesama yang ditenagai oleh Bitcoin dan Nostr.",
     "hero": {
       "eyebrow": "Tentang {{appName}}",
       "headlinePart1": "Cara",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "bekerja.",
-      "body": "{{appName}} adalah platform donasi anti-sensor yang dibangun di atas Nostr dan Bitcoin. Tidak ada rekening bank yang dibekukan. Tidak ada penutupan oleh korporasi. Hanya dukungan langsung dari orang-orang yang percaya pada perjuangan Anda.",
+      "body": "{{appName}} adalah Jaringan Mikrofilantropi Tanpa Batas pertama di dunia. {{appName}} memungkinkan siapa pun, di mana pun, memberi langsung kepada orang dan perjuangan di seluruh dunia dengan Bitcoin — tanpa batas negara, tanpa perantara, tanpa biaya platform. Tanpa rekening bank yang dibekukan, tanpa penutupan oleh korporasi. Hanya dukungan langsung dari orang-orang yang percaya pada perjuangan Anda.",
       "trustChips": {
         "decentralized": "Terdesentralisasi",
         "openSource": "Sumber terbuka",
@@ -1386,9 +1386,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Penggalangan Dana",
-      "seoDescription": "Menghubungkan dunia dengan pendanaan tak terbendung.",
-      "heroTagline": "Menghubungkan dunia dengan<1></1>pendanaan <0>tak terbendung.</0>",
-      "heroBody": "Galang Bitcoin langsung dari pendukung di seluruh dunia. Setiap donasi langsung masuk ke dompet Anda, tanpa perantara, tanpa chargeback, dan tanpa platform yang menahan dana Anda.",
+      "seoDescription": "Memberi Tanpa Batas. Pemberian langsung antar sesama yang ditenagai oleh Bitcoin dan Nostr.",
+      "heroTagline": "Memberi tanpa<1></1><0>batas.</0>",
+      "heroBody": "Dukung orang dan perjuangan di seluruh dunia dengan Bitcoin. Setiap pemberian langsung masuk ke dompet penerima — tanpa batas negara, tanpa perantara, tanpa chargeback, dan tanpa platform yang menahan dana.",
       "startCampaign": "Mulai kampanye",
       "howItWorks": "Cara kerjanya",
       "featuredTitle": "Kampanye unggulan",
@@ -2646,7 +2646,7 @@
       "what-is-ditto": {
         "question": "Apa itu {{appName}}?",
         "answer": [
-          "{{appName}} adalah platform untuk mengirim donasi Bitcoin — publik atau privat — langsung ke penerima. Tidak ada perantara, tidak ada prosesor pembayaran, dan tidak ada akun yang bisa dibekukan.",
+          "{{appName}} adalah Jaringan Mikrofilantropi Tanpa Batas pertama di dunia — tempat untuk memberi Bitcoin langsung kepada orang dan perjuangan di seluruh dunia, secara publik atau privat. Tanpa batas negara, tanpa perantara, tanpa prosesor pembayaran, dan tanpa akun yang bisa dibekukan.",
           "{{appName}} dibangun di atas Nostr, sehingga identitas Anda tidak terkunci ke situs ini — Andalah yang memilikinya."
         ]
       },

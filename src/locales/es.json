@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "Tu contenido. Tu estilo. Tus reglas.",
+    "indexTagline": "Dona sin fronteras.",
     "getApp": {
       "eyebrow": "Descargar la app",
       "title": "{{appName}} para Android",
@@ -941,9 +941,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Recaudaciones",
-      "seoDescription": "Conectamos al mundo con financiación imparable.",
-      "heroTagline": "El mundo con financiación <0>imparable</0>.",
-      "heroBody": "Recauda Bitcoin directamente de simpatizantes de todo el mundo. Cada donación va a tu cartera sin intermediarios, sin contracargos y sin que ninguna plataforma retenga tus fondos.",
+      "seoDescription": "Dona sin fronteras. Donaciones directas, de persona a persona, impulsadas por Bitcoin y Nostr.",
+      "heroTagline": "Dona sin<1></1><0>fronteras.</0>",
+      "heroBody": "Apoya a personas y causas en cualquier parte del mundo con Bitcoin. Cada donación va directamente a la cartera del receptor: sin fronteras, sin intermediarios, sin contracargos y sin que ninguna plataforma retenga los fondos.",
       "startCampaign": "Iniciar una campaña",
       "howItWorks": "Cómo funciona",
       "featuredTitle": "Campañas destacadas",
@@ -2559,13 +2559,13 @@
   },
   "about": {
     "seoTitle": "Acerca de",
-    "seoDescription": "Cómo funciona {{appName}}: conectando a receptores con financiamiento imparable a través de Bitcoin y Nostr.",
+    "seoDescription": "{{appName}} es la primera Red de Microfilantropía Sin Fronteras del mundo: donaciones directas, de persona a persona, impulsadas por Bitcoin y Nostr.",
     "hero": {
       "eyebrow": "Sobre {{appName}}",
       "headlinePart1": "Cómo",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "funciona.",
-      "body": "{{appName}} es una plataforma de donaciones resistente a la censura, construida sobre Nostr y Bitcoin. Sin cuentas bancarias congeladas. Sin cierres corporativos. Solo apoyo directo de personas que creen en tu causa.",
+      "body": "{{appName}} es la primera Red de Microfilantropía Sin Fronteras del mundo. Permite que cualquier persona, en cualquier lugar, done directamente a personas y causas en cualquier parte del mundo con Bitcoin: sin fronteras, sin intermediarios, sin comisiones de plataforma. Sin cuentas bancarias congeladas, sin cierres corporativos. Solo apoyo directo de personas que creen en tu causa.",
       "trustChips": {
         "decentralized": "Descentralizado",
         "openSource": "Código abierto",
@@ -2718,7 +2718,7 @@
       "what-is-ditto": {
         "question": "¿Qué es {{appName}}?",
         "answer": [
-          "{{appName}} es una plataforma para enviar donaciones en Bitcoin —públicas o privadas— directamente a receptores. No hay intermediario, ni procesador de pagos, ni cuenta que pueda ser congelada.",
+          "{{appName}} es la primera Red de Microfilantropía Sin Fronteras del mundo: un lugar para donar Bitcoin directamente a personas y causas en cualquier parte del mundo, de forma pública o privada. Sin fronteras, sin intermediario, sin procesador de pagos y sin cuenta que pueda ser congelada.",
           "{{appName}} está construido sobre Nostr, por lo que tu identidad no está atada a este sitio: es tuya."
         ]
       },

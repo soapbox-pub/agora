@@ -274,7 +274,7 @@
     }
   },
   "feed": {
-    "indexTagline": "Your content. Your vibe. Your rules.",
+    "indexTagline": "Give Without Borders.",
     "getApp": {
       "eyebrow": "Get the app",
       "title": "{{appName}} for Android",
@@ -630,13 +630,13 @@
   },
   "about": {
     "seoTitle": "About",
-    "seoDescription": "How {{appName}} works: connecting recipients to unstoppable funding through Bitcoin and Nostr.",
+    "seoDescription": "{{appName}} is the world's first Borderless Micro-Philanthropy Network — direct, person-to-person giving powered by Bitcoin and Nostr.",
     "hero": {
       "eyebrow": "About {{appName}}",
       "headlinePart1": "How",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "works.",
-      "body": "{{appName}} is a censorship-resistant donation platform built on Nostr and Bitcoin. No frozen bank accounts. No corporate shut-downs. Just direct support from people who believe in your cause.",
+      "body": "{{appName}} is the world's first Borderless Micro-Philanthropy Network. It lets anyone, anywhere, give directly to people and causes anywhere in the world with Bitcoin — no borders, no intermediaries, no platform fees. No frozen bank accounts, no corporate shut-downs. Just direct support from people who believe in your cause.",
       "trustChips": {
         "decentralized": "Decentralized",
         "openSource": "Open source",
@@ -1475,9 +1475,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Fundraisers",
-      "seoDescription": "Connecting the world to unstoppable funding.",
-      "heroTagline": "Connecting the world to<1></1><0>unstoppable</0> funding.",
-      "heroBody": "Raise Bitcoin directly from supporters around the world. Every donation settles straight to your wallet, with no middlemen, no chargebacks, and no platform holding your funds.",
+      "seoDescription": "Give Without Borders. Direct, person-to-person giving powered by Bitcoin and Nostr.",
+      "heroTagline": "Give without<1></1><0>borders.</0>",
+      "heroBody": "Support people and causes anywhere in the world with Bitcoin. Every gift goes straight to the recipient's wallet — no borders, no middlemen, no chargebacks, and no platform holding the funds.",
       "startCampaign": "Start a campaign",
       "verifyCampaigns": "Verify campaigns",
       "howItWorks": "How it works",
@@ -2870,7 +2870,7 @@
       "what-is-ditto": {
         "question": "What is {{appName}}?",
         "answer": [
-          "{{appName}} is a platform for sending Bitcoin donations — public or private — directly to recipients. There's no middleman, no payment processor, and no account that can be frozen.",
+          "{{appName}} is the world's first Borderless Micro-Philanthropy Network — a place to give Bitcoin directly to people and causes anywhere in the world, publicly or privately. No borders, no middleman, no payment processor, and no account that can be frozen.",
           "{{appName}} is built on Nostr, so your identity isn't locked to this site — you own it."
         ]
       },

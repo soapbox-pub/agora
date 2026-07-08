@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "Zviri zvako. Mafambisirwo ako. Mitemo yako.",
+    "indexTagline": "Ipa Pasina Miganhu.",
     "getApp": {
       "eyebrow": "Tora app",
       "title": "{{appName}} yeAndroid",
@@ -941,9 +941,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "Mishandirapamwe yekuunganidza mari",
-      "seoDescription": "Tinobatanidza nyika nemari isingadziviswi.",
-      "heroTagline": "Mari <0>isingadziviswi</0> kunyika yose.",
-      "heroBody": "Unganidza Bitcoin yakananga kubva kuvatsigiri vepasi rose. Mupiro mumwe nemumwe unobva wapinda muchikwama chako, pasina vamiririri, pasina kudzoreredza, uye pasina platform inobata mari yako.",
+      "seoDescription": "Ipa Pasina Miganhu. Kupa kwakananga, munhu-kumunhu, kunotsigirwa neBitcoin neNostr.",
+      "heroTagline": "Ipa pasina<1></1><0>miganhu.</0>",
+      "heroBody": "Tsigira vanhu nezvinangwa chero kupi munyika neBitcoin. Chipo chimwe nechimwe chinobva chananga kuchikwama chemugamuchiri — pasina miganhu, pasina vamiririri, pasina kudzoreredzwa kwemari, uye pasina puratifomu inobata mari.",
       "startCampaign": "Tanga mushandirapamwe",
       "howItWorks": "Mashandire awo",
       "featuredTitle": "Mishandirapamwe Yakatsaurwa",
@@ -2559,13 +2559,13 @@
   },
   "about": {
     "seoTitle": "Pamusoro",
-    "seoDescription": "Maitiro {{appName}} anoshanda nawo: kubatanidza vagamuchiri kune mari isingadziviswi kuburikidza neBitcoin neNostr.",
+    "seoDescription": "{{appName}} iyo yekutanga munyika Network Yekupa Zvidiki Pasina Miganhu — kupa kwakananga, munhu-kumunhu, kunotsigirwa neBitcoin neNostr.",
     "hero": {
       "eyebrow": "Pamusoro pe{{appName}}",
       "headlinePart1": "Maitiro",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "anoshandiswa.",
-      "body": "{{appName}} ipuratifomu yokupa isingadziviswi yakavakwa paNostr neBitcoin. Hapana akaundi dzeBanga dzakadzivirwa. Hapana kuvharwa kwemakambani. Rutsigiro chete rwakananga kubva kuvanhu vanotenda mukuda kwako.",
+      "body": "{{appName}} iyo yekutanga munyika Network Yekupa Zvidiki Pasina Miganhu. Inobvumira munhu wese, kwese kwese, kupa zvakananga kuvanhu nezvinangwa chero kupi munyika neBitcoin — pasina miganhu, pasina vamiririri, pasina mari yepuratifomu. Hapana akaundi dzebhanga dzakaomeswa, hapana kuvharwa kwemakambani. Rutsigiro chete rwakananga kubva kuvanhu vanotenda mukuda kwako.",
       "trustChips": {
         "decentralized": "Yakapararira",
         "openSource": "Yakavhurika",
@@ -2718,7 +2718,7 @@
       "what-is-ditto": {
         "question": "Chii chinonzi {{appName}}?",
         "answer": [
-          "{{appName}} ipuratifomu yekutumira zvipo zveBitcoin — pachena kana zvakavanzika — zvakananga kuvagamuchiri. Hapana mukuvadzi wepakati, hapana mubati wemari, uye hapana akaundi rinogona kurambidzwa.",
+          "{{appName}} iyo yekutanga munyika Network Yekupa Zvidiki Pasina Miganhu — nzvimbo yekupa Bitcoin zvakananga kuvanhu nezvinangwa chero kupi munyika, pachena kana zvakavanzika. Pasina miganhu, pasina mukuvadzi wepakati, pasina mubati wemari, uye pasina akaundi rinogona kurambidzwa.",
           "{{appName}} yakavakwa pamusoro peNostr, saka hunhu hwako hahubatani nehurongwa hweno — iwe une humambo hwacho."
         ]
       },

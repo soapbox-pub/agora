@@ -273,7 +273,7 @@
     }
   },
   "feed": {
-    "indexTagline": "你的内容。你的风格。你的规则。",
+    "indexTagline": "无国界地给予。",
     "getApp": {
       "eyebrow": "获取应用",
       "title": "适用于 Android 的 {{appName}}",
@@ -941,9 +941,9 @@
   "campaigns": {
     "home": {
       "seoTitle": "众筹活动",
-      "seoDescription": "为全世界连接<0>不可阻挡</0>的资金。",
-      "heroTagline": "为全世界连接<0>不可阻挡</0>的资金。",
-      "heroBody": "直接从世界各地的支持者那里筹集比特币。每一笔捐款都直达你的钱包,没有中间人、没有撤单、没有平台扣押你的资金。",
+      "seoDescription": "无国界地给予。由比特币和 Nostr 驱动的直接的、人与人之间的给予。",
+      "heroTagline": "无国界<1></1>地<0>给予。</0>",
+      "heroBody": "用比特币支持世界各地的人和事业。每一份馈赠都直达受款人的钱包——没有国界，没有中间人，没有退单，也没有任何平台扣押资金。",
       "startCampaign": "发起活动",
       "howItWorks": "运作方式",
       "featuredTitle": "精选活动",
@@ -2559,13 +2559,13 @@
   },
   "about": {
     "seoTitle": "关于",
-    "seoDescription": "{{appName}} 如何运作：通过比特币和 Nostr 将受款人与无法阻挡的资金连接起来。",
+    "seoDescription": "{{appName}} 是全球首个无国界微慈善网络——由比特币和 Nostr 驱动的直接的、人与人之间的给予。",
     "hero": {
       "eyebrow": "关于 {{appName}}",
       "headlinePart1": "How",
       "headlineAppName": "{{appName}}",
       "headlinePart2": "works.",
-      "body": "{{appName}} 是一个建立在 Nostr 和比特币之上的抗审查捐赠平台。没有冻结的银行账户。没有公司关闭。只有相信你事业的人提供的直接支持。",
+      "body": "{{appName}} 是全球首个无国界微慈善网络。它让任何人、在任何地方，都能用比特币直接向世界各地的人和事业给予——没有国界，没有中间方，没有平台费。没有被冻结的银行账户，没有公司关停。只有相信你事业的人提供的直接支持。",
       "trustChips": {
         "decentralized": "去中心化",
         "openSource": "开源",
@@ -2718,7 +2718,7 @@
       "what-is-ditto": {
         "question": "{{appName}} 是什么？",
         "answer": [
-          "{{appName}} 是一个直接向受款人发送比特币捐款（公开或私密）的平台。没有中间方，没有支付处理商，也没有可被冻结的账户。",
+          "{{appName}} 是全球首个无国界微慈善网络——一个可以公开或私密地向世界各地的人和事业直接给予比特币的地方。没有国界，没有中间人，没有支付处理商，也没有可被冻结的账户。",
           "{{appName}} 构建在 Nostr 之上，因此你的身份不会被锁定在本网站——它属于你自己。"
         ]
       },

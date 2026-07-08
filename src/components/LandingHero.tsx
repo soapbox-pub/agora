@@ -21,7 +21,7 @@ export function LandingHero({ onJoinClick }: LandingHeroProps) {
             ÁGORA
           </h1>
           <p className="text-[11px] sidebar:text-xs uppercase tracking-wider text-muted-foreground font-semibold">
-            Power to the people
+            Give Without Borders
           </p>
         </div>
 
