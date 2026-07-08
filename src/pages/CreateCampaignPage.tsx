@@ -36,7 +36,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AutoGrowTextarea } from '@/components/ui/auto-grow-textarea';
+import { CampaignStoryEditor } from '@/components/CampaignStoryEditor';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAppContext } from '@/hooks/useAppContext';
 import { useAuthor } from '@/hooks/useAuthor';
@@ -971,7 +971,7 @@ export function CreateCampaignPage() {
   );
 
   const storySection = (
-    <AutoGrowTextarea
+    <CampaignStoryEditor
       id="campaign-story"
       value={story}
       onValueChange={setStory}
