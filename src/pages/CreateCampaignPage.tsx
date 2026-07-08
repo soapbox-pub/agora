@@ -660,6 +660,12 @@ export function CreateCampaignPage() {
       return parsed;
     },
     onSuccess: (campaign) => {
+      // Seed the detail-page query cache with the freshly-signed campaign so
+      // navigating to /<naddr> renders immediately, instead of racing the
+      // relays (which haven't indexed the event yet). Without this, the empty
+      // relay result caches `null` as fresh and the detail page 404s until a
+      // hard refresh. Matches the pattern in CreateEventPage / CreateCommunityPage.
+      queryClient.setQueryData(['campaign', campaign.pubkey, campaign.identifier], campaign);
       void queryClient.invalidateQueries({ queryKey: ['campaign', campaign.pubkey, campaign.identifier] });
       // Refresh the campaign list queries used by the home/discover/profile
       // views so a newly launched (or just-edited) campaign shows up without
