@@ -38,12 +38,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { BanConfirmDialog } from '@/components/BanConfirmDialog';
-import { NoteContent } from '@/components/NoteContent';
-import { EmojifiedText } from '@/components/CustomEmoji';
 import { ReportDialog } from '@/components/ReportDialog';
 import { CommunityReportDialog } from '@/components/CommunityReportDialog';
 import { AddToListDialog } from '@/components/AddToListDialog';
@@ -71,7 +68,6 @@ import { type CommunityMenuContext, canBanTarget, getViewerAuthority } from '@/l
 import { isAdmin } from '@/lib/admins';
 import { CAMPAIGN_KIND } from '@/lib/campaign';
 import { genUserName } from '@/lib/genUserName';
-import { timeAgo } from '@/lib/timeAgo';
 import { toast } from '@/hooks/useToast';
 import { impactLight } from '@/lib/haptics';
 import { cn } from '@/lib/utils';
@@ -569,38 +565,6 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[85dvh] p-0 gap-0 rounded-2xl overflow-y-auto [&>button]:hidden">
         <DialogTitle className="sr-only">{t('noteMoreMenu.title')}</DialogTitle>
-
-        {/* Post preview */}
-        <div className="px-4 pt-4 pb-3">
-          <div className="flex gap-3">
-            <Avatar className="size-10 shrink-0">
-              <AvatarImage src={metadata?.picture} alt={displayName} />
-              <AvatarFallback className="bg-primary/20 text-primary text-sm">
-                {displayName[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 text-sm">
-                <span className="font-bold truncate">
-                  {author.data?.event ? (
-                    <EmojifiedText tags={author.data.event.tags}>{displayName}</EmojifiedText>
-                  ) : displayName}
-                </span>
-                <span className="text-muted-foreground shrink-0">·</span>
-                <span className="text-muted-foreground shrink-0 text-xs">{timeAgo(event.created_at)}</span>
-              </div>
-              <div className="mt-0.5 text-sm text-muted-foreground line-clamp-3 overflow-wrap-anywhere">
-                {/^[A-Za-z0-9+/=_-]{20,}$/.test(event.content.trim()) ? (
-                  <span className="italic">{t('noteMoreMenu.encryptedContent')}</span>
-                ) : (
-                  <NoteContent event={event} className="text-sm leading-snug whitespace-normal" disableEmbeds disableNoteEmbeds as="span" />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Separator />
 
         <div className="py-1">
           <MenuItem
