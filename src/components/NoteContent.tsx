@@ -25,6 +25,7 @@ import { parseImetaMap } from '@/lib/imeta';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { HASHTAG_PATTERN } from '@/lib/hashtag';
 import { rewriteAgoraLinksToNostrUris } from '@/lib/appUrls';
+import { CAMPAIGN_KIND } from '@/lib/campaign';
 import { cn } from '@/lib/utils';
 import type { AddrCoords } from '@/hooks/useEvent';
 
@@ -201,6 +202,7 @@ type ContentToken =
   | { type: 'mention'; pubkey: string }
   | { type: 'nevent-embed'; eventId: string; relays?: string[]; author?: string }
   | { type: 'naddr-embed'; addr: AddrCoords; url?: string }
+  | { type: 'campaign-row'; addrs: AddrCoords[] }
   | { type: 'nostr-link'; id: string; raw: string }
   | { type: 'hashtag'; tag: string; raw: string }
   | { type: 'relay-link'; url: string }
@@ -565,10 +567,17 @@ export function NoteContent({
     [authorMetadata, event.pubkey],
   );
 
-  // Group consecutive image-embed tokens (≥2) into image-gallery tokens
+  // Group consecutive image-embed tokens (≥2) into image-gallery tokens,
+  // and consecutive campaign naddr-embeds (≥2) into a campaign-row so they
+  // render side-by-side instead of stacking full-width.
   const groupedTokens = useMemo(() => {
     const result: ContentToken[] = [];
     let i = 0;
+
+    /** A campaign naddr-embed eligible for the side-by-side row. */
+    const isCampaignEmbed = (t: ContentToken): t is { type: 'naddr-embed'; addr: AddrCoords; url?: string } =>
+      t.type === 'naddr-embed' && t.addr.kind === CAMPAIGN_KIND && !t.url;
+
     while (i < tokens.length) {
       const token = tokens[i];
       if (token.type === 'image-embed') {
@@ -581,6 +590,36 @@ export function NoteContent({
         }
         if (run.length >= 2) {
           result.push({ type: 'image-gallery', urls: run });
+        } else {
+          result.push(token);
+        }
+        i = j;
+      } else if (isCampaignEmbed(token)) {
+        // Collect this and any immediately following campaign naddr-embeds.
+        // Adjacent whitespace-only text tokens between them are skipped so
+        // campaigns typed on separate lines still group into one row.
+        const addrs: AddrCoords[] = [token.addr];
+        let j = i + 1;
+        while (j < tokens.length) {
+          const next = tokens[j];
+          if (isCampaignEmbed(next)) {
+            addrs.push(next.addr);
+            j++;
+          } else if (next.type === 'text' && next.value.trim() === '') {
+            // Peek past the whitespace: only skip it if another campaign
+            // embed immediately follows, so we don't swallow trailing space.
+            const after = tokens[j + 1];
+            if (after && isCampaignEmbed(after)) {
+              j++;
+            } else {
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        if (addrs.length >= 2) {
+          result.push({ type: 'campaign-row', addrs });
         } else {
           result.push(token);
         }
@@ -775,6 +814,40 @@ export function NoteContent({
                 )}
                 <EmbeddedNaddr addr={token.addr} className="my-2.5" />
               </span>
+            );
+          case 'campaign-row':
+            // Consecutive campaign embeds render as a wrapping flex row so
+            // they sit side-by-side. Each EmbeddedNaddr → EmbeddedCampaign
+            // is capped at ~300px, so two-to-four fit per row on desktop and
+            // gracefully wrap / stack on narrow screens.
+            if (disableNoteEmbeds) {
+              return (
+                <span key={i} className="flex flex-col gap-1 my-2.5">
+                  {token.addrs.map((addr, k) => {
+                    const naddrId = nip19.naddrEncode({ kind: addr.kind, pubkey: addr.pubkey, identifier: addr.identifier });
+                    return (
+                      <Link
+                        key={k}
+                        to={`/${naddrId}`}
+                        className="text-primary hover:underline break-all"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {naddrId.slice(0, 16)}…
+                      </Link>
+                    );
+                  })}
+                </span>
+              );
+            }
+            return (
+              <div
+                key={i}
+                className="my-2.5 grid gap-3 grid-cols-[repeat(auto-fill,minmax(240px,1fr))] [&>*]:max-w-none"
+              >
+                {token.addrs.map((addr, k) => (
+                  <EmbeddedNaddr key={k} addr={addr} />
+                ))}
+              </div>
             );
           case 'mention':
             return <NostrMention key={i} pubkey={token.pubkey} />;
