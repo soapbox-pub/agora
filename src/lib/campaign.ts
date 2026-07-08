@@ -293,6 +293,23 @@ export function encodeCampaignNaddr(campaign: ParsedCampaign, relays?: string[])
 }
 
 /**
+ * True if `value` is a bare NIP-19 `naddr1…` (optionally `nostr:`-prefixed)
+ * that decodes to a campaign coordinate (kind 33863). Any decode failure or
+ * non-campaign kind returns `false`.
+ */
+export function isCampaignNaddr(value: string): boolean {
+  const trimmed = value.trim().replace(/^nostr:/i, '');
+  if (!trimmed.toLowerCase().startsWith('naddr1')) return false;
+  try {
+    const decoded = nip19.decode(trimmed);
+    return decoded.type === 'naddr' && decoded.data.kind === CAMPAIGN_KIND;
+  } catch {
+    return false;
+  }
+}
+
+
+/**
  * Strip Unicode bidi controls, zero-width characters, and BOMs from a
  * user-supplied title before it lands in an event tag or feeds the slug
  * deriver. These code points are invisible in most rendering contexts

@@ -4,6 +4,8 @@ import rehypeSanitize from 'rehype-sanitize';
 import type { NostrEvent } from '@nostrify/nostrify';
 
 import { NoteContent } from '@/components/NoteContent';
+import { isCampaignNaddr } from '@/lib/campaign';
+import { rewriteAgoraLinksToNostrUris } from '@/lib/appUrls';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { cn } from '@/lib/utils';
 
@@ -128,6 +130,70 @@ function buildComponents(event: NostrEvent): Components {
   } as Components;
 }
 
+/**
+ * Merge consecutive campaign-only paragraphs into a single paragraph so the
+ * downstream {@link NoteContent} renderer can group them into a side-by-side
+ * campaign row.
+ *
+ * Markdown splits blank-line-separated blocks into separate paragraphs, and
+ * each paragraph is enriched by its own `NoteContent` instance — so two
+ * campaign `nostr:naddr` URIs written on separate lines never reach a single
+ * `NoteContent` and can't be grouped. Here we detect runs of paragraphs that
+ * consist solely of campaign `nostr:naddr` URIs (one per line, blank lines
+ * between) and collapse each run into one paragraph with single-newline
+ * separators. NoteContent then sees all of them at once and lays them out as
+ * a grid.
+ *
+ * Non-campaign content is left byte-for-byte untouched.
+ */
+function collapseCampaignParagraphs(markdown: string): string {
+  // Split into blank-line-delimited blocks, preserving the exact separators
+  // so non-campaign blocks reassemble unchanged.
+  const parts = markdown.split(/(\n[ \t]*\n)/);
+
+  // A block "is a campaign paragraph" when every non-blank line in it is a
+  // single campaign naddr URI (after Agora-link rewriting) and it has ≥1 such
+  // line. This tolerates a campaign written across soft-wrapped lines.
+  const isCampaignBlock = (block: string): boolean => {
+    const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+    if (lines.length === 0) return false;
+    return lines.every((line) => isCampaignNaddr(line));
+  };
+
+  // Walk the parts (blocks interleaved with separators), grouping adjacent
+  // campaign blocks (whose separators are blank-line-only) into one block.
+  const out: string[] = [];
+  let i = 0;
+  while (i < parts.length) {
+    const block = parts[i];
+    if (i % 2 === 0 && isCampaignBlock(block)) {
+      // Start of a potential campaign run. Gather following campaign blocks
+      // as long as they're separated by blank lines only.
+      const campaignLines: string[] = block.split('\n').map((l) => l.trim()).filter(Boolean);
+      let j = i + 1;
+      while (j + 1 < parts.length && isCampaignBlock(parts[j + 1])) {
+        campaignLines.push(...parts[j + 1].split('\n').map((l) => l.trim()).filter(Boolean));
+        j += 2;
+      }
+      // Join the collected campaign URIs with single newlines so they land in
+      // one markdown paragraph → one NoteContent → one grouped row.
+      out.push(campaignLines.join('\n'));
+      // If more content follows, re-insert the trailing blank-line separator
+      // so the merged campaign block stays its own paragraph and doesn't
+      // fuse with the next block.
+      if (j < parts.length) {
+        out.push(parts[j]);
+      }
+      i = j + 1;
+    } else {
+      out.push(block);
+      i++;
+    }
+  }
+
+  return out.join('');
+}
+
 /** Renders kind 30023 long-form article content with Markdown. */
 export function ArticleContent({ event, preview, className }: ArticleContentProps) {
   const title = getTag(event.tags, 'title');
@@ -161,6 +227,11 @@ export function ArticleContent({ event, preview, className }: ArticleContentProp
   }
 
   const components = buildComponents(event);
+  // Rewrite Agora app links to nostr: URIs, then merge consecutive
+  // campaign-only paragraphs so the campaign row renders side-by-side.
+  const processedContent = collapseCampaignParagraphs(
+    rewriteAgoraLinksToNostrUris(event.content),
+  );
 
   return (
     <div className={className}>
@@ -176,7 +247,7 @@ export function ArticleContent({ event, preview, className }: ArticleContentProp
       )}
       <div dir="auto" className="prose prose-sm max-w-none break-words text-foreground prose-headings:text-foreground prose-headings:font-bold prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:bg-muted prose-pre:text-foreground prose-code:text-[13px] prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-li:marker:text-muted-foreground prose-blockquote:text-muted-foreground prose-blockquote:border-border prose-hr:border-border prose-th:text-foreground">
         <Markdown rehypePlugins={[rehypeSanitize]} components={components}>
-          {event.content}
+          {processedContent}
         </Markdown>
       </div>
       {hashtags.length > 0 && (
