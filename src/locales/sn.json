@@ -306,6 +306,11 @@
       "discoverPeople": "Tsvaga vanhu vokutevera",
       "logIn": "Pinda"
     },
+    "error": {
+      "toast": "Yakundikana kudhirowa Feed. Tarisa hukama hwako uedze zvakare.",
+      "loadFailed": "Yakundikana kudhirowa Feed. Izvi zvinowanzokonzerwa nerelay inononoka kana isingasvikike — zvinyorwa zvako zvichiripo.",
+      "retry": "Edza zvakare"
+    },
     "modeSwitcher": {
       "agora": "Zvichangoburwa",
       "allNostr": "Pasi rose",

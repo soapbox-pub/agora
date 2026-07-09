@@ -306,6 +306,11 @@
       "discoverPeople": "Gundua watu wa kufuata",
       "logIn": "Ingia"
     },
+    "error": {
+      "toast": "Imeshindwa kupakia mlisho. Angalia muunganisho wako na ujaribu tena.",
+      "loadFailed": "Imeshindwa kupakia mlisho. Kwa kawaida hii husababishwa na relei ya polepole au isiyofikika — maudhui yako bado yapo.",
+      "retry": "Jaribu tena"
+    },
     "modeSwitcher": {
       "agora": "Mpya zaidi",
       "allNostr": "Kimataifa",

@@ -306,6 +306,11 @@
       "discoverPeople": "Temukan orang untuk diikuti",
       "logIn": "Masuk"
     },
+    "error": {
+      "toast": "Tidak dapat memuat feed. Periksa koneksi Anda dan coba lagi.",
+      "loadFailed": "Tidak dapat memuat feed. Biasanya karena relay yang lambat atau tidak dapat dijangkau — konten Anda masih ada.",
+      "retry": "Coba lagi"
+    },
     "modeSwitcher": {
       "agora": "Terbaru",
       "allNostr": "Global",

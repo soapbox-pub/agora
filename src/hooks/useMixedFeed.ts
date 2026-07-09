@@ -244,9 +244,27 @@ export function useMixedFeed(mode: FeedMode, enabled: boolean) {
     || (useNostr && nostrLayer.isFetchingNextPage);
   const isLoading = agoraFeed.isLoading || (useNostr && nostrLayer.isPending);
 
+  // Aggregate failures across both layers. In pure-agora mode only the
+  // Agora layer matters; in mixed modes either layer failing is a failure.
+  // Consumers gate the error UI on `items.length === 0` so a background
+  // refetch failure over already-loaded content shows a banner rather than
+  // blanking the feed.
+  const isError = agoraFeed.isError || (useNostr && nostrLayer.isError);
+
+  const agoraRefetch = agoraFeed.refetch;
+  const nostrRefetch = nostrLayer.refetch;
+  const refetch = useCallback(async () => {
+    await Promise.all([
+      agoraRefetch(),
+      useNostr ? nostrRefetch() : Promise.resolve(),
+    ]);
+  }, [agoraRefetch, useNostr, nostrRefetch]);
+
   return {
     items,
     isLoading,
+    isError,
+    refetch,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,

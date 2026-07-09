@@ -306,6 +306,11 @@
       "discoverPeople": "Découvrir des personnes à suivre",
       "logIn": "Se connecter"
     },
+    "error": {
+      "toast": "Impossible de charger le fil. Vérifiez votre connexion et réessayez.",
+      "loadFailed": "Impossible de charger le fil. C'est généralement dû à un relais lent ou inaccessible — votre contenu est toujours là.",
+      "retry": "Réessayer"
+    },
     "modeSwitcher": {
       "agora": "Dernières",
       "allNostr": "Global",

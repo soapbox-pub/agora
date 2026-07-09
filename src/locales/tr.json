@@ -306,6 +306,11 @@
       "discoverPeople": "Takip edilecek insanları keşfet",
       "logIn": "Giriş yap"
     },
+    "error": {
+      "toast": "Akış yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+      "loadFailed": "Akış yüklenemedi. Bu genellikle yavaş veya erişilemeyen bir röleden kaynaklanır — içeriğiniz hâlâ orada.",
+      "retry": "Tekrar dene"
+    },
     "modeSwitcher": {
       "agora": "En yeni",
       "allNostr": "Küresel",

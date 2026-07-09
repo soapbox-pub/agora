@@ -10,13 +10,14 @@ import { FeedEmptyState } from '@/components/FeedEmptyState';
 import { FeedModeSwitcher } from '@/components/FeedModeSwitcher';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, WifiOff } from 'lucide-react';
 import AuthDialog from '@/components/auth/AuthDialog';
 import { useFeed } from '@/hooks/useFeed';
 import { useFollowingFeed } from '@/hooks/useFollowingFeed';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useFeedTab } from '@/hooks/useFeedTab';
 import { useMuteList } from '@/hooks/useMuteList';
+import { useToast } from '@/hooks/useToast';
 import { useMixedFeed, type FeedMode } from '@/hooks/useMixedFeed';
 import { shouldHideFeedEvent } from '@/lib/feedUtils';
 import { isEventMuted } from '@/lib/muteHelpers';
@@ -54,6 +55,7 @@ export function Feed({ kinds, tagFilters, header, hideCompose, emptyMessage, fee
   const { t } = useTranslation();
   const { user } = useCurrentUser();
   const { muteItems } = useMuteList();
+  const { toast } = useToast();
 
   const [rawActiveTab, handleSetActiveTab] = useFeedTab<FeedTab>(feedId);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
@@ -146,6 +148,11 @@ export function Feed({ kinds, tagFilters, header, hideCompose, emptyMessage, fee
   const fetchNextPage = isHomeAgoraFeed ? mixedFeed.fetchNextPage : fetchNextPageStandard;
   const hasNextPage = isHomeAgoraFeed ? mixedFeed.hasNextPage : hasNextPageStandard;
   const isFetchingNextPage = isHomeAgoraFeed ? mixedFeed.isFetchingNextPage : isFetchingNextPageStandard;
+  // Error handling is wired for the home feed's three modes (agora /
+  // all-nostr / following), which drive off useMixedFeed. The specialized
+  // Follows/Global feed pages keep their existing empty-state behavior.
+  const isFeedError = isHomeAgoraFeed && mixedFeed.isError;
+  const refetchFeed = mixedFeed.refetch;
 
   // Auto-fetch page 2 as soon as page 1 arrives for smoother scrolling
   useEffect(() => {
@@ -210,6 +217,18 @@ export function Feed({ kinds, tagFilters, header, hideCompose, emptyMessage, fee
   const showSkeleton = isHomeAgoraFeed
       ? mixedFeed.isLoading && feedItems.length === 0
       : (isPending || (isLoading && !rawData));
+
+  // Home feed had no content and the query failed — surface it instead of
+  // rendering the empty state, which would falsely imply there's nothing
+  // to show. Gate on `feedItems.length === 0` so a background refetch
+  // failure over already-loaded content shows a banner, not a blank feed.
+  const showFeedError = isFeedError && !showSkeleton && feedItems.length === 0;
+
+  useEffect(() => {
+    if (showFeedError) {
+      toast({ title: t('feed.error.toast'), variant: 'destructive' });
+    }
+  }, [showFeedError, toast, t]);
 
   // Per-mode empty-state copy for the home feed.
   const homeEmptyMessage = (() => {
@@ -300,6 +319,8 @@ export function Feed({ kinds, tagFilters, header, hideCompose, emptyMessage, fee
                   </div>
                 )}
               </div>
+            ) : showFeedError ? (
+              <FeedErrorState onRetry={() => refetchFeed()} />
             ) : isHomeAgoraFeed ? (
               <HomeFeedEmptyState
                 mode={homeFeedMode}
@@ -367,6 +388,23 @@ function HomeFeedEmptyState({ mode, message, onSwitchToAgora, onLoginClick }: Ho
           </Button>
         )}
       </div>
+    </div>
+  );
+}
+
+function FeedErrorState({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="py-20 px-8 flex flex-col items-center text-center">
+      <div className="size-12 rounded-full bg-muted flex items-center justify-center mb-4">
+        <WifiOff className="size-6 text-muted-foreground" />
+      </div>
+      <p className="text-muted-foreground max-w-sm leading-relaxed mb-5">
+        {t('feed.error.loadFailed')}
+      </p>
+      <Button variant="outline" className="rounded-full" onClick={onRetry}>
+        {t('feed.error.retry')}
+      </Button>
     </div>
   );
 }

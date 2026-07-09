@@ -306,6 +306,11 @@
       "discoverPeople": "Descubre personas a quienes seguir",
       "logIn": "Iniciar sesión"
     },
+    "error": {
+      "toast": "No se pudo cargar el feed. Comprueba tu conexión y vuelve a intentarlo.",
+      "loadFailed": "No se pudo cargar el feed. Normalmente se debe a un relay lento o inaccesible — tu contenido sigue ahí.",
+      "retry": "Volver a intentar"
+    },
     "modeSwitcher": {
       "agora": "Lo último",
       "allNostr": "Global",

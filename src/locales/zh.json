@@ -306,6 +306,11 @@
       "discoverPeople": "发现可关注的人",
       "logIn": "登录"
     },
+    "error": {
+      "toast": "无法加载 Feed。请检查你的连接并重试。",
+      "loadFailed": "无法加载 Feed。这通常是由于中继缓慢或无法连接——你的内容仍然还在。",
+      "retry": "重试"
+    },
     "modeSwitcher": {
       "agora": "最新",
       "allNostr": "全球",

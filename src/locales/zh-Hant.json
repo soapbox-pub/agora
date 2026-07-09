@@ -306,6 +306,11 @@
       "discoverPeople": "發現可關注的人",
       "logIn": "登入"
     },
+    "error": {
+      "toast": "無法載入 Feed。請檢查你的連線並重試。",
+      "loadFailed": "無法載入 Feed。這通常是由於中繼緩慢或無法連線——你的內容仍然還在。",
+      "retry": "重試"
+    },
     "modeSwitcher": {
       "agora": "最新",
       "allNostr": "全球",

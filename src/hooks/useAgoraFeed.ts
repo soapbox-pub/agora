@@ -348,6 +348,13 @@ export function useAgoraFeed(enabled: boolean, options?: UseAgoraFeedOptions) {
     events,
     items,
     isLoading: queryEnabled ? query.isPending : false,
+    // Surface query failures (relay timeout, all relays down) so consumers
+    // can render a distinct error state instead of an empty one. Without
+    // this, a failed query returns `events: []` — indistinguishable from a
+    // genuinely empty feed — and the UI falsely reports "no activity".
+    isError: query.isError,
+    error: query.error,
+    refetch: query.refetch,
     isFetchingNextPage: query.isFetchingNextPage,
     hasNextPage: !authorsEmpty && query.hasNextPage,
     fetchNextPage: query.fetchNextPage,

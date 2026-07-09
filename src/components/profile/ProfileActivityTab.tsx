@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles, WifiOff } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { NoteCard } from '@/components/NoteCard';
 import { useAgoraFeed } from '@/hooks/useAgoraFeed';
+import { useToast } from '@/hooks/useToast';
 
 interface ProfileActivityTabProps {
   pubkey: string;
@@ -33,10 +35,13 @@ interface ProfileActivityTabProps {
  */
 export function ProfileActivityTab({ pubkey, displayName }: ProfileActivityTabProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const {
     events,
     items,
     isLoading,
+    isError,
+    refetch,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
@@ -49,6 +54,15 @@ export function ProfileActivityTab({ pubkey, displayName }: ProfileActivityTabPr
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // Notify on failure so the user knows the empty-looking surface is a
+  // load error, not an empty profile. The inline error state below is the
+  // durable signal; the toast is the transient nudge.
+  useEffect(() => {
+    if (isError && events.length === 0) {
+      toast({ title: t('feed.error.toast'), variant: 'destructive' });
+    }
+  }, [isError, events.length, toast, t]);
 
   if (isLoading && events.length === 0) {
     return (
@@ -63,6 +77,24 @@ export function ProfileActivityTab({ pubkey, displayName }: ProfileActivityTabPr
             <Skeleton className="h-4 w-3/4" />
           </Card>
         ))}
+      </div>
+    );
+  }
+
+  if (isError && events.length === 0) {
+    return (
+      <div className="px-4 sm:px-6 py-12">
+        <Card className="border-dashed">
+          <div className="py-12 px-8 text-center">
+            <WifiOff className="size-10 mx-auto mb-3 text-muted-foreground" />
+            <p className="text-muted-foreground max-w-sm mx-auto mb-5">
+              {t('feed.error.loadFailed')}
+            </p>
+            <Button variant="outline" className="rounded-full" onClick={() => refetch()}>
+              {t('feed.error.retry')}
+            </Button>
+          </div>
+        </Card>
       </div>
     );
   }

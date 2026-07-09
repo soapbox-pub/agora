@@ -307,6 +307,11 @@
       "discoverPeople": "Discover people to follow",
       "logIn": "Log in"
     },
+    "error": {
+      "toast": "Couldn't load the feed. Check your connection and try again.",
+      "loadFailed": "Couldn't load the feed. This is usually a slow or unreachable relay — your content is still there.",
+      "retry": "Try again"
+    },
     "modeSwitcher": {
       "agora": "Latest",
       "allNostr": "Global",
