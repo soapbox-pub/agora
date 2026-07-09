@@ -478,7 +478,10 @@ function WayCard({ icon, image, kicker, title, description, bullets, cta, to, on
 
       <img src={image} alt="" loading="lazy" className="block w-full aspect-video object-cover" />
 
-      <div className="p-6 space-y-5 flex-1 flex flex-col">
+      {/* `gap-5` instead of `space-y-5`: space-y is margin-based and its
+          selector out-specifies `mt-auto`, which would pin the CTA to the
+          content instead of the card bottom. */}
+      <div className="p-6 flex-1 flex flex-col gap-5">
         <div>
           <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-2 leading-snug">
             {title}
