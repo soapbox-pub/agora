@@ -5,6 +5,7 @@ import { HandHeart, ShieldCheck } from 'lucide-react';
 
 import { AuthorByline } from '@/components/AuthorByline';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
+import { InlineMarkdown } from '@/components/InlineMarkdown';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -314,7 +315,11 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
                 isFeaturedVariant ? 'text-base' : 'text-sm',
               )}
             >
-              {displayCampaign.story || '\u00A0'}
+              {displayCampaign.story.trim() ? (
+                <InlineMarkdown>{displayCampaign.story}</InlineMarkdown>
+              ) : (
+                '\u00A0'
+              )}
             </p>
           </div>
 
