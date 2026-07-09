@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import type { NostrEvent, NostrFilter, NPool } from '@nostrify/nostrify';
 
 import { useContentFilters } from '@/hooks/useContentFilters';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useFeedSettings } from '@/hooks/useFeedSettings';
 import { useMuteList } from '@/hooks/useMuteList';
 import { CAMPAIGN_KIND } from '@/lib/campaign';
@@ -200,6 +201,7 @@ interface UseAgoraFeedOptions {
 /** Strict Agora activity feed: campaigns, pledges, communities, world posts, #Agora notes, and donations. */
 export function useAgoraFeed(enabled: boolean, options?: UseAgoraFeedOptions) {
   const { nostr } = useNostr();
+  const { user } = useCurrentUser();
   const { muteItems } = useMuteList();
   const { shouldFilterEvent } = useContentFilters();
   const { feedSettings } = useFeedSettings();
@@ -226,7 +228,11 @@ export function useAgoraFeed(enabled: boolean, options?: UseAgoraFeedOptions) {
   const authorNoteKindsKey = [...authorNoteKinds].sort((a, b) => a - b).join(',');
 
   const query = useInfiniteQuery<AgoraFeedPage, Error>({
-    queryKey: ['agora-feed', authorsKey, includeAuthorNotes, authorNoteKindsKey],
+    // `user.pubkey` partitions the cache per account: the queryFn applies
+    // the logged-in user's mute list and content filters (see below), so a
+    // page filtered under one account must not be served to another after
+    // an account switch. Mirrors useNotifications' key.
+    queryKey: ['agora-feed', user?.pubkey ?? '', authorsKey, includeAuthorNotes, authorNoteKindsKey],
     queryFn: async ({ pageParam, signal: querySignal }) => {
       const signal = AbortSignal.any([querySignal, AbortSignal.timeout(8_000)]);
       const until = pageParam as number | undefined;
