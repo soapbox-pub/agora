@@ -835,10 +835,10 @@
       "promote": {
         "kicker": "03 · Amplifiez",
         "title": "Faites connaître {{appName}} à vos clients",
-        "description": "Faites des dons via {{appName}} un pilier de vos initiatives philanthropiques. Invitez vos clients et votre communauté à donner à vos côtés, et transformez votre audience en financement réel et incensurable pour les causes.",
+        "description": "Invitez vos clients à donner à vos côtés — transformez votre audience en financement réel pour les causes.",
         "bullet1": "Campagnes co-brandées et collectes de dons",
-        "bullet2": "Arrondis en caisse et invitations à l'abondement pour vos clients",
-        "bullet3": "Rapports de transparence partagés que vos clients peuvent vérifier on-chain",
+        "bullet2": "Arrondis en caisse et invitations à l'abondement",
+        "bullet3": "Rapports on-chain vérifiables par vos clients",
         "cta": "Planifier une campagne"
       }
     },

@@ -836,10 +836,10 @@
       "promote": {
         "kicker": "03 · Amplify",
         "title": "Promote {{appName}} to your customers",
-        "description": "Make {{appName}} giving a centerpiece of your philanthropic initiatives. Invite your customers and community to give alongside you, and turn your reach into real, uncensorable funding for causes.",
-        "bullet1": "Co-branded campaigns and donation drives",
-        "bullet2": "Checkout round-ups and customer match prompts",
-        "bullet3": "Shared transparency reports your customers can verify on-chain",
+        "description": "Invite your customers to give alongside you — turn your reach into real funding for causes.",
+        "bullet1": "Co-branded campaigns and drives",
+        "bullet2": "Checkout round-ups and match prompts",
+        "bullet3": "On-chain reports customers can verify",
         "cta": "Plan a campaign"
       }
     },

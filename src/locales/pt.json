@@ -835,10 +835,10 @@
       "promote": {
         "kicker": "03 · Amplifique",
         "title": "Divulgue o {{appName}} aos seus clientes",
-        "description": "Faça das doações no {{appName}} uma peça central das suas iniciativas filantrópicas. Convide seus clientes e sua comunidade a doar junto com você e transforme seu alcance em financiamento real e incensurável para as causas.",
-        "bullet1": "Campanhas em parceria de marca e mutirões de doação",
-        "bullet2": "Arredondamentos no checkout e convites de contrapartida aos clientes",
-        "bullet3": "Relatórios de transparência compartilhados que seus clientes podem verificar on-chain",
+        "description": "Convide seus clientes a doar junto com você — transforme seu alcance em financiamento real para as causas.",
+        "bullet1": "Campanhas e mutirões em parceria de marca",
+        "bullet2": "Arredondamentos no checkout e convites de contrapartida",
+        "bullet3": "Relatórios on-chain que os clientes podem verificar",
         "cta": "Planejar uma campanha"
       }
     },

@@ -2765,10 +2765,10 @@
       "promote": {
         "kicker": "03 · Amplifica",
         "title": "Promociona {{appName}} entre tus clientes",
-        "description": "Haz de las donaciones en {{appName}} una pieza central de tus iniciativas filantrópicas. Invita a tus clientes y a tu comunidad a donar contigo, y convierte tu alcance en financiación real e incensurable para las causas.",
-        "bullet1": "Campañas de marca compartida y colectas de donaciones",
-        "bullet2": "Redondeos al pagar e invitaciones de igualación para clientes",
-        "bullet3": "Informes de transparencia compartidos que tus clientes pueden verificar on-chain",
+        "description": "Invita a tus clientes a donar contigo: convierte tu alcance en financiación real para las causas.",
+        "bullet1": "Campañas y colectas de marca compartida",
+        "bullet2": "Redondeos al pagar e invitaciones de igualación",
+        "bullet3": "Informes on-chain que los clientes pueden verificar",
         "cta": "Planifica una campaña"
       }
     },
