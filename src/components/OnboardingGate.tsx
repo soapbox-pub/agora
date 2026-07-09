@@ -930,6 +930,10 @@ function VerifyStep({ expectedNsec, onVerified }: VerifyStepProps) {
           aria-invalid={!!error}
           aria-label={t('onboarding.verify.inputAriaLabel')}
           className="font-mono text-sm"
+          // The global nsec paste guard (useNsecPasteGuard) blocks pasting a
+          // secret key anywhere except opted-in fields. This verification step
+          // *requires* the user to paste their nsec, so mark it as allowed.
+          data-nsec-allowed
         />
 
         {error && (
