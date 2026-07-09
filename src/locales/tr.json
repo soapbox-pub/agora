@@ -780,11 +780,11 @@
     "intro": {
       "eyebrow": "Neden ortak olmalı",
       "title": "Hedeflerinizle uyumlu kurumsal bağışçılık",
-      "lede": "Doğrudan, şeffaf, doğrulanabilir — şirketinizin arkasında durabileceği bir bağışçılık.",
+      "lede": "Doğrudan, şeffaf ve doğrulanabilir. Şirketinizin arkasında durabileceği bir bağışçılık.",
       "cards": {
         "bitcoin": {
           "title": "Bitcoin tabanlı platform",
-          "body": "Bağışlar Bitcoin blok zincirinde gerçekleşir — sınırsız, durdurulamaz ve herkes tarafından doğrulanabilir."
+          "body": "Bağışlar Bitcoin blok zincirinde gerçekleşir. Sınırsız, durdurulamaz ve herkes tarafından doğrulanabilir."
         },
         "verified": {
           "title": "Doğrulanmış kampanya fonları",
@@ -814,7 +814,7 @@
       "browseAll": "veya tüm kampanyalara göz atın"
     },
     "cta": {
-      "body": "Nasıl katkıda bulunmak istediğinizi bize söyleyin, size uygun ortaklığı kurmanıza yardımcı olalım — Dava Fonu bağışı, eşleştirme havuzu veya bir müşteri kampanyası."
+      "body": "Nasıl katkıda bulunmak istediğinizi bize söyleyin, size uygun ortaklığı kurmanıza yardımcı olalım: Dava Fonu bağışı, eşleştirme havuzu veya bir müşteri kampanyası."
     }
   },
   "partners": {
@@ -1440,7 +1440,7 @@
       "seoTitle": "Fon Toplama Kampanyaları",
       "seoDescription": "Sınır Tanımadan Ver. Bitcoin ve Nostr ile güçlendirilen doğrudan, kişiden kişiye bağış.",
       "heroTagline": "Sınır tanımadan<1></1><0>ver.</0>",
-      "heroBody": "Dünyanın her yerindeki insanları ve davaları Bitcoin ile destekleyin. Her bağış doğrudan alıcının cüzdanına ulaşır — sınır yok, aracı yok, geri ödeme yok ve fonları tutan bir platform yok.",
+      "heroBody": "Dünyanın her yerindeki insanları ve davaları Bitcoin ile destekleyin. Her bağış doğrudan alıcının cüzdanına ulaşır; sınır yok, aracı yok, geri ödeme yok ve fonları tutan bir platform yok.",
       "startCampaign": "Kampanya başlat",
       "howItWorks": "Nasıl çalışır",
       "featuredTitle": "Öne çıkan kampanyalar",
@@ -1466,7 +1466,7 @@
         "block1": {
           "heading": "GoFundMe'den farklı",
           "body": "Hiçbir platform bağışlarınızı donduramaz, iade talep edemez veya politika anlaşmazlıkları nedeniyle kampanyanızı sonlandıramaz. Arada Stripe, Visa veya banka yok; kampanya ortasında sizi kesemezler.",
-          "bullet1": "Dondurmaya dayanıklı — platform vetosu yok",
+          "bullet1": "Dondurmaya dayanıklı, platform vetosu yok",
           "bullet2": "Hiçbir ödeme işlemcisi fişi çekemez",
           "bullet3": "Sıfır platform ücreti"
         },

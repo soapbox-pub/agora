@@ -780,11 +780,11 @@
     "intro": {
       "eyebrow": "Kwa nini kushirikiana",
       "title": "Utoaji wa kampuni unaolingana na malengo yako",
-      "lede": "Moja kwa moja, wazi, unaothibitishika — utoaji ambao kampuni yako inaweza kuusimamia.",
+      "lede": "Moja kwa moja, wazi, na unaothibitishika. Utoaji ambao kampuni yako inaweza kuusimamia.",
       "cards": {
         "bitcoin": {
           "title": "Jukwaa linalotegemea Bitcoin",
-          "body": "Michango inakamilishwa kwenye blockchain ya Bitcoin — bila mipaka, haizuiliki, na inaweza kuthibitishwa na yeyote."
+          "body": "Michango inakamilishwa kwenye blockchain ya Bitcoin. Ni bila mipaka, haizuiliki, na inaweza kuthibitishwa na yeyote."
         },
         "verified": {
           "title": "Mifuko ya kampeni iliyothibitishwa",
@@ -814,7 +814,7 @@
       "browseAll": "au vinjari kampeni zote"
     },
     "cta": {
-      "body": "Tuambie jinsi ungependa kushiriki na tutakusaidia kuanzisha ushirikiano unaofaa — zawadi ya Mfuko wa Malengo, mfuko wa kuoanisha michango, au kampeni ya wateja."
+      "body": "Tuambie jinsi ungependa kushiriki na tutakusaidia kuanzisha ushirikiano unaofaa: zawadi ya Mfuko wa Malengo, mfuko wa kuoanisha michango, au kampeni ya wateja."
     }
   },
   "partners": {
@@ -1440,7 +1440,7 @@
       "seoTitle": "Wakusanyaji wa fedha",
       "seoDescription": "Toa Bila Mipaka. Utoaji wa moja kwa moja, mtu kwa mtu, unaowezeshwa na Bitcoin na Nostr.",
       "heroTagline": "Toa bila<1></1><0>mipaka.</0>",
-      "heroBody": "Unga mkono watu na malengo popote duniani kwa kutumia Bitcoin. Kila zawadi huenda moja kwa moja kwenye pochi ya mpokeaji — bila mipaka, bila wapatanishi, bila marejesho, na bila jukwaa kushikilia fedha.",
+      "heroBody": "Unga mkono watu na malengo popote duniani kwa kutumia Bitcoin. Kila zawadi huenda moja kwa moja kwenye pochi ya mpokeaji, bila mipaka, bila wapatanishi, bila marejesho, na bila jukwaa kushikilia fedha.",
       "startCampaign": "Anza kampeni",
       "howItWorks": "Jinsi inavyofanya kazi",
       "featuredTitle": "Kampeni Maarufu",
@@ -1466,7 +1466,7 @@
         "block1": {
           "heading": "Tofauti na GoFundMe",
           "body": "Hakuna jukwaa linaloweza kufungia michango yako, kudai marejesho, au kusitisha kampeni yako kwa sababu ya tofauti za sera. Hakuna Stripe, Visa, au benki iliyo katikati inayoweza kukukata wakati kampeni inaendelea.",
-          "bullet1": "Haiwezi kufungiwa — hakuna kura ya turufu ya jukwaa",
+          "bullet1": "Haiwezi kufungiwa, hakuna kura ya turufu ya jukwaa",
           "bullet2": "Hakuna mchakatishaji malipo anayeweza kukata huduma",
           "bullet3": "Ada za jukwaa ni sifuri"
         },

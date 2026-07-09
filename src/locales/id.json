@@ -780,11 +780,11 @@
     "intro": {
       "eyebrow": "Mengapa bermitra",
       "title": "Kedermawanan korporat yang selaras dengan tujuan Anda",
-      "lede": "Langsung, transparan, dapat diverifikasi — pemberian yang dapat didukung penuh oleh perusahaan Anda.",
+      "lede": "Langsung, transparan, dan dapat diverifikasi. Pemberian yang dapat didukung penuh oleh perusahaan Anda.",
       "cards": {
         "bitcoin": {
           "title": "Platform berbasis Bitcoin",
-          "body": "Donasi diselesaikan di blockchain Bitcoin — tanpa batas negara, tak terbendung, dapat diverifikasi oleh siapa pun."
+          "body": "Donasi diselesaikan di blockchain Bitcoin. Tanpa batas negara, tak terbendung, dan dapat diverifikasi oleh siapa pun."
         },
         "verified": {
           "title": "Dana kampanye terverifikasi",
@@ -814,7 +814,7 @@
       "browseAll": "atau jelajahi semua kampanye"
     },
     "cta": {
-      "body": "Beri tahu kami bagaimana Anda ingin terlibat dan kami akan membantu menyiapkan kemitraan yang tepat — pemberian Dana Perjuangan, dana padanan, atau kampanye pelanggan."
+      "body": "Beri tahu kami bagaimana Anda ingin terlibat dan kami akan membantu menyiapkan kemitraan yang tepat: pemberian Dana Perjuangan, dana padanan, atau kampanye pelanggan."
     }
   },
   "partners": {
@@ -1440,7 +1440,7 @@
       "seoTitle": "Penggalangan Dana",
       "seoDescription": "Memberi Tanpa Batas. Pemberian langsung antar sesama yang ditenagai oleh Bitcoin dan Nostr.",
       "heroTagline": "Memberi tanpa<1></1><0>batas.</0>",
-      "heroBody": "Dukung orang dan perjuangan di seluruh dunia dengan Bitcoin. Setiap pemberian langsung masuk ke dompet penerima — tanpa batas negara, tanpa perantara, tanpa chargeback, dan tanpa platform yang menahan dana.",
+      "heroBody": "Dukung orang dan perjuangan di seluruh dunia dengan Bitcoin. Setiap pemberian langsung masuk ke dompet penerima, tanpa batas negara, tanpa perantara, tanpa chargeback, dan tanpa platform yang menahan dana.",
       "startCampaign": "Mulai kampanye",
       "howItWorks": "Cara kerjanya",
       "featuredTitle": "Kampanye unggulan",
@@ -1466,7 +1466,7 @@
         "block1": {
           "heading": "Berbeda dari GoFundMe",
           "body": "Tidak ada platform yang bisa membekukan donasi Anda, menuntut pengembalian dana, atau menghentikan kampanye karena perbedaan kebijakan. Tidak ada Stripe, Visa, atau bank di tengah yang bisa memutus akses Anda saat kampanye berjalan.",
-          "bullet1": "Tahan pembekuan — tanpa veto platform",
+          "bullet1": "Tahan pembekuan, tanpa veto platform",
           "bullet2": "Tidak ada pemroses pembayaran yang bisa mencabut akses",
           "bullet3": "Nol biaya platform"
         },

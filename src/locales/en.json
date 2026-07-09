@@ -783,7 +783,7 @@
       "eyebrow": "Partner with {{appName}}",
       "headlinePart1": "Fund what",
       "headlineHighlight": "matters.",
-      "body": "{{appName}} connects donors directly to causes through Bitcoin — no frozen accounts, no middlemen, no platform taking a cut. Bring the same uncensorable, transparent giving to your company's philanthropy.",
+      "body": "{{appName}} connects donors directly to causes through Bitcoin. No frozen accounts, no middlemen, no platform taking a cut. Bring the same uncensorable, transparent giving to your company's philanthropy.",
       "trustChips": {
         "nonCustodial": "Non-custodial",
         "transparent": "Transparent on-chain",
@@ -795,11 +795,11 @@
     "intro": {
       "eyebrow": "Why partner",
       "title": "Corporate giving that aligns with your goals",
-      "lede": "Direct, transparent, verifiable — giving your company can stand behind.",
+      "lede": "Direct, transparent, and verifiable. Giving your company can stand behind.",
       "cards": {
         "bitcoin": {
           "title": "Bitcoin-native platform",
-          "body": "Donations settle on the Bitcoin blockchain — borderless, unstoppable, verifiable by anyone."
+          "body": "Donations settle on the Bitcoin blockchain. Borderless, unstoppable, and verifiable by anyone."
         },
         "verified": {
           "title": "Verified campaign funds",
@@ -814,7 +814,7 @@
     "ways": {
       "eyebrow": "Ways to get involved",
       "title": "Three ways to partner",
-      "lede": "Pick the level of involvement that fits your company — or combine all three.",
+      "lede": "Pick the level of involvement that fits your company, or combine all three.",
       "causeFunds": {
         "kicker": "01 · Direct support",
         "title": "Donate to {{appName}} Cause Funds",
@@ -836,7 +836,7 @@
       "promote": {
         "kicker": "03 · Amplify",
         "title": "Promote {{appName}} to your customers",
-        "description": "Invite your customers to give alongside you — turn your reach into real funding for causes.",
+        "description": "Invite your customers to give alongside you and turn your reach into real funding for causes.",
         "bullet1": "Co-branded campaigns and drives",
         "bullet2": "Checkout round-ups and match prompts",
         "bullet3": "On-chain reports customers can verify",
@@ -852,7 +852,7 @@
     "cta": {
       "eyebrow": "Let's talk",
       "title": "Ready to put your company behind a cause?",
-      "body": "Tell us how you'd like to get involved and we'll help you set up the right partnership — Cause Fund gift, matching pool, or a customer campaign.",
+      "body": "Tell us how you'd like to get involved and we'll help you set up the right partnership: a Cause Fund gift, a matching pool, or a customer campaign.",
       "button": "Contact the {{appName}} team",
       "followLine": "Prefer Nostr?",
       "followLink": "Follow Team Soapbox",
@@ -1482,7 +1482,7 @@
       "seoTitle": "Fundraisers",
       "seoDescription": "Give Without Borders. Direct, person-to-person giving powered by Bitcoin and Nostr.",
       "heroTagline": "Give without<1></1><0>borders.</0>",
-      "heroBody": "Support people and causes anywhere in the world with Bitcoin. Every gift goes straight to the recipient's wallet — no borders, no middlemen, no chargebacks, and no platform holding the funds.",
+      "heroBody": "Support people and causes anywhere in the world with Bitcoin. Every gift goes straight to the recipient's wallet, with no borders, no middlemen, no chargebacks, and no platform holding the funds.",
       "startCampaign": "Start a campaign",
       "verifyCampaigns": "Verify campaigns",
       "howItWorks": "How it works",
@@ -1509,7 +1509,7 @@
         "block1": {
           "heading": "Unlike GoFundMe",
           "body": "No platform can freeze your donations, demand refunds, or terminate your campaign over policy disagreements. No Stripe, no Visa, no bank sits in the middle and can cut you off mid-campaign.",
-          "bullet1": "Freeze-proof — no platform veto",
+          "bullet1": "Freeze-proof, no platform veto",
           "bullet2": "No payment processor can pull the plug",
           "bullet3": "Zero platform fees"
         },

@@ -949,7 +949,7 @@
       "seoTitle": "Mishandirapamwe yekuunganidza mari",
       "seoDescription": "Ipa Pasina Miganhu. Kupa kwakananga, munhu-kumunhu, kunotsigirwa neBitcoin neNostr.",
       "heroTagline": "Ipa pasina<1></1><0>miganhu.</0>",
-      "heroBody": "Tsigira vanhu nezvinangwa chero kupi munyika neBitcoin. Chipo chimwe nechimwe chinobva chananga kuchikwama chemugamuchiri — pasina miganhu, pasina vamiririri, pasina kudzoreredzwa kwemari, uye pasina puratifomu inobata mari.",
+      "heroBody": "Tsigira vanhu nezvinangwa chero kupi munyika neBitcoin. Chipo chimwe nechimwe chinobva chananga kuchikwama chemugamuchiri, pasina miganhu, pasina vamiririri, pasina kudzoreredzwa kwemari, uye pasina puratifomu inobata mari.",
       "startCampaign": "Tanga mushandirapamwe",
       "howItWorks": "Mashandire awo",
       "featuredTitle": "Mishandirapamwe Yakatsaurwa",
@@ -971,7 +971,7 @@
         "block1": {
           "heading": "Kusiyana neGoFundMe",
           "body": "Hapana puratifomu inogona kudzivirira zvipo zvako, kukumbira kudzoserwa kwemari, kana kupedza mushandirapamwe wako pamusoro pekusawirirana kwemitemo. Hapana Stripe, hapana Visa, hapana bhanga riri pakati ringakucherekedza pakati pemushandirapamwe.",
-          "bullet1": "Hazvigoneki kudzivirira — hapana puratifomu inotonga",
+          "bullet1": "Hazvigoneki kudzivirira, hapana puratifomu inotonga",
           "bullet2": "Hapana mutsigiri wokubhadhara anogona kucherekedza",
           "bullet3": "Hapana mari yepuratifomu"
         },
@@ -2710,11 +2710,11 @@
     "intro": {
       "eyebrow": "Sei kushanda pamwe",
       "title": "Kupa kwemakambani kunoenderana nezvinangwa zvenyu",
-      "lede": "Kwakananga, pachena, kunosimbisika — kupa kunogona kutsigirwa nekambani yako.",
+      "lede": "Kwakananga, pachena, uye kunosimbisika. Kupa kunogona kutsigirwa nekambani yako.",
       "cards": {
         "bitcoin": {
           "title": "Puratifomu yakavakirwa paBitcoin",
-          "body": "Zvipo zvinopedziswa pablockchain yeBitcoin — pasina miganhu, hazvimisiki, zvinosimbisika nemunhu wese."
+          "body": "Zvipo zvinopedziswa pablockchain yeBitcoin. Hazvina miganhu, hazvimisiki, uye zvinosimbisika nemunhu wese."
         },
         "verified": {
           "title": "Mari yemishandirapamwe yakasimbiswa",
@@ -2744,7 +2744,7 @@
       "browseAll": "kana tarisa mishandirapamwe yose"
     },
     "cta": {
-      "body": "Tiudze kuti ungada kubatanidzwa sei uye tichakubatsira kugadzira ushamwari hwakakodzera — chipo cheHomwe yeZvinangwa, homwe yekuwedzera zvipo, kana mushandirapamwe wevatengi."
+      "body": "Tiudze kuti ungada kubatanidzwa sei uye tichakubatsira kugadzira ushamwari hwakakodzera: chipo cheHomwe yeZvinangwa, homwe yekuwedzera zvipo, kana mushandirapamwe wevatengi."
     }
   },
   "partners": {

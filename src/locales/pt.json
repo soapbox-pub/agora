@@ -782,7 +782,7 @@
       "eyebrow": "Seja parceiro do {{appName}}",
       "headlinePart1": "Financie o que",
       "headlineHighlight": "importa.",
-      "body": "O {{appName}} conecta doadores diretamente às causas por meio do Bitcoin — sem contas congeladas, sem intermediários, sem plataforma ficando com uma parte. Leve essa mesma filantropia transparente e incensurável para a sua empresa.",
+      "body": "O {{appName}} conecta doadores diretamente às causas por meio do Bitcoin. Sem contas congeladas, sem intermediários, sem plataforma ficando com uma parte. Leve essa mesma filantropia transparente e incensurável para a sua empresa.",
       "trustChips": {
         "nonCustodial": "Sem custódia",
         "transparent": "Transparente on-chain",
@@ -794,11 +794,11 @@
     "intro": {
       "eyebrow": "Por que ser parceiro",
       "title": "Filantropia corporativa alinhada aos seus objetivos",
-      "lede": "Direta, transparente e verificável — uma filantropia que sua empresa pode apoiar de verdade.",
+      "lede": "Direta, transparente e verificável. Uma filantropia que sua empresa pode apoiar de verdade.",
       "cards": {
         "bitcoin": {
           "title": "Plataforma nativa de Bitcoin",
-          "body": "As doações são liquidadas na blockchain do Bitcoin — sem fronteiras, imparáveis e verificáveis por qualquer pessoa."
+          "body": "As doações são liquidadas na blockchain do Bitcoin. Sem fronteiras, imparáveis e verificáveis por qualquer pessoa."
         },
         "verified": {
           "title": "Fundos de campanhas verificadas",
@@ -813,7 +813,7 @@
     "ways": {
       "eyebrow": "Formas de participar",
       "title": "Três formas de parceria",
-      "lede": "Escolha o nível de envolvimento que combina com a sua empresa — ou combine os três.",
+      "lede": "Escolha o nível de envolvimento que combina com a sua empresa, ou combine os três.",
       "causeFunds": {
         "kicker": "01 · Apoio direto",
         "title": "Doe aos Fundos de Causas do {{appName}}",
@@ -835,7 +835,7 @@
       "promote": {
         "kicker": "03 · Amplifique",
         "title": "Divulgue o {{appName}} aos seus clientes",
-        "description": "Convide seus clientes a doar junto com você — transforme seu alcance em financiamento real para as causas.",
+        "description": "Convide seus clientes a doar junto com você e transforme seu alcance em financiamento real para as causas.",
         "bullet1": "Campanhas e mutirões em parceria de marca",
         "bullet2": "Arredondamentos no checkout e convites de contrapartida",
         "bullet3": "Relatórios on-chain que os clientes podem verificar",
@@ -851,7 +851,7 @@
     "cta": {
       "eyebrow": "Vamos conversar",
       "title": "Pronto para colocar sua empresa por trás de uma causa?",
-      "body": "Conte como você gostaria de participar e ajudaremos a montar a parceria certa — doação a um Fundo de Causas, fundo de contrapartida ou uma campanha com seus clientes.",
+      "body": "Conte como você gostaria de participar e ajudaremos a montar a parceria certa: doação a um Fundo de Causas, fundo de contrapartida ou uma campanha com seus clientes.",
       "button": "Fale com a equipe do {{appName}}",
       "followLine": "Prefere o Nostr?",
       "followLink": "Siga a Team Soapbox",
@@ -1481,7 +1481,7 @@
       "seoTitle": "Arrecadações",
       "seoDescription": "Doe sem fronteiras. Doação direta, de pessoa para pessoa, movida por Bitcoin e Nostr.",
       "heroTagline": "Doe sem<1></1><0>fronteiras.</0>",
-      "heroBody": "Apoie pessoas e causas em qualquer lugar do mundo com Bitcoin. Cada doação vai direto para a carteira do beneficiário — sem fronteiras, sem intermediários, sem estornos e sem plataforma segurando os fundos.",
+      "heroBody": "Apoie pessoas e causas em qualquer lugar do mundo com Bitcoin. Cada doação vai direto para a carteira do beneficiário, sem fronteiras, sem intermediários, sem estornos e sem plataforma segurando os fundos.",
       "startCampaign": "Iniciar uma campanha",
       "howItWorks": "Como funciona",
       "featuredTitle": "Campanhas em destaque",
@@ -1503,7 +1503,7 @@
         "block1": {
           "heading": "Diferente do GoFundMe",
           "body": "Nenhuma plataforma pode congelar suas doações, exigir reembolsos ou encerrar sua campanha por divergências de política. Sem Stripe, sem Visa, sem banco no meio que pode te cortar no meio da campanha.",
-          "bullet1": "À prova de congelamento — sem veto de plataforma",
+          "bullet1": "À prova de congelamento, sem veto de plataforma",
           "bullet2": "Nenhum processador de pagamento pode puxar o plugue",
           "bullet3": "Zero taxas de plataforma"
         },
