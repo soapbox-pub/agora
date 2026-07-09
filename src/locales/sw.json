@@ -809,8 +809,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Mifuko ya Malengo",
-      "title": "Unga mkono malengo yanayokugusa",
-      "lede": "Kila mfuko hukusanya michango na kuigawa kwa kampeni zilizothibitishwa. Toa mara moja, saidia wengi.",
+      "title": "Mifuko ya Kampeni Zilizothibitishwa ya {{appName}}",
+      "lede": "Kila mfuko hukusanya michango na kuigawa kwa kampeni zilizothibitishwa.",
       "browseAll": "au vinjari kampeni zote"
     },
     "cta": {

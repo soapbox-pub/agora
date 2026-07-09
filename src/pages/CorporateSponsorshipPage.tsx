@@ -36,7 +36,7 @@ const SPONSOR_CONTACT_MAILTO =
 const AGORA_FUNDS_LIST_SLUG = 'agora-funds';
 
 /** Cap on how many Cause Fund campaigns the showcase grid renders. */
-const FUNDS_SHOWCASE_CAP = 6;
+const FUNDS_SHOWCASE_CAP = 8;
 
 /**
  * The /sponsors page. A landing-style document for companies that want to
@@ -379,6 +379,7 @@ function FeatureCard({ icon, title, body }: FeatureCardProps) {
  */
 function CauseFundsShowcase() {
   const { t } = useTranslation();
+  const { config } = useAppContext();
 
   const { list, isLoading: listLoading } = useCampaignList(AGORA_FUNDS_LIST_SLUG);
 
@@ -409,18 +410,18 @@ function CauseFundsShowcase() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow={t('corporateSponsorship.fundsShowcase.eyebrow')}
-          title={t('corporateSponsorship.fundsShowcase.title')}
+          title={t('corporateSponsorship.fundsShowcase.title', { appName: config.appName })}
           lede={t('corporateSponsorship.fundsShowcase.lede')}
         />
 
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-            {Array.from({ length: 3 }).map((_, i) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {Array.from({ length: 4 }).map((_, i) => (
               <CampaignCardSkeleton key={i} variant="compact" />
             ))}
           </div>
         ) : ordered.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {ordered.map((campaign) => (
               <CampaignCard key={campaign.aTag} campaign={campaign} variant="compact" />
             ))}

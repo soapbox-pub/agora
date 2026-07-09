@@ -2774,8 +2774,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Fondos de Causas",
-      "title": "Respalda las causas que te mueven",
-      "lede": "Cada fondo agrupa donaciones y las distribuye a campañas verificadas. Dona una vez, apoya a muchas.",
+      "title": "Fondos de Campañas Verificadas de {{appName}}",
+      "lede": "Cada fondo agrupa donaciones y las distribuye a campañas verificadas.",
       "browseAll": "o explora todas las campañas"
     },
     "cta": {

@@ -2739,8 +2739,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Homwe dzeZvinangwa",
-      "title": "Tsigira zvinangwa zvinokubata moyo",
-      "lede": "Homwe imwe neimwe inounganidza zvipo yozvigovera kumishandirapamwe yakasimbiswa. Ipa kamwe chete, utsigire zvakawanda.",
+      "title": "Homwe dzeMishandirapamwe Yakasimbiswa dze{{appName}}",
+      "lede": "Homwe imwe neimwe inounganidza zvipo yozvigovera kumishandirapamwe yakasimbiswa.",
       "browseAll": "kana tarisa mishandirapamwe yose"
     },
     "cta": {

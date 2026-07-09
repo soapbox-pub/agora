@@ -809,8 +809,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Dava Fonları",
-      "title": "Sizi harekete geçiren davaları destekleyin",
-      "lede": "Her fon bağışları bir havuzda toplar ve doğrulanmış kampanyalara dağıtır. Bir kez verin, birçoğunu destekleyin.",
+      "title": "{{appName}} Doğrulanmış Kampanya Fonları",
+      "lede": "Her fon bağışları bir havuzda toplar ve doğrulanmış kampanyalara dağıtır.",
       "browseAll": "veya tüm kampanyalara göz atın"
     },
     "cta": {

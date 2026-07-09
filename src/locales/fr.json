@@ -844,8 +844,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Fonds de Causes",
-      "title": "Soutenez les causes qui vous touchent",
-      "lede": "Chaque fonds met en commun les dons et les distribue à des campagnes vérifiées. Donnez une fois, soutenez-en plusieurs.",
+      "title": "Fonds de Campagnes Vérifiées {{appName}}",
+      "lede": "Chaque fonds met en commun les dons et les distribue à des campagnes vérifiées.",
       "browseAll": "ou parcourez toutes les campagnes"
     },
     "cta": {

@@ -845,8 +845,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Cause Funds",
-      "title": "Back the causes that move you",
-      "lede": "Each fund pools donations and distributes them to verified campaigns. Give once, support many.",
+      "title": "{{appName}} Verified Campaign Funds",
+      "lede": "Each fund pools donations and distributes them to verified campaigns.",
       "browseAll": "or browse all campaigns"
     },
     "cta": {

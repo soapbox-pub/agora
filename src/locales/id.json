@@ -809,8 +809,8 @@
     },
     "fundsShowcase": {
       "eyebrow": "Dana Perjuangan",
-      "title": "Dukung perjuangan yang menggerakkan hati Anda",
-      "lede": "Setiap dana menggabungkan donasi dan menyalurkannya ke kampanye terverifikasi. Beri sekali, dukung banyak.",
+      "title": "Dana Kampanye Terverifikasi {{appName}}",
+      "lede": "Setiap dana menggabungkan donasi dan menyalurkannya ke kampanye terverifikasi.",
       "browseAll": "atau jelajahi semua kampanye"
     },
     "cta": {
