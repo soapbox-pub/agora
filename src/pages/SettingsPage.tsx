@@ -9,6 +9,7 @@ import {
   Bell,
   SlidersHorizontal,
   ShieldCheck,
+  VolumeX,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -73,6 +74,16 @@ const settingsSections: SettingsSection[] = [
     path: '/settings/notifications',
     icon: <Bell className="size-[18px]" />,
     tile: 'bg-gradient-to-b from-rose-400 to-rose-600',
+    group: 'app',
+    requiresAuth: true,
+  },
+  {
+    id: 'content',
+    labelKey: 'settings.sections.content',
+    descriptionKey: 'settings.sections.contentDesc',
+    path: '/settings/content',
+    icon: <VolumeX className="size-[18px]" />,
+    tile: 'bg-gradient-to-b from-fuchsia-400 to-fuchsia-600',
     group: 'app',
     requiresAuth: true,
   },

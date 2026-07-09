@@ -1,4 +1,5 @@
 import { useNostr } from '@nostrify/react';
+import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { NostrEvent, NostrFilter, NostrSigner } from '@nostrify/nostrify';
 import { nip19 } from 'nostr-tools';
@@ -7,6 +8,7 @@ import { useCurrentUser } from './useCurrentUser';
 import { useNostrPublish } from './useNostrPublish';
 import { useAppContext } from './useAppContext';
 import { fetchFreshEvent } from '@/lib/fetchFreshEvent';
+import { isNostrId } from '@/lib/nostrId';
 import { getStorageKey } from '@/lib/storageKey';
 
 export interface MuteListItem {
@@ -48,10 +50,12 @@ export function parseMuteTags(tags: string[][]): MuteListItem[] {
     const [tagName, value] = tag;
     if (!value) continue;
     switch (tagName) {
-      case 'p': items.push({ type: 'pubkey', value }); break;
+      // Pubkey and event-id mute entries must be valid 64-char hex — anything
+      // else would crash nip19 encoders in the mute-list management UI.
+      case 'p': if (isNostrId(value)) items.push({ type: 'pubkey', value }); break;
       case 't': items.push({ type: 'hashtag', value }); break;
       case 'word': items.push({ type: 'word', value }); break;
-      case 'e': items.push({ type: 'thread', value }); break;
+      case 'e': if (isNostrId(value)) items.push({ type: 'thread', value }); break;
     }
   }
   return items;
@@ -142,6 +146,13 @@ async function getAllMuteItems(
 }
 
 /**
+ * Stable empty-array identity returned while the mute list is loading, so
+ * consumers that memoize on `muteItems` (feed filters) don't recompute on
+ * every render.
+ */
+const EMPTY_MUTE_ITEMS: MuteListItem[] = [];
+
+/**
  * Hook to manage NIP-51 mute lists (kind 10000)
  * All mute items are encrypted for privacy
  */
@@ -153,8 +164,14 @@ export function useMuteList() {
   const { mutateAsync: publishEvent } = useNostrPublish();
   const cacheKey = getMuteCacheKey(config.appId);
 
-  // Placeholder from localStorage so mutes apply immediately on page load
-  const cachedItems = user ? getCachedMuteItems(cacheKey, user.pubkey) : undefined;
+  // Placeholder from localStorage so mutes apply immediately on page load.
+  // Memoized — this hook runs in every NoteCard, and an unmemoized read would
+  // JSON.parse the cached list on every render of every card.
+  const userPubkey = user?.pubkey;
+  const cachedItems = useMemo(
+    () => userPubkey ? getCachedMuteItems(cacheKey, userPubkey) : undefined,
+    [cacheKey, userPubkey],
+  );
 
   // Query the current mute list
   const query = useQuery({
@@ -200,13 +217,27 @@ export function useMuteList() {
     mutationFn: async (item: MuteListItem) => {
       if (!user) throw new Error('User not logged in');
 
-      // Normalize the value based on type
+      // Normalize the value based on type. Throw on unrecognisable input
+      // rather than silently storing garbage that would crash renderers.
       let normalizedValue = item.value;
-      
+
       if (item.type === 'pubkey') {
-        normalizedValue = normalizePubkey(item.value);
+        const np = normalizePubkey(item.value);
+        if (!np) throw new Error(`Invalid pubkey: ${item.value}`);
+        normalizedValue = np;
       } else if (item.type === 'thread') {
-        normalizedValue = normalizeEventId(item.value);
+        const ne = normalizeEventId(item.value);
+        if (!ne) throw new Error(`Invalid event id: ${item.value}`);
+        normalizedValue = ne;
+      }
+
+      // Never let a user mute their own pubkey. Doing so blanks their entire
+      // authored feed everywhere isEventMuted runs (feeds, MutedContentGuard),
+      // while notifications from others keep working — an extremely confusing
+      // state that a non-technical user has no in-app recourse for. This is the
+      // belt-and-braces guard behind the UI-level checks at each call site.
+      if (item.type === 'pubkey' && normalizedValue === user.pubkey) {
+        throw new Error('You cannot mute yourself');
       }
 
       // ① Fetch the freshest kind 10000 from relays before mutating
@@ -223,6 +254,12 @@ export function useMuteList() {
 
       // Update localStorage immediately so it survives page refresh
       setCachedMuteItems(config.appId, user.pubkey, newItems);
+
+      // Optimistically update the in-memory muteItems cache so isMuted()
+      // flips immediately, before the relay round-trip.
+      if (query.data?.id) {
+        queryClient.setQueryData<MuteListItem[]>(['muteItems', query.data.id], newItems);
+      }
 
       await updateMuteList(newItems, prev);
     },
@@ -248,6 +285,12 @@ export function useMuteList() {
       // Update localStorage immediately so it survives page refresh
       setCachedMuteItems(config.appId, user.pubkey, newItems);
 
+      // Optimistically update the in-memory muteItems cache so isMuted()
+      // flips immediately, before the relay round-trip.
+      if (query.data?.id) {
+        queryClient.setQueryData<MuteListItem[]>(['muteItems', query.data.id], newItems);
+      }
+
       await updateMuteList(newItems, prev);
     },
     onSuccess: () => {
@@ -261,11 +304,13 @@ export function useMuteList() {
     mutationFn: async (pubkeys: string[]): Promise<number> => {
       if (!user) throw new Error('User not logged in');
 
-      // Normalize + dedupe input
+      // Normalize + dedupe input — drop entries we can't recognise, and never
+      // mute the user's own pubkey (see addMute for why self-muting is toxic).
       const normalized = new Set<string>();
       for (const pk of pubkeys) {
         if (!pk) continue;
-        normalized.add(normalizePubkey(pk));
+        const np = normalizePubkey(pk);
+        if (np && np !== user.pubkey) normalized.add(np);
       }
 
       // ① Fetch the freshest kind 10000 from relays
@@ -290,6 +335,12 @@ export function useMuteList() {
 
       // Update localStorage immediately so mutes apply on refresh
       setCachedMuteItems(config.appId, user.pubkey, newItems);
+
+      // Optimistically update the in-memory muteItems cache so muted posts
+      // disappear immediately, before the relay round-trip.
+      if (query.data?.id) {
+        queryClient.setQueryData<MuteListItem[]>(['muteItems', query.data.id], newItems);
+      }
 
       await updateMuteList(newItems, prev);
 
@@ -362,7 +413,7 @@ export function useMuteList() {
 
   return {
     muteList: query.data,
-    muteItems: muteItems.data || [],
+    muteItems: muteItems.data ?? EMPTY_MUTE_ITEMS,
     isLoading: query.isLoading || muteItems.isLoading,
     isError: query.isError || muteItems.isError,
     error: query.error || muteItems.error,
@@ -378,12 +429,17 @@ export function useMuteList() {
 }
 
 /**
- * Normalize a pubkey value that might be hex or npub
+ * Normalize a pubkey value that might be hex or npub/nprofile.
+ *
+ * Returns `undefined` when the value isn't a recognisable pubkey form. The
+ * previous behaviour of returning the original (invalid) string silently
+ * polluted the mute list with garbage that crashed `nip19.npubEncode`
+ * downstream in rendering — callers must now drop the entry.
  */
-function normalizePubkey(value: string): string {
-  // If it looks like a hex pubkey (64 chars), return as-is
-  if (/^[0-9a-f]{64}$/i.test(value)) {
-    return value.toLowerCase();
+function normalizePubkey(value: string): string | undefined {
+  // If it's a valid hex pubkey, return as-is.
+  if (isNostrId(value)) {
+    return value;
   }
 
   // If it's an npub or nprofile, try to decode it
@@ -396,21 +452,25 @@ function normalizePubkey(value: string): string {
         return decoded.data.pubkey;
       }
     } catch (error) {
-      // Fall through to return original value
+      // Fall through to return undefined
       console.warn('Failed to decode npub/nprofile:', error);
     }
   }
 
-  return value;
+  return undefined;
 }
 
 /**
- * Normalize an event ID that might be hex or note
+ * Normalize an event ID that might be hex or note/nevent.
+ *
+ * Returns `undefined` when the value isn't a recognisable event-id form.
+ * See {@link normalizePubkey} for why we no longer fall through to the
+ * original string.
  */
-function normalizeEventId(value: string): string {
-  // If it looks like a hex event ID (64 chars), return as-is
-  if (/^[0-9a-f]{64}$/i.test(value)) {
-    return value.toLowerCase();
+function normalizeEventId(value: string): string | undefined {
+  // If it's a valid hex event ID, return as-is.
+  if (isNostrId(value)) {
+    return value;
   }
 
   // If it's a note or nevent, try to decode it
@@ -423,10 +483,10 @@ function normalizeEventId(value: string): string {
         return decoded.data.id;
       }
     } catch (error) {
-      // Fall through to return original value
+      // Fall through to return undefined
       console.warn('Failed to decode note/nevent:', error);
     }
   }
 
-  return value;
+  return undefined;
 }

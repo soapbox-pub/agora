@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Bookmark,
-  BellOff,
   VolumeX,
   Flag,
   Pin,
@@ -529,24 +528,6 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
     close();
   };
 
-  const handleMuteConversation = () => {
-    impactLight();
-    const rootTag = event.tags.find(([name, , , marker]) => name === 'e' && marker === 'root');
-    const threadId = rootTag?.[1] ?? event.id;
-    addMute.mutate(
-      { type: 'thread', value: threadId },
-      {
-        onSuccess: () => {
-          toast({ title: t('noteMoreMenu.toast.convoMuted') });
-        },
-        onError: () => {
-          toast({ title: t('noteMoreMenu.toast.convoMuteFailed'), variant: 'destructive' });
-        },
-      },
-    );
-    close();
-  };
-
   const handleMuteUser = () => {
     const muteItem = { type: 'pubkey' as const, value: event.pubkey };
     const mutation = userMuted ? removeMute : addMute;
@@ -610,13 +591,6 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
               icon={<Pin className={cn('size-5', postIsPinnedInCountry && 'fill-current')} />}
               label={postIsPinnedInCountry ? t('noteMoreMenu.unpinCountry') : t('noteMoreMenu.pinCountry')}
               onClick={handleToggleCountryPin}
-            />
-          )}
-          {!isOwnPost && (
-            <MenuItem
-              icon={<BellOff className="size-5" />}
-              label={isCampaign ? t('noteMoreMenu.muteCampaign') : t('noteMoreMenu.muteConversation')}
-              onClick={handleMuteConversation}
             />
           )}
           {!isOwnPost && (

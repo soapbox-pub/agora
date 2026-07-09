@@ -539,8 +539,6 @@
     "unpinProfile": "Profilden sabitlemeyi kaldır",
     "pinCountry": "Ülke akışına sabitle",
     "unpinCountry": "Ülke akışından sabitlemeyi kaldır",
-    "muteConversation": "Sohbeti sessize al",
-    "muteCampaign": "Kampanyayı sessize al",
     "mute": "@{{name}} kullanıcısını sessize al",
     "unmute": "@{{name}} kullanıcısının sesini aç",
     "report": "@{{name}} kullanıcısını şikayet et",
@@ -559,8 +557,6 @@
       "countryUnpinned": "Ülke akışından sabitleme kaldırıldı",
       "countryPinFailed": "Ülke akışına sabitlenemedi",
       "countryUnpinFailed": "Ülke akışından sabitleme kaldırılamadı",
-      "convoMuted": "Sohbet sessize alındı",
-      "convoMuteFailed": "Sohbet sessize alınamadı",
       "muted": "@{{name}} sessize alındı",
       "unmuted": "@{{name}} sesi açıldı",
       "muteFailed": "Kullanıcı sessize alınamadı",
@@ -587,6 +583,30 @@
       "broadcast": "Event'i Yayınla",
       "broadcasting": "Yayınlanıyor..."
     }
+  },
+  "content": {
+    "title": "İçerik",
+    "description": "Sessize alınan kullanıcıları, etiketleri ve kelimeleri yönetin.",
+    "muted": {
+      "heading": "Sessize Alınan İçerik",
+      "subheading": "Akışlarınızda neyin görüneceğine siz karar verirsiniz. Sesini açmak için bir öğeyi kaldırın. Sessize almalar şifreli ve gizlidir.",
+      "empty": "Henüz kimseyi sessize almadınız.",
+      "removed": "Sessize alma listesinden kaldırıldı",
+      "removeFailed": "Sessize alma listesinden kaldırılamadı",
+      "removeAria": "{{value}} için sessize almayı kaldır",
+      "types": {
+        "pubkey": "Kullanıcılar",
+        "hashtag": "Etiketler",
+        "word": "Kelimeler",
+        "thread": "Konular"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Sessize Alınan İçerik",
+    "description": "Bu gönderi sessize aldığınız birinden.",
+    "showAnyway": "Yine de Göster",
+    "manageMutes": "Sessize alınan içeriği yönet"
   },
   "policyPages": {
     "privacy": {
@@ -1618,6 +1638,8 @@
       "networkDesc": "Veri kullanımı, röleler ve dosya yükleme sunucuları.",
       "notifications": "Bildirimler",
       "notificationsDesc": "Anlık bildirim tercihleri.",
+      "content": "İçerik",
+      "contentDesc": "Sessize alınan kullanıcıları, etiketleri ve kelimeleri yönetin.",
       "advanced": "Gelişmiş",
       "advancedDesc": "Cüzdan, sistem ve ileri kullanıcı seçenekleri.",
       "organizers": "Organizatörler",

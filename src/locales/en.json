@@ -540,8 +540,6 @@
     "unpinProfile": "Unpin from profile",
     "pinCountry": "Pin to country feed",
     "unpinCountry": "Unpin from country feed",
-    "muteConversation": "Mute Conversation",
-    "muteCampaign": "Mute Campaign",
     "mute": "Mute @{{name}}",
     "unmute": "Unmute @{{name}}",
     "report": "Report @{{name}}",
@@ -560,8 +558,6 @@
       "countryUnpinned": "Unpinned from country feed",
       "countryPinFailed": "Failed to pin to country feed",
       "countryUnpinFailed": "Failed to unpin from country feed",
-      "convoMuted": "Conversation muted",
-      "convoMuteFailed": "Failed to mute conversation",
       "muted": "Muted @{{name}}",
       "unmuted": "Unmuted @{{name}}",
       "muteFailed": "Failed to mute user",
@@ -588,6 +584,30 @@
       "broadcast": "Broadcast Event",
       "broadcasting": "Broadcasting..."
     }
+  },
+  "content": {
+    "title": "Content",
+    "description": "Manage muted users, hashtags, and words.",
+    "muted": {
+      "heading": "Muted Content",
+      "subheading": "You decide what shows up in your feeds. Remove an item to unmute it. Mutes are encrypted and private.",
+      "empty": "You haven't muted anyone yet.",
+      "removed": "Removed from mute list",
+      "removeFailed": "Failed to remove from mute list",
+      "removeAria": "Remove mute for {{value}}",
+      "types": {
+        "pubkey": "Users",
+        "hashtag": "Hashtags",
+        "word": "Words",
+        "thread": "Threads"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Muted Content",
+    "description": "This post is from someone you've muted.",
+    "showAnyway": "Show Anyway",
+    "manageMutes": "Manage muted content"
   },
   "policyPages": {
     "privacy": {
@@ -1660,6 +1680,8 @@
       "networkDesc": "Data usage, relays, and file upload servers.",
       "notifications": "Notifications",
       "notificationsDesc": "Push notification preferences.",
+      "content": "Content",
+      "contentDesc": "Manage muted users, hashtags, and words.",
       "advanced": "Advanced",
       "advancedDesc": "Wallet, system, and power-user options.",
       "organizers": "Organizers",

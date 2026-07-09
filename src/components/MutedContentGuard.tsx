@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { VolumeX, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useMuteList } from '@/hooks/useMuteList';
 import { isEventMuted } from '@/lib/muteHelpers';
@@ -24,6 +26,7 @@ interface MutedContentGuardProps {
  * media and nested queries are not fetched for muted content.
  */
 export function MutedContentGuard({ event, children, className }: MutedContentGuardProps) {
+  const { t } = useTranslation();
   const { muteItems } = useMuteList();
   const [revealed, setRevealed] = useState(false);
 
@@ -38,20 +41,25 @@ export function MutedContentGuard({ event, children, className }: MutedContentGu
           <VolumeX className="size-5 text-muted-foreground" />
         </div>
         <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">Muted Content</p>
+          <p className="text-sm font-medium text-foreground">{t('mutedGuard.title')}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            This post is from a user or conversation you've muted.
+            {t('mutedGuard.description')}
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1.5 mt-1 rounded-full px-5"
-          onClick={() => setRevealed(true)}
-        >
-          <Eye className="size-3.5" />
-          Show Anyway
-        </Button>
+        <div className="flex flex-col items-center gap-2 mt-1">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 rounded-full px-5"
+            onClick={() => setRevealed(true)}
+          >
+            <Eye className="size-3.5" />
+            {t('mutedGuard.showAnyway')}
+          </Button>
+          <Button asChild variant="link" size="sm" className="h-auto p-0 text-xs text-muted-foreground">
+            <Link to="/settings/content">{t('mutedGuard.manageMutes')}</Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

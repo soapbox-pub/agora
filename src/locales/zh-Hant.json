@@ -1127,6 +1127,8 @@
       "networkDesc": "資料使用、中繼和檔案上傳伺服器。",
       "notifications": "通知",
       "notificationsDesc": "推送通知偏好。",
+      "content": "內容",
+      "contentDesc": "管理已靜音的使用者、標籤和字詞。",
       "advanced": "高階",
       "advancedDesc": "錢包、系統和高階使用者選項。",
       "organizers": "組織者",
@@ -2397,8 +2399,6 @@
     "unpinProfile": "取消置頂資料",
     "pinCountry": "置頂到國家 Feed",
     "unpinCountry": "取消置頂國家 Feed",
-    "muteConversation": "靜音對話",
-    "muteCampaign": "靜音活動",
     "mute": "靜音 @{{name}}",
     "unmute": "取消靜音 @{{name}}",
     "report": "舉報 @{{name}}",
@@ -2417,8 +2417,6 @@
       "countryUnpinned": "已從國家 Feed 取消置頂",
       "countryPinFailed": "置頂到國家 Feed 失敗",
       "countryUnpinFailed": "從國家 Feed 取消置頂失敗",
-      "convoMuted": "對話已靜音",
-      "convoMuteFailed": "靜音對話失敗",
       "muted": "已靜音 @{{name}}",
       "unmuted": "已取消靜音 @{{name}}",
       "muteFailed": "靜音使用者失敗",
@@ -2445,6 +2443,30 @@
       "broadcast": "廣播事件",
       "broadcasting": "廣播中..."
     }
+  },
+  "content": {
+    "title": "內容",
+    "description": "管理已靜音的使用者、標籤和字詞。",
+    "muted": {
+      "heading": "已靜音內容",
+      "subheading": "由你決定資訊流中顯示什麼。移除某項即可取消靜音。靜音記錄經過加密且保密。",
+      "empty": "你還沒有靜音任何人。",
+      "removed": "已從靜音列表移除",
+      "removeFailed": "從靜音列表移除失敗",
+      "removeAria": "取消對 {{value}} 的靜音",
+      "types": {
+        "pubkey": "使用者",
+        "hashtag": "標籤",
+        "word": "字詞",
+        "thread": "話題"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "已靜音內容",
+    "description": "此帖子來自你已靜音的人。",
+    "showAnyway": "仍然顯示",
+    "manageMutes": "管理已靜音內容"
   },
   "policyPages": {
     "privacy": {

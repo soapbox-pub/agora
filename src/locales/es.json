@@ -1127,6 +1127,8 @@
       "networkDesc": "Uso de datos, relés y servidores de subida de archivos.",
       "notifications": "Notificaciones",
       "notificationsDesc": "Preferencias de notificaciones push.",
+      "content": "Contenido",
+      "contentDesc": "Administra usuarios, hashtags y palabras silenciados.",
       "advanced": "Avanzado",
       "advancedDesc": "Cartera, sistema y opciones para usuarios avanzados.",
       "organizers": "Organizadores",
@@ -2469,8 +2471,6 @@
     "unpinProfile": "Quitar de fijados del perfil",
     "pinCountry": "Fijar en feed del país",
     "unpinCountry": "Quitar de fijados del país",
-    "muteConversation": "Silenciar conversación",
-    "muteCampaign": "Silenciar campaña",
     "mute": "Silenciar a @{{name}}",
     "unmute": "Dejar de silenciar a @{{name}}",
     "report": "Reportar a @{{name}}",
@@ -2489,8 +2489,6 @@
       "countryUnpinned": "Quitado del feed del país",
       "countryPinFailed": "No se pudo fijar al feed del país",
       "countryUnpinFailed": "No se pudo quitar del feed del país",
-      "convoMuted": "Conversación silenciada",
-      "convoMuteFailed": "No se pudo silenciar la conversación",
       "muted": "Silenciaste a @{{name}}",
       "unmuted": "Ya no silencias a @{{name}}",
       "muteFailed": "No se pudo silenciar al usuario",
@@ -2517,6 +2515,30 @@
       "broadcast": "Transmitir evento",
       "broadcasting": "Transmitiendo..."
     }
+  },
+  "content": {
+    "title": "Contenido",
+    "description": "Administra usuarios, hashtags y palabras silenciados.",
+    "muted": {
+      "heading": "Contenido silenciado",
+      "subheading": "Tú decides qué aparece en tus feeds. Elimina un elemento para dejar de silenciarlo. Los silenciamientos están cifrados y son privados.",
+      "empty": "Aún no has silenciado a nadie.",
+      "removed": "Eliminado de la lista de silenciados",
+      "removeFailed": "No se pudo eliminar de la lista de silenciados",
+      "removeAria": "Dejar de silenciar a {{value}}",
+      "types": {
+        "pubkey": "Usuarios",
+        "hashtag": "Hashtags",
+        "word": "Palabras",
+        "thread": "Hilos"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Contenido silenciado",
+    "description": "Esta publicación es de alguien a quien has silenciado.",
+    "showAnyway": "Mostrar de todos modos",
+    "manageMutes": "Administrar contenido silenciado"
   },
   "policyPages": {
     "privacy": {

@@ -539,8 +539,6 @@
     "unpinProfile": "Désépingler du profil",
     "pinCountry": "Épingler au fil du pays",
     "unpinCountry": "Désépingler du fil du pays",
-    "muteConversation": "Mettre la conversation en sourdine",
-    "muteCampaign": "Mettre la campagne en sourdine",
     "mute": "Mettre @{{name}} en sourdine",
     "unmute": "Réactiver @{{name}}",
     "report": "Signaler @{{name}}",
@@ -559,8 +557,6 @@
       "countryUnpinned": "Désépinglé du fil du pays",
       "countryPinFailed": "Échec de l'épinglage au fil du pays",
       "countryUnpinFailed": "Échec du désépinglage du fil du pays",
-      "convoMuted": "Conversation en sourdine",
-      "convoMuteFailed": "Échec de la mise en sourdine de la conversation",
       "muted": "@{{name}} en sourdine",
       "unmuted": "@{{name}} réactivé",
       "muteFailed": "Échec de la mise en sourdine de l'utilisateur",
@@ -587,6 +583,30 @@
       "broadcast": "Diffuser l'événement",
       "broadcasting": "Diffusion..."
     }
+  },
+  "content": {
+    "title": "Contenu",
+    "description": "Gérez les utilisateurs, hashtags et mots en sourdine.",
+    "muted": {
+      "heading": "Contenu en sourdine",
+      "subheading": "Vous décidez ce qui apparaît dans vos fils. Retirez un élément pour le réactiver. Les mises en sourdine sont chiffrées et privées.",
+      "empty": "Vous n'avez encore mis personne en sourdine.",
+      "removed": "Retiré de la liste des sourdines",
+      "removeFailed": "Échec du retrait de la liste des sourdines",
+      "removeAria": "Réactiver {{value}}",
+      "types": {
+        "pubkey": "Utilisateurs",
+        "hashtag": "Hashtags",
+        "word": "Mots",
+        "thread": "Fils"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Contenu en sourdine",
+    "description": "Cette publication provient d'une personne que vous avez mise en sourdine.",
+    "showAnyway": "Afficher quand même",
+    "manageMutes": "Gérer le contenu en sourdine"
   },
   "policyPages": {
     "privacy": {
@@ -1659,6 +1679,8 @@
       "networkDesc": "Utilisation des données, relais et serveurs de téléversement.",
       "notifications": "Notifications",
       "notificationsDesc": "Préférences de notifications push.",
+      "content": "Contenu",
+      "contentDesc": "Gérez les utilisateurs, hashtags et mots en sourdine.",
       "advanced": "Avancé",
       "advancedDesc": "Portefeuille, système et options utilisateur avancé.",
       "organizers": "Organisateurs",

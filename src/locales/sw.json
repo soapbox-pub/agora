@@ -539,8 +539,6 @@
     "unpinProfile": "Ondoa bandiko kwenye wasifu",
     "pinCountry": "Bandika kwenye mlisho wa nchi",
     "unpinCountry": "Ondoa bandiko kwenye mlisho wa nchi",
-    "muteConversation": "Nyamazisha mazungumzo",
-    "muteCampaign": "Nyamazisha kampeni",
     "mute": "Nyamazisha @{{name}}",
     "unmute": "Ondoa unyamavu wa @{{name}}",
     "report": "Ripoti @{{name}}",
@@ -559,8 +557,6 @@
       "countryUnpinned": "Imeondolewa kwenye mlisho wa nchi",
       "countryPinFailed": "Imeshindikana kubandika kwenye mlisho wa nchi",
       "countryUnpinFailed": "Imeshindikana kuondoa bandiko kwenye mlisho wa nchi",
-      "convoMuted": "Mazungumzo yamenyamazishwa",
-      "convoMuteFailed": "Imeshindikana kunyamazisha mazungumzo",
       "muted": "@{{name}} amenyamazishwa",
       "unmuted": "@{{name}} ameondolewa unyamavu",
       "muteFailed": "Imeshindikana kunyamazisha mtumiaji",
@@ -587,6 +583,30 @@
       "broadcast": "Tangaza tukio",
       "broadcasting": "Inatangaza..."
     }
+  },
+  "content": {
+    "title": "Maudhui",
+    "description": "Dhibiti watumiaji, lebo za reli, na maneno yaliyonyamazishwa.",
+    "muted": {
+      "heading": "Maudhui Yaliyonyamazishwa",
+      "subheading": "Wewe unaamua nini kinaonekana kwenye milisho yako. Ondoa kipengele ili kukiondolea unyamavu. Unyamazishaji umesimbwa na ni wa faragha.",
+      "empty": "Bado hujamnyamazisha mtu yeyote.",
+      "removed": "Imeondolewa kwenye orodha ya waliyonyamazishwa",
+      "removeFailed": "Imeshindikana kuondoa kwenye orodha ya waliyonyamazishwa",
+      "removeAria": "Ondoa unyamavu kwa {{value}}",
+      "types": {
+        "pubkey": "Watumiaji",
+        "hashtag": "Lebo za reli",
+        "word": "Maneno",
+        "thread": "Mijadala"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Maudhui Yaliyonyamazishwa",
+    "description": "Chapisho hili ni kutoka kwa mtu uliyemnyamazisha.",
+    "showAnyway": "Onyesha Hata Hivyo",
+    "manageMutes": "Dhibiti maudhui yaliyonyamazishwa"
   },
   "policyPages": {
     "privacy": {
@@ -1618,6 +1638,8 @@
       "networkDesc": "Matumizi ya data, relei, na seva za upakiaji faili.",
       "notifications": "Arifa",
       "notificationsDesc": "Mapendeleo ya arifa za kusukuma.",
+      "content": "Maudhui",
+      "contentDesc": "Dhibiti watumiaji, lebo za reli, na maneno yaliyonyamazishwa.",
       "advanced": "Ya kina",
       "advancedDesc": "Pochi, mfumo, na chaguzi za mtumiaji mwenye uwezo.",
       "organizers": "Waratibu",

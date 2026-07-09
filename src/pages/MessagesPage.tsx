@@ -218,6 +218,7 @@ function MessageThread({
   onMuted: (peer: string) => void;
 }) {
   const { t } = useTranslation();
+  const { user } = useCurrentUser();
   const { name, picture, profileUrl } = usePeerProfile(conversation.peer);
   const { data: messages, isLoading } = useDirectMessageThread(conversation);
   const { statement: verifierStatement } = useVerifierStatement(conversation.peer);
@@ -251,6 +252,12 @@ function MessageThread({
     translatedMessages[message.id] !== undefined
   ));
   const showVerifierStatement = !!verifierStatement && !dismissedVerifierStatements.has(conversation.peer);
+
+  // A "note to self" conversation (peer === own pubkey) must never expose the
+  // mute action — muting your own pubkey blanks your entire authored feed
+  // everywhere isEventMuted runs, with no in-app recourse. The hook rejects it
+  // too (see useMuteList.addMute), this hides the button so it never fires.
+  const isSelfConversation = !!user && conversation.peer === user.pubkey;
 
   useEffect(() => {
     setDraft('');
@@ -387,9 +394,10 @@ function MessageThread({
           type="button"
           variant="ghost"
           size="icon"
-          className="shrink-0 text-muted-foreground hover:text-destructive"
+          className={cn('shrink-0 text-muted-foreground hover:text-destructive', isSelfConversation && 'hidden')}
           onClick={() => setMuteConfirmOpen(true)}
           aria-label={t('messages.muteUser', { name })}
+          disabled={isSelfConversation}
         >
           <BellOff className="size-4" />
         </Button>

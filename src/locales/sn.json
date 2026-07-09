@@ -1127,6 +1127,8 @@
       "networkDesc": "Kushandiswa kwedata, marelays, nemaserver ekuiswa kwemafaira.",
       "notifications": "Zviziviso",
       "notificationsDesc": "Zvinodiwa zveziviso dze push.",
+      "content": "Zvirimo",
+      "contentDesc": "Batanidza vashandisi, mahashtag, nemazwi akanyararidzwa.",
       "advanced": "Zvepamusoro",
       "advancedDesc": "Chikwama, system, nesarudzo dzevanyanzvi.",
       "organizers": "Vagadziri",
@@ -2469,8 +2471,6 @@
     "unpinProfile": "Bvisa pakunamira pfungidziro",
     "pinCountry": "Namira pakwete yenyika",
     "unpinCountry": "Bvisa pakunamira kwete yenyika",
-    "muteConversation": "Nyararisa hurukuro",
-    "muteCampaign": "Nyararisa mushandirapamwe",
     "mute": "Nyararisa @{{name}}",
     "unmute": "Bvisa kunyararisa @{{name}}",
     "report": "Mhan'arira @{{name}}",
@@ -2489,8 +2489,6 @@
       "countryUnpinned": "Yabviswa pakunamira kwete yenyika",
       "countryPinFailed": "Hazvina kubudirira kunamira pakwete yenyika",
       "countryUnpinFailed": "Hazvina kubudirira kubvisa pakunamira kwete yenyika",
-      "convoMuted": "Hurukuro yanyararidzwa",
-      "convoMuteFailed": "Hazvina kubudirira kunyararisa hurukuro",
       "muted": "Wanyararisa @{{name}}",
       "unmuted": "Wabvisa kunyararisa @{{name}}",
       "muteFailed": "Hazvina kubudirira kunyararisa mushandisi",
@@ -2517,6 +2515,30 @@
       "broadcast": "Tumira chiitiko",
       "broadcasting": "Kutumira..."
     }
+  },
+  "content": {
+    "title": "Zvirimo",
+    "description": "Batanidza vashandisi, mahashtag, nemazwi akanyararidzwa.",
+    "muted": {
+      "heading": "Zvirimo Zvakanyararidzwa",
+      "subheading": "Iwe unosarudza zvinoonekwa mumafuto ako. Bvisa chinhu kuti uchidzikinure. Kunyararisa kwakavanzwa uye ndekwakavanzika.",
+      "empty": "Hausati wanyararisa munhu.",
+      "removed": "Yabviswa parondedzero yekunyararisa",
+      "removeFailed": "Hazvina kubudirira kubvisa parondedzero yekunyararisa",
+      "removeAria": "Bvisa kunyararisa kwe {{value}}",
+      "types": {
+        "pubkey": "Vashandisi",
+        "hashtag": "MaHashtag",
+        "word": "Mazwi",
+        "thread": "Nhevedzano"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Zvirimo Zvakanyararidzwa",
+    "description": "Ichi chinyorwa chinobva kune munhu wawakanyararisa.",
+    "showAnyway": "Ratidza Zvakadaro",
+    "manageMutes": "Batanidza zvirimo zvakanyararidzwa"
   },
   "policyPages": {
     "privacy": {

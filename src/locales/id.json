@@ -539,8 +539,6 @@
     "unpinProfile": "Lepas sematan dari profil",
     "pinCountry": "Sematkan ke feed negara",
     "unpinCountry": "Lepas sematan dari feed negara",
-    "muteConversation": "Bisukan Percakapan",
-    "muteCampaign": "Bisukan Kampanye",
     "mute": "Bisukan @{{name}}",
     "unmute": "Aktifkan @{{name}}",
     "report": "Laporkan @{{name}}",
@@ -559,8 +557,6 @@
       "countryUnpinned": "Sematan dilepas dari feed negara",
       "countryPinFailed": "Gagal menyematkan ke feed negara",
       "countryUnpinFailed": "Gagal melepas sematan dari feed negara",
-      "convoMuted": "Percakapan dibisukan",
-      "convoMuteFailed": "Gagal membisukan percakapan",
       "muted": "Membisukan @{{name}}",
       "unmuted": "Mengaktifkan @{{name}}",
       "muteFailed": "Gagal membisukan pengguna",
@@ -587,6 +583,30 @@
       "broadcast": "Siarkan Event",
       "broadcasting": "Menyiarkan..."
     }
+  },
+  "content": {
+    "title": "Konten",
+    "description": "Kelola pengguna, tagar, dan kata yang dibisukan.",
+    "muted": {
+      "heading": "Konten yang Dibisukan",
+      "subheading": "Anda yang menentukan apa yang muncul di feed Anda. Hapus item untuk mengaktifkannya kembali. Bisu bersifat terenkripsi dan privat.",
+      "empty": "Anda belum membisukan siapa pun.",
+      "removed": "Dihapus dari daftar bisu",
+      "removeFailed": "Gagal menghapus dari daftar bisu",
+      "removeAria": "Hapus bisu untuk {{value}}",
+      "types": {
+        "pubkey": "Pengguna",
+        "hashtag": "Tagar",
+        "word": "Kata",
+        "thread": "Utas"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Konten yang Dibisukan",
+    "description": "Unggahan ini berasal dari seseorang yang Anda bisukan.",
+    "showAnyway": "Tetap Tampilkan",
+    "manageMutes": "Kelola konten yang dibisukan"
   },
   "policyPages": {
     "privacy": {
@@ -1618,6 +1638,8 @@
       "networkDesc": "Penggunaan data, relay, dan server unggah berkas.",
       "notifications": "Notifikasi",
       "notificationsDesc": "Preferensi notifikasi push.",
+      "content": "Konten",
+      "contentDesc": "Kelola pengguna, tagar, dan kata yang dibisukan.",
       "advanced": "Lanjutan",
       "advancedDesc": "Opsi dompet, sistem, dan pengguna mahir.",
       "organizers": "Organizer",

@@ -539,8 +539,6 @@
     "unpinProfile": "Desafixar do perfil",
     "pinCountry": "Fixar no feed do país",
     "unpinCountry": "Desafixar do feed do país",
-    "muteConversation": "Silenciar conversa",
-    "muteCampaign": "Silenciar campanha",
     "mute": "Silenciar @{{name}}",
     "unmute": "Reativar @{{name}}",
     "report": "Denunciar @{{name}}",
@@ -559,8 +557,6 @@
       "countryUnpinned": "Desafixado do feed do país",
       "countryPinFailed": "Falha ao fixar no feed do país",
       "countryUnpinFailed": "Falha ao desafixar do feed do país",
-      "convoMuted": "Conversa silenciada",
-      "convoMuteFailed": "Falha ao silenciar a conversa",
       "muted": "@{{name}} silenciado",
       "unmuted": "@{{name}} reativado",
       "muteFailed": "Falha ao silenciar usuário",
@@ -587,6 +583,30 @@
       "broadcast": "Transmitir evento",
       "broadcasting": "Transmitindo..."
     }
+  },
+  "content": {
+    "title": "Conteúdo",
+    "description": "Gerencie usuários, hashtags e palavras silenciados.",
+    "muted": {
+      "heading": "Conteúdo silenciado",
+      "subheading": "Você decide o que aparece nos seus feeds. Remova um item para reativá-lo. Os silenciamentos são criptografados e privados.",
+      "empty": "Você ainda não silenciou ninguém.",
+      "removed": "Removido da lista de silenciados",
+      "removeFailed": "Falha ao remover da lista de silenciados",
+      "removeAria": "Remover silenciamento de {{value}}",
+      "types": {
+        "pubkey": "Usuários",
+        "hashtag": "Hashtags",
+        "word": "Palavras",
+        "thread": "Tópicos"
+      }
+    }
+  },
+  "mutedGuard": {
+    "title": "Conteúdo silenciado",
+    "description": "Esta publicação é de alguém que você silenciou.",
+    "showAnyway": "Mostrar mesmo assim",
+    "manageMutes": "Gerenciar conteúdo silenciado"
   },
   "policyPages": {
     "privacy": {
@@ -1659,6 +1679,8 @@
       "networkDesc": "Uso de dados, relays e servidores de upload de arquivos.",
       "notifications": "Notificações",
       "notificationsDesc": "Preferências de notificação push.",
+      "content": "Conteúdo",
+      "contentDesc": "Gerencie usuários, hashtags e palavras silenciados.",
       "advanced": "Avançado",
       "advancedDesc": "Carteira, sistema e opções de usuário avançado.",
       "organizers": "Organizadores",
