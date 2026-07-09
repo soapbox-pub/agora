@@ -17,6 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { CampaignCard, CampaignCardSkeleton } from '@/components/CampaignCard';
 import { CampaignListsStrip } from '@/components/campaign-lists/CampaignListsStrip';
 import { HeroLightningMap } from '@/components/HeroLightningMap';
+import { PartnersPressBand } from '@/components/PartnersPressBand';
 import { StartCampaignLink } from '@/components/StartCampaignLink';
 import { AppDownloadNudge } from '@/components/AppDownloadNudge';
 import { useCampaigns } from '@/hooks/useCampaigns';
@@ -204,6 +205,9 @@ export function CampaignsPage() {
       </div>
 
       <WhyDifferentSection />
+
+      {/* Partner + press logo band — shared with /sponsors. */}
+      <PartnersPressBand />
 
       <AppDownloadNudge className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-8 pb-0" />
     </main>

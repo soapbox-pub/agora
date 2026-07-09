@@ -144,6 +144,14 @@ export default {
 				// verifier tutorial — shrinks briefly to read as a tap.
 				'0%, 70%, 100%': { transform: 'scale(1)' },
 				'80%': { transform: 'scale(0.78)' }
+			},
+			'logo-marquee': {
+				// Endless horizontal scroll for the partner-logo rail.
+				// The track renders its logo set an even number of
+				// times, so shifting by half the track width loops
+				// seamlessly.
+				from: { transform: 'translateX(0)' },
+				to: { transform: 'translateX(-50%)' }
 			}
 			},
 			animation: {
@@ -156,7 +164,8 @@ export default {
 				'collapsible-up': 'collapsible-up 0.2s ease-out',
 				'accent-glow': 'accent-glow 2s ease-in-out infinite',
 				'equaliser-bar': 'equaliser-bar 0.9s ease-in-out infinite',
-				'tutorial-tap': 'tutorial-tap 2.4s ease-in-out infinite'
+				'tutorial-tap': 'tutorial-tap 2.4s ease-in-out infinite',
+				'logo-marquee': 'logo-marquee 40s linear infinite'
 			}
 		}
 	},

@@ -2705,6 +2705,52 @@
       "stillStuckSuffix": ". Tinopindura mibvunzo ipapo."
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "Shanda pamwe ne{{appName}} kutsigira zvinangwa zvinokosha. Ipa kuHomwe dzeZvinangwa dzeAgora, wedzera zvipo kumishandirapamwe yaunokoshesa, kana kusimudzira {{appName}} kuvatengi vako sechikamu chezvirongwa zvako zvekupa rubatsiro.",
+    "intro": {
+      "eyebrow": "Sei kushanda pamwe",
+      "title": "Kupa kwemakambani kunoenderana nezvinangwa zvenyu",
+      "lede": "Kwakananga, pachena, kunosimbisika — kupa kunogona kutsigirwa nekambani yako.",
+      "cards": {
+        "bitcoin": {
+          "title": "Puratifomu yakavakirwa paBitcoin",
+          "body": "Zvipo zvinopedziswa pablockchain yeBitcoin — pasina miganhu, hazvimisiki, zvinosimbisika nemunhu wese."
+        },
+        "verified": {
+          "title": "Mari yemishandirapamwe yakasimbiswa",
+          "body": "Mushandirapamwe wega wega unoongororwa nekusimbiswa mari isati yagoverwa."
+        },
+        "fees": {
+          "title": "Hapana muripo wepuratifomu",
+          "body": "100% yechipo chako inosvika kuchinangwa. Isu hatitore chinhu."
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · Rutsigiro rwakananga",
+        "title": "Ipa kuHomwe dzeZvinangwa dze{{appName}}",
+        "description": "Homwe dzakaunganidzwa dzezvinangwa zvaunokoshesa. {{appName}} inodzigovera kumishandirapamwe yakasimbiswa, inovimbwa.",
+        "bullet1": "Ipa neBitcoin (BTC) kana madhora eAmerica (USD)",
+        "bullet2": "Inosanganiswa nezvipo zvevamwe vapi kuti ive nesimba rakakura",
+        "bullet3": "Inogoverwa kumishandirapamwe yakasimbiswa, inovimbwa",
+        "cta": "Ongorora Homwe dzeZvinangwa"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Homwe dzeZvinangwa",
+      "title": "Tsigira zvinangwa zvinokubata moyo",
+      "lede": "Homwe imwe neimwe inounganidza zvipo yozvigovera kumishandirapamwe yakasimbiswa. Ipa kamwe chete, utsigire zvakawanda.",
+      "browseAll": "kana tarisa mishandirapamwe yose"
+    },
+    "cta": {
+      "body": "Tiudze kuti ungada kubatanidzwa sei uye tichakubatsira kugadzira ushamwari hwakakodzera — chipo cheHomwe yeZvinangwa, homwe yekuwedzera zvipo, kana mushandirapamwe wevatengi."
+    }
+  },
+  "partners": {
+    "partnersTitle": "Tichishanda pamwe ne:",
+    "pressTitle": "Sezvakaonekwa mu:"
+  },
   "faq": {
     "categories": {
       "getting-started": {

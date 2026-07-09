@@ -2633,6 +2633,52 @@
       "stillStuckSuffix": "。我們在那裡處理問題。"
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "與 {{appName}} 合作，資助真正重要的事業。向 Agora 公益基金捐款、為您關心的活動提供配捐，或向您的客戶推廣 {{appName}}，作為貴公司慈善計畫的一部分。",
+    "intro": {
+      "eyebrow": "為何合作",
+      "title": "契合貴公司目標的企業公益",
+      "lede": "直接、透明、可驗證——貴公司可以放心支持的捐贈方式。",
+      "cards": {
+        "bitcoin": {
+          "title": "比特幣原生平臺",
+          "body": "捐款直接在比特幣區塊鏈上結算——無國界、不可阻擋、任何人都可驗證。"
+        },
+        "verified": {
+          "title": "經過驗證的活動資金",
+          "body": "每個活動在資金發放前都會經過審查與驗證。"
+        },
+        "fees": {
+          "title": "零平臺費用",
+          "body": "您的捐贈 100% 到達受助事業，我們分文不取。"
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · 直接支持",
+        "title": "向 {{appName}} 公益基金捐款",
+        "description": "為您關心的事業設立的集體資金池。{{appName}} 會將資金分配給經過驗證、值得信賴的活動。",
+        "bullet1": "以比特幣（BTC）或美元（USD）捐贈",
+        "bullet2": "與其他捐贈者的資金匯集，影響更大",
+        "bullet3": "分配給經過驗證、值得信賴的活動",
+        "cta": "探索公益基金"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "公益基金",
+      "title": "支持打動您的事業",
+      "lede": "每個基金都會匯集捐款，並將其分配給經過驗證的活動。捐贈一次，支持多方。",
+      "browseAll": "或瀏覽所有活動"
+    },
+    "cta": {
+      "body": "告訴我們您希望以何種方式參與，我們將幫助您建立合適的合作方式——公益基金捐贈、配捐資金池或客戶活動。"
+    }
+  },
+  "partners": {
+    "partnersTitle": "合作夥伴：",
+    "pressTitle": "媒體報導："
+  },
   "faq": {
     "categories": {
       "getting-started": {

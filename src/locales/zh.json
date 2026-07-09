@@ -2705,6 +2705,52 @@
       "stillStuckSuffix": "。我们在那里处理问题。"
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "与 {{appName}} 合作，资助真正重要的事业。向 Agora 公益基金捐款、为您关心的活动提供配捐，或向您的客户推广 {{appName}}，作为贵公司慈善计划的一部分。",
+    "intro": {
+      "eyebrow": "为何合作",
+      "title": "契合贵公司目标的企业公益",
+      "lede": "直接、透明、可验证——贵公司可以放心支持的捐赠方式。",
+      "cards": {
+        "bitcoin": {
+          "title": "比特币原生平台",
+          "body": "捐款直接在比特币区块链上结算——无国界、不可阻挡、任何人都可验证。"
+        },
+        "verified": {
+          "title": "经过验证的活动资金",
+          "body": "每个活动在资金发放前都会经过审查与验证。"
+        },
+        "fees": {
+          "title": "零平台费用",
+          "body": "您的捐赠 100% 到达受助事业，我们分文不取。"
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · 直接支持",
+        "title": "向 {{appName}} 公益基金捐款",
+        "description": "为您关心的事业设立的集体资金池。{{appName}} 会将资金分配给经过验证、值得信赖的活动。",
+        "bullet1": "以比特币（BTC）或美元（USD）捐赠",
+        "bullet2": "与其他捐赠者的资金汇集，影响更大",
+        "bullet3": "分配给经过验证、值得信赖的活动",
+        "cta": "探索公益基金"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "公益基金",
+      "title": "支持打动您的事业",
+      "lede": "每个基金都会汇集捐款，并将其分配给经过验证的活动。捐赠一次，支持多方。",
+      "browseAll": "或浏览所有活动"
+    },
+    "cta": {
+      "body": "告诉我们您希望以何种方式参与，我们将帮助您建立合适的合作方式——公益基金捐赠、配捐资金池或客户活动。"
+    }
+  },
+  "partners": {
+    "partnersTitle": "合作伙伴：",
+    "pressTitle": "媒体报道："
+  },
   "faq": {
     "categories": {
       "getting-started": {

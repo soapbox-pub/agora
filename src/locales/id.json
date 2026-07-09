@@ -775,6 +775,52 @@
       "stillStuckSuffix": ". Kami menjawab pertanyaan di sana."
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "Bermitralah dengan {{appName}} untuk mendanai perjuangan yang berarti. Berdonasi ke Dana Perjuangan Agora, berikan dana padanan untuk donasi ke kampanye yang Anda pedulikan, atau promosikan {{appName}} kepada pelanggan Anda sebagai bagian dari inisiatif filantropi perusahaan.",
+    "intro": {
+      "eyebrow": "Mengapa bermitra",
+      "title": "Kedermawanan korporat yang selaras dengan tujuan Anda",
+      "lede": "Langsung, transparan, dapat diverifikasi — pemberian yang dapat didukung penuh oleh perusahaan Anda.",
+      "cards": {
+        "bitcoin": {
+          "title": "Platform berbasis Bitcoin",
+          "body": "Donasi diselesaikan di blockchain Bitcoin — tanpa batas negara, tak terbendung, dapat diverifikasi oleh siapa pun."
+        },
+        "verified": {
+          "title": "Dana kampanye terverifikasi",
+          "body": "Setiap kampanye diperiksa dan diverifikasi sebelum dana disalurkan."
+        },
+        "fees": {
+          "title": "Tanpa biaya platform",
+          "body": "100% pemberian Anda sampai ke perjuangan yang dituju. Kami tidak mengambil apa pun."
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · Dukungan langsung",
+        "title": "Berdonasi ke Dana Perjuangan {{appName}}",
+        "description": "Dana kolektif untuk perjuangan yang Anda pedulikan. {{appName}} menyalurkannya ke kampanye tepercaya yang terverifikasi.",
+        "bullet1": "Beri dalam Bitcoin (BTC) atau dolar AS (USD)",
+        "bullet2": "Digabungkan dengan donatur lain untuk dampak yang lebih besar",
+        "bullet3": "Disalurkan ke kampanye tepercaya yang terverifikasi",
+        "cta": "Jelajahi Dana Perjuangan"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Dana Perjuangan",
+      "title": "Dukung perjuangan yang menggerakkan hati Anda",
+      "lede": "Setiap dana menggabungkan donasi dan menyalurkannya ke kampanye terverifikasi. Beri sekali, dukung banyak.",
+      "browseAll": "atau jelajahi semua kampanye"
+    },
+    "cta": {
+      "body": "Beri tahu kami bagaimana Anda ingin terlibat dan kami akan membantu menyiapkan kemitraan yang tepat — pemberian Dana Perjuangan, dana padanan, atau kampanye pelanggan."
+    }
+  },
+  "partners": {
+    "partnersTitle": "Bermitra dengan:",
+    "pressTitle": "Diliput oleh:"
+  },
   "forms": {
     "required": "Wajib",
     "recommended": "Direkomendasikan",

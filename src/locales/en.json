@@ -778,7 +778,7 @@
   },
   "corporateSponsorship": {
     "seoTitle": "Corporate Sponsorship",
-    "seoDescription": "Partner with {{appName}} to fund causes that matter. Donate to the Seed Fund, match donations to campaigns you care about, or promote {{appName}} to your customers as part of your philanthropic initiatives.",
+    "seoDescription": "Partner with {{appName}} to fund causes that matter. Donate to Agora Cause Funds, match donations to campaigns you care about, or promote {{appName}} to your customers as part of your philanthropic initiatives.",
     "hero": {
       "eyebrow": "Partner with {{appName}}",
       "headlinePart1": "Fund what",
@@ -794,29 +794,35 @@
     },
     "intro": {
       "eyebrow": "Why partner",
-      "title": "Corporate giving without the gatekeepers",
-      "lede": "Every dollar your company commits goes straight to the cause — verifiably, on the Bitcoin blockchain. There is no custodian to freeze funds, no payment processor to deplatform a campaign, and no opaque overhead eating into your impact.",
-      "stats": {
-        "feesLabel": "Platform fees on donations",
-        "feesValue": "0%",
-        "custodyLabel": "Funds we ever custody",
-        "custodyValue": "None",
-        "reachLabel": "Borders that can stop a donation",
-        "reachValue": "Zero"
+      "title": "Corporate giving that aligns with your goals",
+      "lede": "Direct, transparent, verifiable — giving your company can stand behind.",
+      "cards": {
+        "bitcoin": {
+          "title": "Bitcoin-native platform",
+          "body": "Donations settle on the Bitcoin blockchain — borderless, unstoppable, verifiable by anyone."
+        },
+        "verified": {
+          "title": "Verified campaign funds",
+          "body": "Every campaign is vetted and verified before funds are distributed."
+        },
+        "fees": {
+          "title": "No platform fees",
+          "body": "100% of your gift reaches the cause. We take nothing."
+        }
       }
     },
     "ways": {
       "eyebrow": "Ways to get involved",
       "title": "Three ways to partner",
       "lede": "Pick the level of involvement that fits your company — or combine all three.",
-      "seedFund": {
+      "causeFunds": {
         "kicker": "01 · Direct support",
-        "title": "Donate to the Agora Seed Fund",
-        "description": "Make an unrestricted gift to the {{appName}} Seed Fund. The Seed Fund seeds new and high-need campaigns across the platform, getting verified causes off the ground when they need it most.",
+        "title": "Donate to {{appName}} Cause Funds",
+        "description": "Collective pools for the causes you care about. {{appName}} distributes them to verified, trusted campaigns.",
         "bullet1": "Give in Bitcoin (BTC) or US dollars (USD)",
-        "bullet2": "Unrestricted — directed where the need is greatest",
-        "bullet3": "Recurring or one-time commitments welcome",
-        "cta": "Fund the Seed Fund"
+        "bullet2": "Pooled with other donors for bigger impact",
+        "bullet3": "Distributed to verified, trusted campaigns",
+        "cta": "Explore Cause Funds"
       },
       "matching": {
         "kicker": "02 · Multiply impact",
@@ -837,32 +843,25 @@
         "cta": "Plan a campaign"
       }
     },
-    "matchingExamples": {
-      "eyebrow": "Matching in action",
-      "title": "Match the causes that move you",
-      "lede": "Curated lists let you back an entire movement with a single commitment. A few examples of what a matching pool can target:",
-      "example1": {
-        "title": "Political prisoners",
-        "body": "Match every donation to campaigns providing legal defense and family support for political prisoners worldwide."
-      },
-      "example2": {
-        "title": "Women's sovereignty in Africa",
-        "body": "Double gifts to campaigns advancing women's economic independence and self-determination across the African continent."
-      },
-      "example3": {
-        "title": "Your own list",
-        "body": "Tell us the cause and we'll build a curated list of verified campaigns for your matching pool to back."
-      }
+    "fundsShowcase": {
+      "eyebrow": "Cause Funds",
+      "title": "Back the causes that move you",
+      "lede": "Each fund pools donations and distributes them to verified campaigns. Give once, support many.",
+      "browseAll": "or browse all campaigns"
     },
     "cta": {
       "eyebrow": "Let's talk",
       "title": "Ready to put your company behind a cause?",
-      "body": "Tell us how you'd like to get involved and we'll help you set up the right partnership — Seed Fund gift, matching pool, or a customer campaign.",
+      "body": "Tell us how you'd like to get involved and we'll help you set up the right partnership — Cause Fund gift, matching pool, or a customer campaign.",
       "button": "Contact the {{appName}} team",
       "followLine": "Prefer Nostr?",
       "followLink": "Follow Team Soapbox",
       "followSuffix": " and send us a message."
     }
+  },
+  "partners": {
+    "partnersTitle": "In partnership with:",
+    "pressTitle": "As seen in:"
   },
   "forms": {
     "required": "Required",

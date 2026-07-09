@@ -775,6 +775,93 @@
       "stillStuckSuffix": ". Nous y traitons les questions."
     }
   },
+  "corporateSponsorship": {
+    "seoTitle": "Mécénat d'entreprise",
+    "seoDescription": "Associez-vous à {{appName}} pour financer des causes qui comptent. Faites un don aux Fonds de Causes d'Agora, abondez les dons aux campagnes qui vous tiennent à cœur, ou faites connaître {{appName}} à vos clients dans le cadre de vos initiatives philanthropiques.",
+    "hero": {
+      "eyebrow": "Devenez partenaire de {{appName}}",
+      "headlinePart1": "Financez ce qui",
+      "headlineHighlight": "compte.",
+      "body": "{{appName}} relie directement les donateurs aux causes grâce à Bitcoin — pas de comptes gelés, pas d'intermédiaires, pas de plateforme qui prélève sa part. Apportez cette même philanthropie transparente et incensurable à votre entreprise.",
+      "trustChips": {
+        "nonCustodial": "Non-custodial",
+        "transparent": "Transparent on-chain",
+        "noFees": "Sans frais de plateforme"
+      },
+      "ctaPrimary": "Contactez-nous",
+      "ctaSecondary": "Découvrir les façons de devenir partenaire"
+    },
+    "intro": {
+      "eyebrow": "Pourquoi devenir partenaire",
+      "title": "Un mécénat d'entreprise aligné sur vos objectifs",
+      "lede": "Direct, transparent, vérifiable — un mécénat que votre entreprise peut pleinement assumer.",
+      "cards": {
+        "bitcoin": {
+          "title": "Plateforme native Bitcoin",
+          "body": "Les dons sont réglés sur la blockchain Bitcoin — sans frontières, inarrêtables, vérifiables par tous."
+        },
+        "verified": {
+          "title": "Fonds de campagnes vérifiées",
+          "body": "Chaque campagne est examinée et vérifiée avant la distribution des fonds."
+        },
+        "fees": {
+          "title": "Aucuns frais de plateforme",
+          "body": "100 % de votre don parvient à la cause. Nous ne prenons rien."
+        }
+      }
+    },
+    "ways": {
+      "eyebrow": "Façons de participer",
+      "title": "Trois façons de devenir partenaire",
+      "lede": "Choisissez le niveau d'engagement qui convient à votre entreprise — ou combinez les trois.",
+      "causeFunds": {
+        "kicker": "01 · Soutien direct",
+        "title": "Faites un don aux Fonds de Causes de {{appName}}",
+        "description": "Des cagnottes collectives pour les causes qui vous tiennent à cœur. {{appName}} les distribue à des campagnes vérifiées et de confiance.",
+        "bullet1": "Donnez en Bitcoin (BTC) ou en dollars américains (USD)",
+        "bullet2": "Mis en commun avec d'autres donateurs pour un impact accru",
+        "bullet3": "Distribués à des campagnes vérifiées et de confiance",
+        "cta": "Explorer les Fonds de Causes"
+      },
+      "matching": {
+        "kicker": "02 · Multipliez l'impact",
+        "title": "Abondez les dons aux campagnes",
+        "description": "Engagez une cagnotte d'abondement et nous doublerons le don de chaque donateur jusqu'à votre plafond. Choisissez exactement ce que votre entreprise soutient :",
+        "bullet1": "Abondez une campagne précise qui vous tient à cœur",
+        "bullet2": "Abondez une campagne mise en avant ou sélectionnée par l'équipe",
+        "bullet3": "Abondez toutes les campagnes d'une liste organisée — p. ex. les campagnes de soutien aux prisonniers politiques, ou à la souveraineté des femmes en Afrique",
+        "cta": "Mettre en place un abondement"
+      },
+      "promote": {
+        "kicker": "03 · Amplifiez",
+        "title": "Faites connaître {{appName}} à vos clients",
+        "description": "Faites des dons via {{appName}} un pilier de vos initiatives philanthropiques. Invitez vos clients et votre communauté à donner à vos côtés, et transformez votre audience en financement réel et incensurable pour les causes.",
+        "bullet1": "Campagnes co-brandées et collectes de dons",
+        "bullet2": "Arrondis en caisse et invitations à l'abondement pour vos clients",
+        "bullet3": "Rapports de transparence partagés que vos clients peuvent vérifier on-chain",
+        "cta": "Planifier une campagne"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Fonds de Causes",
+      "title": "Soutenez les causes qui vous touchent",
+      "lede": "Chaque fonds met en commun les dons et les distribue à des campagnes vérifiées. Donnez une fois, soutenez-en plusieurs.",
+      "browseAll": "ou parcourez toutes les campagnes"
+    },
+    "cta": {
+      "eyebrow": "Parlons-en",
+      "title": "Prêt à engager votre entreprise derrière une cause ?",
+      "body": "Dites-nous comment vous souhaitez vous impliquer et nous vous aiderons à mettre en place le bon partenariat — don à un Fonds de Causes, cagnotte d'abondement ou campagne auprès de vos clients.",
+      "button": "Contacter l'équipe {{appName}}",
+      "followLine": "Vous préférez Nostr ?",
+      "followLink": "Suivez Team Soapbox",
+      "followSuffix": " et envoyez-nous un message."
+    }
+  },
+  "partners": {
+    "partnersTitle": "En partenariat avec :",
+    "pressTitle": "Vu dans :"
+  },
   "forms": {
     "required": "Obligatoire",
     "recommended": "Recommandé",

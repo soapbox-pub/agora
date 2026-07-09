@@ -775,6 +775,52 @@
       "stillStuckSuffix": ". Tunashughulikia maswali huko."
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "Shirikiana na {{appName}} kufadhili malengo muhimu. Changia Mifuko ya Malengo ya Agora, oanisha michango kwa kampeni unazojali, au tangaza {{appName}} kwa wateja wako kama sehemu ya juhudi zako za uhisani.",
+    "intro": {
+      "eyebrow": "Kwa nini kushirikiana",
+      "title": "Utoaji wa kampuni unaolingana na malengo yako",
+      "lede": "Moja kwa moja, wazi, unaothibitishika — utoaji ambao kampuni yako inaweza kuusimamia.",
+      "cards": {
+        "bitcoin": {
+          "title": "Jukwaa linalotegemea Bitcoin",
+          "body": "Michango inakamilishwa kwenye blockchain ya Bitcoin — bila mipaka, haizuiliki, na inaweza kuthibitishwa na yeyote."
+        },
+        "verified": {
+          "title": "Mifuko ya kampeni iliyothibitishwa",
+          "body": "Kila kampeni huchunguzwa na kuthibitishwa kabla ya fedha kugawanywa."
+        },
+        "fees": {
+          "title": "Hakuna ada za jukwaa",
+          "body": "Asilimia 100 ya mchango wako inafika kwenye lengo. Hatuchukui chochote."
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · Msaada wa moja kwa moja",
+        "title": "Changia Mifuko ya Malengo ya {{appName}}",
+        "description": "Mifuko ya pamoja kwa malengo unayojali. {{appName}} inaigawa kwa kampeni zilizothibitishwa na zinazoaminika.",
+        "bullet1": "Toa kwa Bitcoin (BTC) au dola za Marekani (USD)",
+        "bullet2": "Inaunganishwa na michango ya wengine kwa athari kubwa zaidi",
+        "bullet3": "Inagawanywa kwa kampeni zilizothibitishwa na zinazoaminika",
+        "cta": "Chunguza Mifuko ya Malengo"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Mifuko ya Malengo",
+      "title": "Unga mkono malengo yanayokugusa",
+      "lede": "Kila mfuko hukusanya michango na kuigawa kwa kampeni zilizothibitishwa. Toa mara moja, saidia wengi.",
+      "browseAll": "au vinjari kampeni zote"
+    },
+    "cta": {
+      "body": "Tuambie jinsi ungependa kushiriki na tutakusaidia kuanzisha ushirikiano unaofaa — zawadi ya Mfuko wa Malengo, mfuko wa kuoanisha michango, au kampeni ya wateja."
+    }
+  },
+  "partners": {
+    "partnersTitle": "Kwa ushirikiano na:",
+    "pressTitle": "Kama ilivyoonekana kwenye:"
+  },
   "forms": {
     "required": "Lazima",
     "recommended": "Inapendekezwa",

@@ -775,6 +775,52 @@
       "stillStuckSuffix": ". Soruları orada cevaplıyoruz."
     }
   },
+  "corporateSponsorship": {
+    "seoDescription": "Önemli davaları finanse etmek için {{appName}} ile ortak olun. Agora Dava Fonlarına bağış yapın, önemsediğiniz kampanyalara yapılan bağışları eşleştirin veya hayırseverlik girişimlerinizin bir parçası olarak {{appName}}'ı müşterilerinize tanıtın.",
+    "intro": {
+      "eyebrow": "Neden ortak olmalı",
+      "title": "Hedeflerinizle uyumlu kurumsal bağışçılık",
+      "lede": "Doğrudan, şeffaf, doğrulanabilir — şirketinizin arkasında durabileceği bir bağışçılık.",
+      "cards": {
+        "bitcoin": {
+          "title": "Bitcoin tabanlı platform",
+          "body": "Bağışlar Bitcoin blok zincirinde gerçekleşir — sınırsız, durdurulamaz ve herkes tarafından doğrulanabilir."
+        },
+        "verified": {
+          "title": "Doğrulanmış kampanya fonları",
+          "body": "Her kampanya, fonlar dağıtılmadan önce incelenir ve doğrulanır."
+        },
+        "fees": {
+          "title": "Platform ücreti yok",
+          "body": "Bağışınızın %100'ü davaya ulaşır. Biz hiçbir şey almayız."
+        }
+      }
+    },
+    "ways": {
+      "causeFunds": {
+        "kicker": "01 · Doğrudan destek",
+        "title": "{{appName}} Dava Fonlarına bağış yapın",
+        "description": "Önemsediğiniz davalar için ortak havuzlar. {{appName}} bunları doğrulanmış, güvenilir kampanyalara dağıtır.",
+        "bullet1": "Bitcoin (BTC) veya ABD doları (USD) ile bağış yapın",
+        "bullet2": "Daha büyük etki için diğer bağışçılarla aynı havuzda toplanır",
+        "bullet3": "Doğrulanmış, güvenilir kampanyalara dağıtılır",
+        "cta": "Dava Fonlarını keşfedin"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Dava Fonları",
+      "title": "Sizi harekete geçiren davaları destekleyin",
+      "lede": "Her fon bağışları bir havuzda toplar ve doğrulanmış kampanyalara dağıtır. Bir kez verin, birçoğunu destekleyin.",
+      "browseAll": "veya tüm kampanyalara göz atın"
+    },
+    "cta": {
+      "body": "Nasıl katkıda bulunmak istediğinizi bize söyleyin, size uygun ortaklığı kurmanıza yardımcı olalım — Dava Fonu bağışı, eşleştirme havuzu veya bir müşteri kampanyası."
+    }
+  },
+  "partners": {
+    "partnersTitle": "İş birliğiyle:",
+    "pressTitle": "Basında biz:"
+  },
   "forms": {
     "required": "Zorunlu",
     "recommended": "Önerilen",

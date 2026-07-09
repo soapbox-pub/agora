@@ -5,25 +5,38 @@ import {
   ArrowRight,
   Bitcoin,
   CircleCheck,
-  Gavel,
   HandHeart,
   Handshake,
   HeartHandshake,
-  ListChecks,
   Megaphone,
+  Percent,
+  ShieldCheck,
   Sparkles,
-  Users,
 } from 'lucide-react';
 import { nip19 } from 'nostr-tools';
 import { Link } from 'react-router-dom';
 
+import { CampaignCard, CampaignCardSkeleton } from '@/components/CampaignCard';
+import { PartnersPressBand } from '@/components/PartnersPressBand';
 import { useAppContext } from '@/hooks/useAppContext';
+import { useCampaignList } from '@/hooks/useCampaignLists';
+import { useCampaigns } from '@/hooks/useCampaigns';
 import { TEAM_SOAPBOX_PACK } from '@/lib/helpContent';
 import { openUrl } from '@/lib/downloadFile';
+import type { ParsedCampaign } from '@/lib/campaign';
 
 /** Where "Get in touch" / "Contact" CTAs send a prospective corporate partner. */
 const SPONSOR_CONTACT_MAILTO =
   'mailto:hello@soapbox.pub?subject=Agora%20corporate%20sponsorship';
+
+/**
+ * Slug of the curated kind-30003 list that powers the Cause Funds
+ * showcase. Its detail page lives at `/campaigns/lists/agora-funds`.
+ */
+const AGORA_FUNDS_LIST_SLUG = 'agora-funds';
+
+/** Cap on how many Cause Fund campaigns the showcase grid renders. */
+const FUNDS_SHOWCASE_CAP = 6;
 
 /**
  * The /sponsors page. A landing-style document for companies that want to
@@ -32,7 +45,8 @@ const SPONSOR_CONTACT_MAILTO =
  * sub-components, and the canonical Inter-Bold section headings.
  *
  * Three ways to get involved (matching the partnership pitch):
- *   1. Donate to the Seed Fund (BTC or USD)
+ *   1. Donate to the Agora Cause Funds (BTC or USD, distributed to
+ *      verified campaigns) — CTA links to /campaigns/lists/agora-funds
  *   2. Match donations — individual campaigns, featured campaigns, or a
  *      curated list (e.g. political prisoners, women's sovereignty in Africa)
  *   3. Promote donations to your customer base as a philanthropic initiative
@@ -158,21 +172,27 @@ export function CorporateSponsorshipPage() {
           />
 
           <ul className="grid sm:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
-            <StatCard
-              value={t('corporateSponsorship.intro.stats.feesValue')}
-              label={t('corporateSponsorship.intro.stats.feesLabel')}
+            <FeatureCard
+              icon={<Bitcoin className="size-6" />}
+              title={t('corporateSponsorship.intro.cards.bitcoin.title')}
+              body={t('corporateSponsorship.intro.cards.bitcoin.body')}
             />
-            <StatCard
-              value={t('corporateSponsorship.intro.stats.custodyValue')}
-              label={t('corporateSponsorship.intro.stats.custodyLabel')}
+            <FeatureCard
+              icon={<ShieldCheck className="size-6" />}
+              title={t('corporateSponsorship.intro.cards.verified.title')}
+              body={t('corporateSponsorship.intro.cards.verified.body')}
             />
-            <StatCard
-              value={t('corporateSponsorship.intro.stats.reachValue')}
-              label={t('corporateSponsorship.intro.stats.reachLabel')}
+            <FeatureCard
+              icon={<Percent className="size-6" />}
+              title={t('corporateSponsorship.intro.cards.fees.title')}
+              body={t('corporateSponsorship.intro.cards.fees.body')}
             />
           </ul>
         </div>
       </section>
+
+      {/* ── 2b. Partners + press logos (dark band) ───────────────────────── */}
+      <PartnersPressBand />
 
       {/* ── 3. Three ways to partner (white / dark navy) ─────────────────── */}
       <section
@@ -198,16 +218,16 @@ export function CorporateSponsorshipPage() {
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-start">
             <WayCard
               icon={<Bitcoin className="size-5" />}
-              kicker={t('corporateSponsorship.ways.seedFund.kicker')}
-              title={t('corporateSponsorship.ways.seedFund.title')}
-              description={t('corporateSponsorship.ways.seedFund.description', { appName })}
+              kicker={t('corporateSponsorship.ways.causeFunds.kicker')}
+              title={t('corporateSponsorship.ways.causeFunds.title', { appName })}
+              description={t('corporateSponsorship.ways.causeFunds.description', { appName })}
               bullets={[
-                t('corporateSponsorship.ways.seedFund.bullet1'),
-                t('corporateSponsorship.ways.seedFund.bullet2'),
-                t('corporateSponsorship.ways.seedFund.bullet3'),
+                t('corporateSponsorship.ways.causeFunds.bullet1'),
+                t('corporateSponsorship.ways.causeFunds.bullet2'),
+                t('corporateSponsorship.ways.causeFunds.bullet3'),
               ]}
-              cta={t('corporateSponsorship.ways.seedFund.cta')}
-              onCta={() => void openUrl(SPONSOR_CONTACT_MAILTO)}
+              cta={t('corporateSponsorship.ways.causeFunds.cta')}
+              to={`/campaigns/lists/${AGORA_FUNDS_LIST_SLUG}`}
             />
             <WayCard
               icon={<HeartHandshake className="size-5" />}
@@ -239,34 +259,8 @@ export function CorporateSponsorshipPage() {
         </div>
       </section>
 
-      {/* ── 4. Matching in action (cream / dark navy) ────────────────────── */}
-      <section className="bg-[#f5f1eb] dark:bg-[#0a0c14] py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            eyebrow={t('corporateSponsorship.matchingExamples.eyebrow')}
-            title={t('corporateSponsorship.matchingExamples.title')}
-            lede={t('corporateSponsorship.matchingExamples.lede')}
-          />
-
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            <ExampleCard
-              icon={<Gavel className="size-5" />}
-              title={t('corporateSponsorship.matchingExamples.example1.title')}
-              body={t('corporateSponsorship.matchingExamples.example1.body')}
-            />
-            <ExampleCard
-              icon={<Users className="size-5" />}
-              title={t('corporateSponsorship.matchingExamples.example2.title')}
-              body={t('corporateSponsorship.matchingExamples.example2.body')}
-            />
-            <ExampleCard
-              icon={<ListChecks className="size-5" />}
-              title={t('corporateSponsorship.matchingExamples.example3.title')}
-              body={t('corporateSponsorship.matchingExamples.example3.body')}
-            />
-          </div>
-        </div>
-      </section>
+      {/* ── 4. Cause Funds showcase (cream / dark navy) ──────────────────── */}
+      <CauseFundsShowcase />
 
       {/* ── 5. Contact CTA (white / dark navy) ───────────────────────────── */}
       <section className="bg-white dark:bg-[#13181f] py-20 md:py-28">
@@ -335,19 +329,112 @@ function SectionHeader({ eyebrow, title, lede }: SectionHeaderProps) {
   );
 }
 
-interface StatCardProps {
-  value: string;
-  label: string;
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
 }
 
-function StatCard({ value, label }: StatCardProps) {
+/**
+ * One of the three "why partner" pillars. A gradient icon chip,
+ * tight title, and one-line body on a card that lifts and glows
+ * on hover — deliberately punchier than a static stat tile.
+ */
+function FeatureCard({ icon, title, body }: FeatureCardProps) {
   return (
-    <li className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm p-7 text-center">
-      <p className="text-4xl sm:text-5xl font-bold tracking-tight text-primary mb-2 tabular-nums">
-        {value}
-      </p>
-      <p className="text-sm text-gray-600 dark:text-gray-300 leading-snug">{label}</p>
+    <li className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm p-7 transition-all motion-safe:hover:-translate-y-1 hover:shadow-xl hover:border-primary/40">
+      {/* Corner glow that blooms on hover. */}
+      <div
+        aria-hidden
+        className="absolute -top-12 -right-12 size-36 rounded-full bg-primary/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+      />
+      {/* Brand hairline across the top edge. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-primary/40"
+      />
+      <div className="relative">
+        <div className="mb-5 inline-flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-white shadow-lg shadow-primary/25 motion-safe:transition-transform motion-safe:group-hover:scale-110">
+          {icon}
+        </div>
+        <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2 leading-snug">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{body}</p>
+      </div>
     </li>
+  );
+}
+
+/**
+ * Live grid of campaigns from the curated `agora-funds` list —
+ * the Cause Funds a corporate partner can put money behind today.
+ * Mirrors the home page's featured-row data flow: list → coords →
+ * `useCampaigns({ coordinates })` → reorder to the curator's order.
+ * Always renders the "browse all campaigns" escape hatch, even
+ * while loading or if the list is empty.
+ */
+function CauseFundsShowcase() {
+  const { t } = useTranslation();
+
+  const { list, isLoading: listLoading } = useCampaignList(AGORA_FUNDS_LIST_SLUG);
+
+  const coords = useMemo(
+    () => (list?.coords ?? []).slice(0, FUNDS_SHOWCASE_CAP),
+    [list],
+  );
+
+  const { data: campaigns, isLoading: campaignsLoading } = useCampaigns(
+    coords.length > 0 ? { coordinates: coords } : { coordinates: [] },
+  );
+
+  const ordered = useMemo<ParsedCampaign[]>(() => {
+    if (!campaigns || coords.length === 0) return [];
+    const byCoord = new Map(campaigns.map((c) => [c.aTag, c]));
+    const out: ParsedCampaign[] = [];
+    for (const coord of coords) {
+      const found = byCoord.get(coord);
+      if (found) out.push(found);
+    }
+    return out;
+  }, [campaigns, coords]);
+
+  const loading = listLoading || (campaignsLoading && coords.length > 0);
+
+  return (
+    <section className="bg-[#f5f1eb] dark:bg-[#0a0c14] py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          eyebrow={t('corporateSponsorship.fundsShowcase.eyebrow')}
+          title={t('corporateSponsorship.fundsShowcase.title')}
+          lede={t('corporateSponsorship.fundsShowcase.lede')}
+        />
+
+        {loading ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <CampaignCardSkeleton key={i} variant="compact" />
+            ))}
+          </div>
+        ) : ordered.length > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+            {ordered.map((campaign) => (
+              <CampaignCard key={campaign.aTag} campaign={campaign} variant="compact" />
+            ))}
+          </div>
+        ) : null}
+
+        <div className="mt-10 text-center">
+          <Link
+            to="/campaigns"
+            className="group inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 dark:border-white/20 bg-white dark:bg-white/5 text-gray-900 dark:text-white hover:border-primary hover:text-primary dark:hover:text-primary font-medium h-11 px-6 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          >
+            {t('corporateSponsorship.fundsShowcase.browseAll')}
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -358,10 +445,16 @@ interface WayCardProps {
   description: string;
   bullets: string[];
   cta: string;
-  onCta: () => void;
+  /** In-app destination — renders the CTA as a router Link. */
+  to?: string;
+  /** Click handler — renders the CTA as a button. Ignored when `to` is set. */
+  onCta?: () => void;
 }
 
-function WayCard({ icon, kicker, title, description, bullets, cta, onCta }: WayCardProps) {
+function WayCard({ icon, kicker, title, description, bullets, cta, to, onCta }: WayCardProps) {
+  const ctaClass =
+    'group inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm h-10 px-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50';
+
   return (
     <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm overflow-hidden flex flex-col">
       <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-5 text-white">
@@ -393,36 +486,19 @@ function WayCard({ icon, kicker, title, description, bullets, cta, onCta }: WayC
         </ul>
 
         <div className="mt-auto pt-2">
-          <button
-            type="button"
-            onClick={onCta}
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm h-10 px-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          >
-            {cta}
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
-          </button>
+          {to ? (
+            <Link to={to} className={ctaClass}>
+              {cta}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
+            </Link>
+          ) : (
+            <button type="button" onClick={onCta} className={ctaClass}>
+              {cta}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
+            </button>
+          )}
         </div>
       </div>
-    </div>
-  );
-}
-
-interface ExampleCardProps {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}
-
-function ExampleCard({ icon, title, body }: ExampleCardProps) {
-  return (
-    <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm p-7">
-      <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 border border-primary/30 text-primary">
-        {icon}
-      </div>
-      <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2 leading-snug">
-        {title}
-      </h3>
-      <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-[15px]">{body}</p>
     </div>
   );
 }

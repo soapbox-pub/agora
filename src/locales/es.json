@@ -2705,6 +2705,93 @@
       "stillStuckSuffix": ". Allí resolvemos preguntas."
     }
   },
+  "corporateSponsorship": {
+    "seoTitle": "Patrocinio corporativo",
+    "seoDescription": "Asóciate con {{appName}} para financiar causas que importan. Dona a los Fondos de Causas de Agora, iguala donaciones a campañas que te importan o promociona {{appName}} entre tus clientes como parte de tus iniciativas filantrópicas.",
+    "hero": {
+      "eyebrow": "Asóciate con {{appName}}",
+      "headlinePart1": "Financia lo que",
+      "headlineHighlight": "importa.",
+      "body": "{{appName}} conecta a los donantes directamente con las causas a través de Bitcoin: sin cuentas congeladas, sin intermediarios, sin una plataforma que se lleve una parte. Lleva esa misma filantropía transparente e incensurable a tu empresa.",
+      "trustChips": {
+        "nonCustodial": "No custodial",
+        "transparent": "Transparente on-chain",
+        "noFees": "Sin comisiones de plataforma"
+      },
+      "ctaPrimary": "Contáctanos",
+      "ctaSecondary": "Descubre las formas de asociarte"
+    },
+    "intro": {
+      "eyebrow": "Por qué asociarse",
+      "title": "Filantropía corporativa alineada con tus objetivos",
+      "lede": "Directa, transparente y verificable: una filantropía que tu empresa puede respaldar.",
+      "cards": {
+        "bitcoin": {
+          "title": "Plataforma nativa de Bitcoin",
+          "body": "Las donaciones se liquidan en la blockchain de Bitcoin: sin fronteras, imparables y verificables por cualquiera."
+        },
+        "verified": {
+          "title": "Fondos de campañas verificadas",
+          "body": "Cada campaña se examina y verifica antes de distribuir los fondos."
+        },
+        "fees": {
+          "title": "Sin comisiones de plataforma",
+          "body": "El 100 % de tu aporte llega a la causa. No nos quedamos con nada."
+        }
+      }
+    },
+    "ways": {
+      "eyebrow": "Formas de participar",
+      "title": "Tres formas de asociarte",
+      "lede": "Elige el nivel de participación que encaje con tu empresa, o combina los tres.",
+      "causeFunds": {
+        "kicker": "01 · Apoyo directo",
+        "title": "Dona a los Fondos de Causas de {{appName}}",
+        "description": "Fondos colectivos para las causas que te importan. {{appName}} los distribuye a campañas verificadas y de confianza.",
+        "bullet1": "Dona en Bitcoin (BTC) o dólares estadounidenses (USD)",
+        "bullet2": "Tu aporte se agrupa con el de otros donantes para un mayor impacto",
+        "bullet3": "Se distribuye a campañas verificadas y de confianza",
+        "cta": "Explora los Fondos de Causas"
+      },
+      "matching": {
+        "kicker": "02 · Multiplica el impacto",
+        "title": "Iguala donaciones a campañas",
+        "description": "Comprométete con un fondo de igualación y duplicaremos la donación de cada donante hasta tu límite. Elige exactamente qué respalda tu empresa:",
+        "bullet1": "Iguala una campaña concreta que te importe",
+        "bullet2": "Iguala una campaña destacada o seleccionada por el equipo",
+        "bullet3": "Iguala todas las campañas de una lista curada, p. ej. campañas que apoyan a presos políticos o la soberanía de las mujeres en África",
+        "cta": "Configura una igualación"
+      },
+      "promote": {
+        "kicker": "03 · Amplifica",
+        "title": "Promociona {{appName}} entre tus clientes",
+        "description": "Haz de las donaciones en {{appName}} una pieza central de tus iniciativas filantrópicas. Invita a tus clientes y a tu comunidad a donar contigo, y convierte tu alcance en financiación real e incensurable para las causas.",
+        "bullet1": "Campañas de marca compartida y colectas de donaciones",
+        "bullet2": "Redondeos al pagar e invitaciones de igualación para clientes",
+        "bullet3": "Informes de transparencia compartidos que tus clientes pueden verificar on-chain",
+        "cta": "Planifica una campaña"
+      }
+    },
+    "fundsShowcase": {
+      "eyebrow": "Fondos de Causas",
+      "title": "Respalda las causas que te mueven",
+      "lede": "Cada fondo agrupa donaciones y las distribuye a campañas verificadas. Dona una vez, apoya a muchas.",
+      "browseAll": "o explora todas las campañas"
+    },
+    "cta": {
+      "eyebrow": "Hablemos",
+      "title": "¿Lista tu empresa para respaldar una causa?",
+      "body": "Cuéntanos cómo te gustaría participar y te ayudaremos a crear la asociación adecuada: un aporte a un Fondo de Causas, un fondo de igualación o una campaña con tus clientes.",
+      "button": "Contacta al equipo de {{appName}}",
+      "followLine": "¿Prefieres Nostr?",
+      "followLink": "Sigue a Team Soapbox",
+      "followSuffix": " y envíanos un mensaje."
+    }
+  },
+  "partners": {
+    "partnersTitle": "En colaboración con:",
+    "pressTitle": "Visto en:"
+  },
   "faq": {
     "categories": {
       "getting-started": {
