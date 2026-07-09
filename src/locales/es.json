@@ -2759,7 +2759,7 @@
         "description": "Comprométete con un fondo de igualación y duplicaremos la donación de cada donante hasta tu límite. Elige exactamente qué respalda tu empresa:",
         "bullet1": "Iguala una campaña concreta que te importe",
         "bullet2": "Iguala una campaña destacada o seleccionada por el equipo",
-        "bullet3": "Iguala todas las campañas de una lista curada, p. ej. campañas que apoyan a presos políticos o la soberanía de las mujeres en África",
+        "bullet3": "Iguala los Fondos de Causas de {{appName}} para multiplicar tu impacto en múltiples campañas",
         "cta": "Configura una igualación"
       },
       "promote": {

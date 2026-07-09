@@ -829,7 +829,7 @@
         "description": "Comprometa um fundo de contrapartida e dobraremos a doação de cada doador até o seu limite. Escolha exatamente o que a sua empresa apoia:",
         "bullet1": "Iguale uma campanha específica que você apoia",
         "bullet2": "Iguale uma campanha em destaque ou escolhida pela equipe",
-        "bullet3": "Iguale todas as campanhas de uma lista curada — por exemplo, campanhas de apoio a presos políticos ou à soberania das mulheres na África",
+        "bullet3": "Iguale os Fundos de Causas do {{appName}} para multiplicar o seu impacto em várias campanhas",
         "cta": "Configurar uma contrapartida"
       },
       "promote": {

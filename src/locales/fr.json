@@ -829,7 +829,7 @@
         "description": "Engagez une cagnotte d'abondement et nous doublerons le don de chaque donateur jusqu'à votre plafond. Choisissez exactement ce que votre entreprise soutient :",
         "bullet1": "Abondez une campagne précise qui vous tient à cœur",
         "bullet2": "Abondez une campagne mise en avant ou sélectionnée par l'équipe",
-        "bullet3": "Abondez toutes les campagnes d'une liste organisée — p. ex. les campagnes de soutien aux prisonniers politiques, ou à la souveraineté des femmes en Afrique",
+        "bullet3": "Abondez les Fonds de Causes de {{appName}} pour multiplier votre impact sur plusieurs campagnes",
         "cta": "Mettre en place un abondement"
       },
       "promote": {

@@ -830,7 +830,7 @@
         "description": "Commit a matching pool and we will double every donor's gift up to your cap. Choose exactly what your company stands behind:",
         "bullet1": "Match an individual campaign you care about",
         "bullet2": "Match a featured or staff-picked campaign",
-        "bullet3": "Match every campaign on a curated list — e.g. campaigns supporting political prisoners, or women's sovereignty across Africa",
+        "bullet3": "Match {{appName}} Cause Funds to multiply your impact across multiple campaigns",
         "cta": "Set up a match"
       },
       "promote": {

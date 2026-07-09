@@ -239,7 +239,7 @@ export function CorporateSponsorshipPage() {
               bullets={[
                 t('corporateSponsorship.ways.matching.bullet1'),
                 t('corporateSponsorship.ways.matching.bullet2'),
-                t('corporateSponsorship.ways.matching.bullet3'),
+                t('corporateSponsorship.ways.matching.bullet3', { appName }),
               ]}
               cta={t('corporateSponsorship.ways.matching.cta')}
               onCta={() => void openUrl(SPONSOR_CONTACT_MAILTO)}
