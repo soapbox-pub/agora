@@ -30,6 +30,7 @@ import { COUNTRIES } from '@/lib/countries';
 import { createCountryIdentifier } from '@/lib/countryIdentifiers';
 import { createOrganizationAssociationTags, decodeOrganizationParam } from '@/lib/organizationContext';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
+import { seedDetailCache } from '@/lib/seedDetailCache';
 import { unixSecondsInTimezone } from '@/lib/timezone';
 import { withAgoraTag } from '@/lib/agoraNoteTags';
 import { parseContentTagInput } from '@/lib/contentTags';
@@ -195,10 +196,13 @@ export function CreateEventPage() {
         // Best-effort: event publishing has already succeeded.
       });
 
-      queryClient.setQueryData(['addr-event', kind, publishedEvent.pubkey, dTag], publishedEvent);
+      seedDetailCache(queryClient, ['addr-event', kind, publishedEvent.pubkey, dTag], publishedEvent);
+      // Seed the detail-read cache above, but do NOT invalidate that same key
+      // here — an immediate refetch would race the relay and clobber the seed
+      // with a stale/empty result. Only refresh the separate list/feed keys,
+      // which don't overlap the seed. See seedDetailCache for the rationale.
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['feed'] }),
-        queryClient.invalidateQueries({ queryKey: ['addr-event', kind, publishedEvent.pubkey, dTag] }),
         ...(organizationATag ? [
           queryClient.invalidateQueries({ queryKey: ['community-events', organizationATag] }),
           queryClient.invalidateQueries({ queryKey: ['organization-activity', organizationATag] }),

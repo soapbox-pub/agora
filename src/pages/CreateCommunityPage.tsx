@@ -40,6 +40,7 @@ import {
   type ParsedCommunity,
 } from '@/lib/communityUtils';
 import { fetchFreshEvent } from '@/lib/fetchFreshEvent';
+import { seedDetailCache } from '@/lib/seedDetailCache';
 import { getCountryInfo } from '@/lib/countries';
 import { getEditableContentTags } from '@/lib/contentTags';
 import {
@@ -484,7 +485,12 @@ export function CreateCommunityPage() {
         pubkey: event.pubkey,
         identifier: slug,
       });
-      queryClient.setQueryData(
+      // Seed the detail-read cache (the community page reads via useAddrEvent,
+      // i.e. the ['addr-event', ...] key) with the freshly-signed definition so
+      // navigating renders immediately. We don't invalidate this seeded key —
+      // see seedDetailCache. The invalidations below target separate keys.
+      seedDetailCache(
+        queryClient,
         ['addr-event', COMMUNITY_DEFINITION_KIND, event.pubkey, slug],
         event,
       );

@@ -60,6 +60,7 @@ import {
   sanitizeCampaignTitle,
 } from '@/lib/campaign';
 import { fetchFreshEvent } from '@/lib/fetchFreshEvent';
+import { seedDetailCache } from '@/lib/seedDetailCache';
 import { genUserName } from '@/lib/genUserName';
 import { createOrganizationAssociationTags, decodeOrganizationParam } from '@/lib/organizationContext';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
@@ -662,14 +663,23 @@ export function CreateCampaignPage() {
     onSuccess: (campaign) => {
       // Seed the detail-page query cache with the freshly-signed campaign so
       // navigating to /<naddr> renders immediately, instead of racing the
-      // relays (which haven't indexed the event yet). Without this, the empty
-      // relay result caches `null` as fresh and the detail page 404s until a
-      // hard refresh. Matches the pattern in CreateEventPage / CreateCommunityPage.
-      queryClient.setQueryData(['campaign', campaign.pubkey, campaign.identifier], campaign);
-      void queryClient.invalidateQueries({ queryKey: ['campaign', campaign.pubkey, campaign.identifier] });
+      // relays (which haven't indexed the event yet). We deliberately do NOT
+      // invalidate this same key afterward: an immediate refetch beats the
+      // relay and re-reads the OLD state — empty on create (page 404s) or the
+      // previous revision on edit (story reverts to pre-edit content) —
+      // clobbering the seed. The 30s staleTime lets a natural refetch
+      // reconcile once the relay has indexed the event, and useCampaign's
+      // monotonic created_at guard keeps a lagging relay from regressing this
+      // fresh revision. See seedDetailCache for the full rationale.
+      seedDetailCache(
+        queryClient,
+        ['campaign', campaign.pubkey, campaign.identifier],
+        campaign,
+      );
       // Refresh the campaign list queries used by the home/discover/profile
       // views so a newly launched (or just-edited) campaign shows up without
-      // a manual reload.
+      // a manual reload. These are separate query keys, so invalidating them
+      // does not clobber the detail seed above.
       void queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       void queryClient.invalidateQueries({ queryKey: ['campaigns-all'] });
       const publishOrganizationATag = isEditMode
