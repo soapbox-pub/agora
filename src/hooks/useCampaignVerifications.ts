@@ -13,7 +13,9 @@ import {
   EMPTY_VERIFICATION_DATA,
   type CampaignVerification,
   type VerificationData,
+  addVerificationToData,
   foldVerificationLabels,
+  removeVerificationFromData,
 } from '@/lib/agoraVerification';
 
 /**
@@ -107,7 +109,22 @@ export function useCampaignVerifications() {
         ],
       });
     },
-    onSuccess: () => {
+    // Fold the freshly-signed label straight into the cached rollup so the
+    // badge appears immediately. A plain invalidate races the relay: the
+    // refetch usually lands before the relay has indexed the new event, so
+    // the badge would only show after a manual refresh. We still invalidate
+    // afterwards to reconcile with the relay's canonical view.
+    //
+    // Only moderators feed this badge (the read query filters `authors:
+    // moderators`), so only optimistically add for a moderator — otherwise a
+    // pure verifier's avatar would flash in then vanish on the next refetch.
+    onSuccess: (event) => {
+      if (isModerator) {
+        queryClient.setQueryData<VerificationData>(
+          ['campaign-verifications', moderatorsKey],
+          (prev) => addVerificationToData(prev, event),
+        );
+      }
       queryClient.invalidateQueries({ queryKey: ['campaign-verifications'] });
     },
   });
@@ -131,7 +148,14 @@ export function useCampaignVerifications() {
         ],
       });
     },
-    onSuccess: () => {
+    onSuccess: (_event, { verification }) => {
+      // Drop the retracted verification from the cached rollup right away so
+      // the badge updates without waiting for the relay to index the kind 5
+      // deletion. Invalidate afterwards to reconcile.
+      queryClient.setQueryData<VerificationData>(
+        ['campaign-verifications', moderatorsKey],
+        (prev) => removeVerificationFromData(prev, verification),
+      );
       queryClient.invalidateQueries({ queryKey: ['campaign-verifications'] });
     },
   });

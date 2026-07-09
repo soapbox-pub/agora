@@ -107,3 +107,69 @@ export function foldVerificationLabels(
 
   return { byCoord, moderators };
 }
+
+/**
+ * Return a new {@link VerificationData} with the given label event folded in.
+ *
+ * Used for optimistic cache updates the moment a moderator publishes a
+ * verification, so the badge appears without waiting for the relay to index
+ * and re-serve the event. Mirrors {@link foldVerificationLabels}: keeps the
+ * newest event per `(coord, moderator)` and preserves oldest-first ordering.
+ *
+ * The event must carry the `verified` value in the `agora.verified`
+ * namespace and an `a` tag — otherwise the input is returned unchanged.
+ */
+export function addVerificationToData(
+  prev: VerificationData | undefined,
+  event: NostrEvent,
+): VerificationData {
+  const base = prev ?? EMPTY_VERIFICATION_DATA;
+
+  const value = event.tags.find(
+    ([n, , ns]) => n === 'l' && ns === AGORA_VERIFIED_NAMESPACE,
+  )?.[1];
+  if (value !== AGORA_VERIFIED_VALUE) return base;
+
+  const coord = event.tags.find(([n, v]) => n === 'a' && typeof v === 'string')?.[1];
+  if (!coord) return base;
+
+  const byCoord = new Map(base.byCoord);
+  const existing = byCoord.get(coord) ?? [];
+  // Drop any prior verification from the same moderator (republish refreshes
+  // their single entry rather than stacking twice), then append the new one.
+  const next = existing
+    .filter((v) => v.pubkey !== event.pubkey)
+    .concat({ pubkey: event.pubkey, event, createdAt: event.created_at })
+    .sort((a, b) => a.createdAt - b.createdAt);
+  byCoord.set(coord, next);
+
+  return { byCoord, moderators: base.moderators };
+}
+
+/**
+ * Return a new {@link VerificationData} with the given verification removed.
+ *
+ * Used for optimistic cache updates when a moderator retracts their own
+ * verification (a NIP-09 deletion), so the badge disappears immediately
+ * rather than after the relay processes the kind 5 event.
+ */
+export function removeVerificationFromData(
+  prev: VerificationData | undefined,
+  verification: CampaignVerification,
+): VerificationData {
+  const base = prev ?? EMPTY_VERIFICATION_DATA;
+
+  const byCoord = new Map(base.byCoord);
+  for (const [coord, list] of byCoord) {
+    const next = list.filter((v) => v.event.id !== verification.event.id);
+    if (next.length !== list.length) {
+      if (next.length === 0) {
+        byCoord.delete(coord);
+      } else {
+        byCoord.set(coord, next);
+      }
+    }
+  }
+
+  return { byCoord, moderators: base.moderators };
+}
