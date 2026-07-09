@@ -64,6 +64,11 @@ export const EMPTY_VERIFICATION_DATA: VerificationData = {
  * `agora.verified` namespace and an `a` tag whose coordinate starts with
  * `<coordKind>:` — so the verification stream never bleeds across kinds.
  *
+ * Kind 5 deletion events (NIP-09) mixed into `events` are honored: any label
+ * whose id is referenced by a deletion's `e` tag is dropped, so a retracted
+ * verification stays gone even on relays that keep serving the original
+ * kind 1985 label.
+ *
  * Each `(coord, moderator)` pair keeps the newest event; a moderator who
  * republishes simply refreshes their own entry rather than stacking twice.
  */
@@ -73,10 +78,26 @@ export function foldVerificationLabels(
   coordKind: number,
 ): VerificationData {
   const coordPrefix = `${coordKind}:`;
+
+  // Collect ids of labels deleted via NIP-09 kind 5 events so we can exclude
+  // them below. Only the label's own author can delete it (a kind 5 only
+  // takes effect on events the signer authored), and the read query already
+  // constrains deletions to `authors: moderators`.
+  const deletedIds = new Set<string>();
+  for (const event of events) {
+    if (event.kind !== 5) continue;
+    for (const [n, id] of event.tags) {
+      if (n === 'e' && id) deletedIds.add(id);
+    }
+  }
+
   // coord -> (moderator pubkey -> verification)
   const byCoordMap = new Map<string, Map<string, CampaignVerification>>();
 
   for (const event of events) {
+    if (event.kind === 5) continue;
+    if (deletedIds.has(event.id)) continue;
+
     const value = event.tags.find(
       ([n, , ns]) => n === 'l' && ns === AGORA_VERIFIED_NAMESPACE,
     )?.[1];

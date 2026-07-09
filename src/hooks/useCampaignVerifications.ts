@@ -81,6 +81,16 @@ export function useCampaignVerifications() {
             '#l': [AGORA_VERIFIED_VALUE],
             limit: 2000,
           },
+          // Also pull the moderators' NIP-09 deletions so a retracted
+          // verification stays gone even on relays that keep serving the
+          // original kind 1985 label. `foldVerificationLabels` drops any
+          // label whose id appears in a moderator's kind 5 `e` tag.
+          {
+            kinds: [5],
+            authors: moderators,
+            '#k': [String(LABEL_KIND)],
+            limit: 2000,
+          },
         ],
         { signal },
       );
@@ -110,10 +120,15 @@ export function useCampaignVerifications() {
       });
     },
     // Fold the freshly-signed label straight into the cached rollup so the
-    // badge appears immediately. A plain invalidate races the relay: the
-    // refetch usually lands before the relay has indexed the new event, so
-    // the badge would only show after a manual refresh. We still invalidate
-    // afterwards to reconcile with the relay's canonical view.
+    // badge appears immediately.
+    //
+    // We intentionally do NOT call invalidateQueries here. Invalidation forces
+    // an immediate refetch, and that refetch races the relay: it almost always
+    // lands before the relay has indexed the label we just published, so the
+    // queryFn re-reads the OLD label set and overwrites the optimistic value —
+    // the badge flashes in, then vanishes. The query's staleTime (30s) lets a
+    // natural refetch reconcile with the relay's canonical view once it has
+    // caught up. (Same rationale as useNotifications' unread-dot update.)
     //
     // Only moderators feed this badge (the read query filters `authors:
     // moderators`), so only optimistically add for a moderator — otherwise a
@@ -125,7 +140,6 @@ export function useCampaignVerifications() {
           (prev) => addVerificationToData(prev, event),
         );
       }
-      queryClient.invalidateQueries({ queryKey: ['campaign-verifications'] });
     },
   });
 
@@ -150,13 +164,17 @@ export function useCampaignVerifications() {
     },
     onSuccess: (_event, { verification }) => {
       // Drop the retracted verification from the cached rollup right away so
-      // the badge updates without waiting for the relay to index the kind 5
-      // deletion. Invalidate afterwards to reconcile.
+      // the badge disappears immediately. As with `verify`, we deliberately
+      // skip invalidateQueries: an immediate refetch races the relay (the
+      // kind 5 deletion isn't indexed yet, so the label still comes back) and
+      // the badge would reappear. Once the query goes stale (30s) a natural
+      // refetch reconciles — and because the read query now also pulls the
+      // moderators' kind 5 deletions, the label stays gone even if the relay
+      // keeps serving it.
       queryClient.setQueryData<VerificationData>(
         ['campaign-verifications', moderatorsKey],
         (prev) => removeVerificationFromData(prev, verification),
       );
-      queryClient.invalidateQueries({ queryKey: ['campaign-verifications'] });
     },
   });
 
