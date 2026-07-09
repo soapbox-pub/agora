@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1420"/>
+      <stop offset="1" stop-color="#161d2e"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8533"/>
+      <stop offset="1" stop-color="#ff6600"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff6600" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ff6600" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <circle cx="612" cy="225" r="230" fill="url(#glow)"/>
+
+  <!-- faint dot texture -->
+  <g fill="#ffffff" fill-opacity="0.05">
+    <circle cx="55" cy="55" r="3"/><circle cx="745" cy="60" r="3"/>
+    <circle cx="720" cy="400" r="3"/><circle cx="70" cy="400" r="3"/>
+    <circle cx="470" cy="45" r="3"/>
+  </g>
+
+  <!-- ── donation card ─────────────────────────────────────────── -->
+  <rect x="80" y="95" width="360" height="260" rx="22" fill="#1c2230" stroke="#ffffff" stroke-opacity="0.12"/>
+
+  <!-- row 1: donor gives $50 -->
+  <circle cx="120" cy="143" r="18" fill="#2a3245"/>
+  <circle cx="120" cy="138" r="6.5" fill="#7c86a0"/>
+  <path d="M108 152 a12 9 0 0 1 24 0 Z" fill="#7c86a0"/>
+  <rect x="152" y="138" width="88" height="9" rx="4.5" fill="#39415a"/>
+  <path d="M330 138 c0 -4 3.2 -6.5 6.5 -6.5 c2 0 3.4 1 4.5 2.2 c1.1 -1.2 2.5 -2.2 4.5 -2.2 c3.3 0 6.5 2.5 6.5 6.5 c0 5.5 -11 12 -11 12 c0 0 -11 -6.5 -11 -12 Z" fill="#ff6600"/>
+  <text x="416" y="152" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff" text-anchor="end">$50</text>
+
+  <line x1="104" y1="180" x2="416" y2="180" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1.5"/>
+
+  <!-- row 2: your match +$50 -->
+  <rect x="102" y="196" width="36" height="36" rx="9" fill="#ff6600" fill-opacity="0.15" stroke="#ff6600" stroke-opacity="0.5"/>
+  <path d="M120 205 v18 M111 214 h18" stroke="#ff8533" stroke-width="3" stroke-linecap="round"/>
+  <rect x="152" y="209" width="110" height="9" rx="4.5" fill="#39415a"/>
+  <text x="416" y="223" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="700" fill="#ff8533" text-anchor="end">+$50</text>
+
+  <line x1="104" y1="250" x2="416" y2="250" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1.5"/>
+
+  <!-- total: full progress bar, $100 -->
+  <rect x="104" y="272" width="64" height="9" rx="4.5" fill="#39415a"/>
+  <text x="416" y="284" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800" fill="#ffffff" text-anchor="end">$100</text>
+  <rect x="104" y="300" width="312" height="16" rx="8" fill="#2a3245"/>
+  <rect x="104" y="300" width="312" height="16" rx="8" fill="url(#orange)"/>
+  <circle cx="404" cy="308" r="5" fill="#ffffff" fill-opacity="0.85"/>
+
+  <!-- connector to the badge -->
+  <path d="M446 225 L 505 225" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+
+  <!-- ── 2x badge ──────────────────────────────────────────────── -->
+  <circle cx="612" cy="225" r="112" fill="none" stroke="#ff6600" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="3 12" stroke-linecap="round"/>
+  <circle cx="612" cy="225" r="88" fill="url(#orange)"/>
+  <circle cx="612" cy="225" r="88" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.5"/>
+  <text x="612" y="257" font-family="Inter, system-ui, sans-serif" font-size="92" font-weight="800" fill="#ffffff" text-anchor="middle">2&#215;</text>
+
+  <!-- sparkles -->
+  <path d="M715 105 l4.5 11 11 4.5 -11 4.5 -4.5 11 -4.5 -11 -11 -4.5 11 -4.5 Z" fill="#ff8533"/>
+  <path d="M735 330 l3.5 8.5 8.5 3.5 -8.5 3.5 -3.5 8.5 -3.5 -8.5 -8.5 -3.5 8.5 -3.5 Z" fill="#ff8533" fill-opacity="0.7"/>
+  <path d="M508 118 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#ff8533" fill-opacity="0.5"/>
+</svg>

@@ -215,9 +215,10 @@ export function CorporateSponsorshipPage() {
             lede={t('corporateSponsorship.ways.lede')}
           />
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-start">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
             <WayCard
               icon={<Bitcoin className="size-5" />}
+              image="/sponsors/way-cause-funds.svg"
               kicker={t('corporateSponsorship.ways.causeFunds.kicker')}
               title={t('corporateSponsorship.ways.causeFunds.title', { appName })}
               description={t('corporateSponsorship.ways.causeFunds.description', { appName })}
@@ -231,6 +232,7 @@ export function CorporateSponsorshipPage() {
             />
             <WayCard
               icon={<HeartHandshake className="size-5" />}
+              image="/sponsors/way-matching.svg"
               kicker={t('corporateSponsorship.ways.matching.kicker')}
               title={t('corporateSponsorship.ways.matching.title')}
               description={t('corporateSponsorship.ways.matching.description')}
@@ -244,6 +246,7 @@ export function CorporateSponsorshipPage() {
             />
             <WayCard
               icon={<Megaphone className="size-5" />}
+              image="/sponsors/way-promote.svg"
               kicker={t('corporateSponsorship.ways.promote.kicker')}
               title={t('corporateSponsorship.ways.promote.title', { appName })}
               description={t('corporateSponsorship.ways.promote.description', { appName })}
@@ -440,6 +443,13 @@ function CauseFundsShowcase() {
 
 interface WayCardProps {
   icon: React.ReactNode;
+  /**
+   * Illustration shown under the kicker band — a 16:9 brand-styled
+   * SVG from `public/sponsors/` visualizing the partnership mode.
+   * Decorative (empty alt): the title, description, and bullets
+   * carry the full meaning.
+   */
+  image: string;
   kicker: string;
   title: string;
   description: string;
@@ -451,12 +461,12 @@ interface WayCardProps {
   onCta?: () => void;
 }
 
-function WayCard({ icon, kicker, title, description, bullets, cta, to, onCta }: WayCardProps) {
+function WayCard({ icon, image, kicker, title, description, bullets, cta, to, onCta }: WayCardProps) {
   const ctaClass =
     'group inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm h-10 px-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50';
 
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm overflow-hidden flex flex-col">
+    <div className="h-full rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1c2230] shadow-sm overflow-hidden flex flex-col">
       <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-5 text-white">
         <div className="flex items-center gap-2.5">
           <span className="flex size-9 items-center justify-center rounded-xl bg-white/15">
@@ -465,6 +475,8 @@ function WayCard({ icon, kicker, title, description, bullets, cta, to, onCta }: 
           <span className="text-xs font-semibold uppercase tracking-widest">{kicker}</span>
         </div>
       </div>
+
+      <img src={image} alt="" loading="lazy" className="block w-full aspect-video object-cover" />
 
       <div className="p-6 space-y-5 flex-1 flex flex-col">
         <div>

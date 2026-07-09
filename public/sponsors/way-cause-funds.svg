@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1420"/>
+      <stop offset="1" stop-color="#161d2e"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8533"/>
+      <stop offset="1" stop-color="#ff6600"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff6600" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ff6600" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <circle cx="405" cy="225" r="250" fill="url(#glow)"/>
+
+  <!-- faint dot texture -->
+  <g fill="#ffffff" fill-opacity="0.05">
+    <circle cx="60" cy="60" r="3"/><circle cx="740" cy="50" r="3"/>
+    <circle cx="710" cy="400" r="3"/><circle cx="90" cy="395" r="3"/>
+    <circle cx="400" cy="40" r="3"/><circle cx="380" cy="415" r="3"/>
+  </g>
+
+  <!-- ── sources: Bitcoin coin + USD card ─────────────────────── -->
+  <circle cx="130" cy="150" r="42" fill="url(#orange)"/>
+  <circle cx="130" cy="150" r="42" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="2.5"/>
+  <text x="130" y="166" font-family="Inter, system-ui, sans-serif" font-size="46" font-weight="700" fill="#ffffff" text-anchor="middle">&#8383;</text>
+
+  <rect x="72" y="238" width="118" height="68" rx="14" fill="#1c2230" stroke="#ffffff" stroke-opacity="0.12"/>
+  <circle cx="104" cy="272" r="17" fill="#2a3245"/>
+  <text x="104" y="280" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">$</text>
+  <rect x="132" y="258" width="40" height="8" rx="4" fill="#39415a"/>
+  <rect x="132" y="276" width="26" height="8" rx="4" fill="#2a3245"/>
+
+  <!-- flows in -->
+  <path d="M180 152 C 255 158 265 195 322 208" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+  <path d="M196 268 C 255 262 270 250 322 240" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+
+  <!-- ── the fund pool ─────────────────────────────────────────── -->
+  <rect x="328" y="148" width="154" height="154" rx="30" fill="#1c2230" stroke="url(#orange)" stroke-width="2.5"/>
+  <rect x="328" y="148" width="154" height="154" rx="30" fill="#ff6600" fill-opacity="0.07"/>
+  <!-- overlapping coins inside -->
+  <circle cx="389" cy="212" r="24" fill="url(#orange)"/>
+  <text x="389" y="221" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">&#8383;</text>
+  <circle cx="424" cy="226" r="24" fill="#2a3245" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5"/>
+  <text x="424" y="235" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">$</text>
+  <rect x="363" y="264" width="84" height="9" rx="4.5" fill="#39415a"/>
+
+  <!-- flows out -->
+  <path d="M486 200 C 525 178 530 138 552 127" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+  <path d="M486 225 L 552 226" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+  <path d="M486 250 C 525 272 530 312 552 323" fill="none" stroke="#ff6600" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 9" stroke-opacity="0.85"/>
+
+  <!-- ── verified campaigns ────────────────────────────────────── -->
+  <g>
+    <rect x="558" y="95" width="186" height="66" rx="14" fill="#1c2230" stroke="#ffffff" stroke-opacity="0.12"/>
+    <rect x="574" y="111" width="84" height="9" rx="4.5" fill="#39415a"/>
+    <rect x="574" y="134" width="126" height="8" rx="4" fill="#2a3245"/>
+    <rect x="574" y="134" width="92" height="8" rx="4" fill="url(#orange)"/>
+    <circle cx="722" cy="115" r="12" fill="#22c55e"/>
+    <path d="M716.5 115.5 L 720.5 119.5 L 728 111" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g>
+    <rect x="558" y="193" width="186" height="66" rx="14" fill="#1c2230" stroke="#ffffff" stroke-opacity="0.12"/>
+    <rect x="574" y="209" width="70" height="9" rx="4.5" fill="#39415a"/>
+    <rect x="574" y="232" width="126" height="8" rx="4" fill="#2a3245"/>
+    <rect x="574" y="232" width="64" height="8" rx="4" fill="url(#orange)"/>
+    <circle cx="722" cy="213" r="12" fill="#22c55e"/>
+    <path d="M716.5 213.5 L 720.5 217.5 L 728 209" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g>
+    <rect x="558" y="291" width="186" height="66" rx="14" fill="#1c2230" stroke="#ffffff" stroke-opacity="0.12"/>
+    <rect x="574" y="307" width="92" height="9" rx="4.5" fill="#39415a"/>
+    <rect x="574" y="330" width="126" height="8" rx="4" fill="#2a3245"/>
+    <rect x="574" y="330" width="110" height="8" rx="4" fill="url(#orange)"/>
+    <circle cx="722" cy="311" r="12" fill="#22c55e"/>
+    <path d="M716.5 311.5 L 720.5 315.5 L 728 307" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
