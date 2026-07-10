@@ -1369,8 +1369,8 @@
   "campaignVerification": {
     "verifiedBy": "Doğrulayan",
     "verifiedLabel": "Doğrulandı",
-    "verifiedByCount_one": "{{count}} moderatör tarafından doğrulandı",
-    "verifiedByCount_other": "{{count}} moderatör tarafından doğrulandı",
+    "verifiedByCount_one": "{{count}} kişi tarafından doğrulandı",
+    "verifiedByCount_other": "{{count}} kişi tarafından doğrulandı",
     "verifyCampaign": "Bu kampanyayı doğrula",
     "removeVerification": "Doğrulamamı kaldır",
     "dialogTitle": "Bu kampanyayı doğrula",
@@ -1378,10 +1378,10 @@
     "verified": "Kampanya doğrulandı",
     "unverified": "Doğrulama kaldırıldı",
     "actionFailed": "İşlem başarısız oldu",
-    "verifiedByCount_zero": "{{count}} moderatör tarafından doğrulandı",
-    "verifiedByCount_two": "{{count}} moderatör tarafından doğrulandı",
-    "verifiedByCount_few": "{{count}} moderatör tarafından doğrulandı",
-    "verifiedByCount_many": "{{count}} moderatör tarafından doğrulandı"
+    "verifiedByCount_zero": "{{count}} kişi tarafından doğrulandı",
+    "verifiedByCount_two": "{{count}} kişi tarafından doğrulandı",
+    "verifiedByCount_few": "{{count}} kişi tarafından doğrulandı",
+    "verifiedByCount_many": "{{count}} kişi tarafından doğrulandı"
   },
   "calendarEvents": {
     "create": {

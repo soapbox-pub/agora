@@ -1369,8 +1369,8 @@
   "campaignVerification": {
     "verifiedBy": "Imethibitishwa na",
     "verifiedLabel": "Imethibitishwa",
-    "verifiedByCount_one": "Imethibitishwa na msimamizi {{count}}",
-    "verifiedByCount_other": "Imethibitishwa na wasimamizi {{count}}",
+    "verifiedByCount_one": "Imethibitishwa na mtu {{count}}",
+    "verifiedByCount_other": "Imethibitishwa na watu {{count}}",
     "verifyCampaign": "Thibitisha kampeni hii",
     "removeVerification": "Ondoa uthibitisho wangu",
     "dialogTitle": "Thibitisha kampeni hii",
@@ -1378,10 +1378,10 @@
     "verified": "Kampeni imethibitishwa",
     "unverified": "Uthibitisho umeondolewa",
     "actionFailed": "Kitendo kimeshindwa",
-    "verifiedByCount_zero": "Imethibitishwa na wasimamizi {{count}}",
-    "verifiedByCount_two": "Imethibitishwa na wasimamizi {{count}}",
-    "verifiedByCount_few": "Imethibitishwa na wasimamizi {{count}}",
-    "verifiedByCount_many": "Imethibitishwa na wasimamizi {{count}}"
+    "verifiedByCount_zero": "Imethibitishwa na watu {{count}}",
+    "verifiedByCount_two": "Imethibitishwa na watu {{count}}",
+    "verifiedByCount_few": "Imethibitishwa na watu {{count}}",
+    "verifiedByCount_many": "Imethibitishwa na watu {{count}}"
   },
   "calendarEvents": {
     "create": {

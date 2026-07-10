@@ -858,8 +858,8 @@
   "campaignVerification": {
     "verifiedBy": "تصدیق شوی د",
     "verifiedLabel": "تصدیق شوی",
-    "verifiedByCount_one": "د {{count}} اعتدال کوونکي لخوا تصدیق شوی",
-    "verifiedByCount_other": "د {{count}} اعتدال کوونکو لخوا تصدیق شوی",
+    "verifiedByCount_one": "د {{count}} کس لخوا تصدیق شوی",
+    "verifiedByCount_other": "د {{count}} کسانو لخوا تصدیق شوی",
     "verifyCampaign": "دا کمپاین تصدیق کړئ",
     "removeVerification": "زما تصدیق لرې کړئ",
     "dialogTitle": "دا کمپاین تصدیق کړئ",
@@ -867,10 +867,10 @@
     "verified": "کمپاین تصدیق شو",
     "unverified": "تصدیق لرې شو",
     "actionFailed": "کړنه ناکامه شوه",
-    "verifiedByCount_zero": "د {{count}} اعتدال کوونکو لخوا تصدیق شوی",
-    "verifiedByCount_two": "د {{count}} اعتدال کوونکو لخوا تصدیق شوی",
-    "verifiedByCount_few": "د {{count}} اعتدال کوونکو لخوا تصدیق شوی",
-    "verifiedByCount_many": "د {{count}} اعتدال کوونکو لخوا تصدیق شوی"
+    "verifiedByCount_zero": "د {{count}} کسانو لخوا تصدیق شوی",
+    "verifiedByCount_two": "د {{count}} کسانو لخوا تصدیق شوی",
+    "verifiedByCount_few": "د {{count}} کسانو لخوا تصدیق شوی",
+    "verifiedByCount_many": "د {{count}} کسانو لخوا تصدیق شوی"
   },
   "calendarEvents": {
     "create": {

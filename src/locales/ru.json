@@ -1369,10 +1369,10 @@
   "campaignVerification": {
     "verifiedBy": "Проверено",
     "verifiedLabel": "Проверено",
-    "verifiedByCount_one": "Проверено {{count}} модератором",
-    "verifiedByCount_few": "Проверено {{count}} модераторами",
-    "verifiedByCount_many": "Проверено {{count}} модераторами",
-    "verifiedByCount_other": "Проверено {{count}} модераторами",
+    "verifiedByCount_one": "Проверено {{count}} человеком",
+    "verifiedByCount_few": "Проверено {{count}} людьми",
+    "verifiedByCount_many": "Проверено {{count}} людьми",
+    "verifiedByCount_other": "Проверено {{count}} людьми",
     "verifyCampaign": "Проверить эту кампанию",
     "removeVerification": "Убрать мою проверку",
     "dialogTitle": "Проверить эту кампанию",
@@ -1380,8 +1380,8 @@
     "verified": "Кампания проверена",
     "unverified": "Проверка удалена",
     "actionFailed": "Не удалось выполнить действие",
-    "verifiedByCount_zero": "Проверено {{count}} модераторами",
-    "verifiedByCount_two": "Проверено {{count}} модераторами"
+    "verifiedByCount_zero": "Проверено {{count}} людьми",
+    "verifiedByCount_two": "Проверено {{count}} людьми"
   },
   "calendarEvents": {
     "create": {

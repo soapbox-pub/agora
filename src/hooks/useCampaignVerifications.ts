@@ -20,25 +20,28 @@ import {
 
 /**
  * Fetches and folds campaign **verification** label events (NIP-32 kind
- * 1985 in the `agora.verified` namespace) authored by the campaign
- * moderators ({@link useCampaignModerators}). Returns a per-coordinate
- * map of which moderators have verified each campaign — the UI stacks
+ * 1985 in the `agora.verified` namespace) from **any author**. Returns a
+ * per-coordinate map of who has verified each campaign — the UI stacks
  * their avatars into a badge.
  *
- * Verification is a moderator action, gated by the same moderator pack
- * that governs hide / feature labels. It just rides a different NIP-32
- * namespace (`agora.verified`) so it's an independent, additive trust
- * signal rather than a discovery decision.
+ * Unlike the `agora.moderation` labels (hide / feature), which are gated by
+ * the moderator pack, verification is an **open** trust signal: anyone may
+ * publish a `verified` label and it surfaces on the badge. The badge always
+ * shows *who* verified — donors judge the verifier, not an allowlist. This
+ * is a deliberate product decision (open verification until abuse forces a
+ * trust gate); if spam becomes a problem, reintroduce an `authors:` filter
+ * here.
  *
- * The mutations let a logged-in moderator vouch for or retract verification:
+ * The mutations let a logged-in moderator or verifier vouch for or retract
+ * verification:
  * - `verify({ coord })` publishes a kind 1985 label in the verified namespace.
- * - `unverify({ event })` publishes a NIP-09 kind 5 deletion of that
- *   moderator's own prior label event.
+ * - `unverify({ event })` publishes a NIP-09 kind 5 deletion of the
+ *   author's own prior label event.
  *
- * As with moderation labels, the read query filters by `authors:
- * moderators`, so a `verified` label signed by anyone outside the pack is
- * ignored — the verification badge can never be forged by an untrusted
- * pubkey.
+ * Forgery note: a kind 5 deletion only takes effect on labels its signer
+ * authored — `foldVerificationLabels` enforces the author match — so an
+ * attacker can neither remove someone else's verification nor (per the
+ * badge UI) hide who signed one.
  */
 export function useCampaignVerifications() {
   const { nostr } = useNostr();
@@ -48,53 +51,40 @@ export function useCampaignVerifications() {
   const { data: moderators } = useCampaignModerators();
   const { isVerifier } = useVerifierStatement(user?.pubkey);
 
-  // Stable key so the query refetches when the moderator set changes.
-  const moderatorsKey = moderators ? [...moderators].sort().join(',') : '';
-
-  // True when the logged-in user is a moderator. Moderators sign the
-  // verification labels that feed the stacked-avatar badge (the read path
-  // filters by `authors: moderators`).
+  // True when the logged-in user is a moderator (member of the pack that
+  // gates `agora.moderation` hide / feature labels).
   const isModerator = !!user && !!moderators && moderators.includes(user.pubkey);
 
   // True when the logged-in user may verify campaigns: either a moderator
   // or a self-declared verifier (someone who published a kind 14672
-  // verifier statement). Verifiers' verifications surface on their own
-  // profile's "Verified" tab (`useVerifiedCampaigns`, scoped by author);
-  // moderators' additionally power the on-card verification badge.
+  // verifier statement). This gates the verify *action* in menus; the
+  // badge read path below is open to labels from anyone.
   const canVerify = isModerator || isVerifier;
 
   const verificationQuery = useQuery({
-    queryKey: ['campaign-verifications', moderatorsKey],
-    // Never fire with an empty `authors:` filter — that would match every
-    // `agora.verified` label from any author and break the trust model.
-    enabled: moderators !== undefined,
+    queryKey: ['campaign-verifications'],
     queryFn: async ({ signal }): Promise<VerificationData> => {
-      if (!moderators || moderators.length === 0) {
-        return { ...EMPTY_VERIFICATION_DATA, moderators: [] };
-      }
       const events = await nostr.query(
         [
           {
             kinds: [LABEL_KIND],
-            authors: moderators,
             '#L': [AGORA_VERIFIED_NAMESPACE],
             '#l': [AGORA_VERIFIED_VALUE],
             limit: 2000,
           },
-          // Also pull the moderators' NIP-09 deletions so a retracted
+          // Also pull NIP-09 deletions of kind 1985 labels so a retracted
           // verification stays gone even on relays that keep serving the
-          // original kind 1985 label. `foldVerificationLabels` drops any
-          // label whose id appears in a moderator's kind 5 `e` tag.
+          // original label. `foldVerificationLabels` only honors a deletion
+          // signed by the label's own author.
           {
             kinds: [5],
-            authors: moderators,
             '#k': [String(LABEL_KIND)],
             limit: 2000,
           },
         ],
         { signal },
       );
-      return foldVerificationLabels(events, moderators, CAMPAIGN_KIND);
+      return foldVerificationLabels(events, CAMPAIGN_KIND);
     },
     staleTime: 30_000,
   });
@@ -130,16 +120,13 @@ export function useCampaignVerifications() {
     // natural refetch reconcile with the relay's canonical view once it has
     // caught up. (Same rationale as useNotifications' unread-dot update.)
     //
-    // Only moderators feed this badge (the read query filters `authors:
-    // moderators`), so only optimistically add for a moderator — otherwise a
-    // pure verifier's avatar would flash in then vanish on the next refetch.
+    // The read path is open (labels from anyone feed the badge), so the
+    // optimistic add applies to every signer, moderator or not.
     onSuccess: (event) => {
-      if (isModerator) {
-        queryClient.setQueryData<VerificationData>(
-          ['campaign-verifications', moderatorsKey],
-          (prev) => addVerificationToData(prev, event),
-        );
-      }
+      queryClient.setQueryData<VerificationData>(
+        ['campaign-verifications'],
+        (prev) => addVerificationToData(prev, event),
+      );
     },
   });
 
@@ -147,7 +134,7 @@ export function useCampaignVerifications() {
     mutationFn: async ({ verification }: { verification: CampaignVerification }) => {
       if (!user) throw new Error('You must be logged in to unverify a campaign.');
       if (verification.pubkey !== user.pubkey) {
-        // A moderator can only retract their own verification — a kind 5
+        // A signer can only retract their own verification — a kind 5
         // deletion only takes effect on events the signer authored.
         throw new Error('You can only remove your own verification.');
       }
@@ -168,11 +155,10 @@ export function useCampaignVerifications() {
       // skip invalidateQueries: an immediate refetch races the relay (the
       // kind 5 deletion isn't indexed yet, so the label still comes back) and
       // the badge would reappear. Once the query goes stale (30s) a natural
-      // refetch reconciles — and because the read query now also pulls the
-      // moderators' kind 5 deletions, the label stays gone even if the relay
-      // keeps serving it.
+      // refetch reconciles — and because the read query also pulls kind 5
+      // deletions, the label stays gone even if the relay keeps serving it.
       queryClient.setQueryData<VerificationData>(
-        ['campaign-verifications', moderatorsKey],
+        ['campaign-verifications'],
         (prev) => removeVerificationFromData(prev, verification),
       );
     },

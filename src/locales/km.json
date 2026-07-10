@@ -858,8 +858,8 @@
   "campaignVerification": {
     "verifiedBy": "បានផ្ទៀងផ្ទាត់ដោយ",
     "verifiedLabel": "បានផ្ទៀងផ្ទាត់",
-    "verifiedByCount_one": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់",
-    "verifiedByCount_other": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់",
+    "verifiedByCount_one": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់",
+    "verifiedByCount_other": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់",
     "verifyCampaign": "ផ្ទៀងផ្ទាត់យុទ្ធនាការនេះ",
     "removeVerification": "លុបការផ្ទៀងផ្ទាត់របស់ខ្ញុំ",
     "dialogTitle": "ផ្ទៀងផ្ទាត់យុទ្ធនាការនេះ",
@@ -867,10 +867,10 @@
     "verified": "យុទ្ធនាការត្រូវបានផ្ទៀងផ្ទាត់",
     "unverified": "ការផ្ទៀងផ្ទាត់ត្រូវបានលុប",
     "actionFailed": "សកម្មភាពបានបរាជ័យ",
-    "verifiedByCount_zero": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់",
-    "verifiedByCount_two": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់",
-    "verifiedByCount_few": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់",
-    "verifiedByCount_many": "បានផ្ទៀងផ្ទាត់ដោយអ្នកសម្របសម្រួល {{count}} នាក់"
+    "verifiedByCount_zero": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់",
+    "verifiedByCount_two": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់",
+    "verifiedByCount_few": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់",
+    "verifiedByCount_many": "បានផ្ទៀងផ្ទាត់ដោយមនុស្ស {{count}} នាក់"
   },
   "calendarEvents": {
     "create": {

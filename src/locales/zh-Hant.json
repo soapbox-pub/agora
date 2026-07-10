@@ -858,8 +858,8 @@
   "campaignVerification": {
     "verifiedBy": "驗證者",
     "verifiedLabel": "已驗證",
-    "verifiedByCount_one": "已由 {{count}} 位審核員驗證",
-    "verifiedByCount_other": "已由 {{count}} 位審核員驗證",
+    "verifiedByCount_one": "已由 {{count}} 人驗證",
+    "verifiedByCount_other": "已由 {{count}} 人驗證",
     "verifyCampaign": "驗證此活動",
     "removeVerification": "移除我的驗證",
     "dialogTitle": "驗證此活動",
@@ -867,10 +867,10 @@
     "verified": "活動已驗證",
     "unverified": "驗證已移除",
     "actionFailed": "操作失敗",
-    "verifiedByCount_zero": "已由 {{count}} 位審核員驗證",
-    "verifiedByCount_two": "已由 {{count}} 位審核員驗證",
-    "verifiedByCount_few": "已由 {{count}} 位審核員驗證",
-    "verifiedByCount_many": "已由 {{count}} 位審核員驗證"
+    "verifiedByCount_zero": "已由 {{count}} 人驗證",
+    "verifiedByCount_two": "已由 {{count}} 人驗證",
+    "verifiedByCount_few": "已由 {{count}} 人驗證",
+    "verifiedByCount_many": "已由 {{count}} 人驗證"
   },
   "calendarEvents": {
     "create": {

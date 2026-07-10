@@ -1369,8 +1369,8 @@
   "campaignVerification": {
     "verifiedBy": "द्वारा सत्यापित",
     "verifiedLabel": "सत्यापित",
-    "verifiedByCount_one": "{{count}} मॉडरेटर द्वारा सत्यापित",
-    "verifiedByCount_other": "{{count}} मॉडरेटरों द्वारा सत्यापित",
+    "verifiedByCount_one": "{{count}} व्यक्ति द्वारा सत्यापित",
+    "verifiedByCount_other": "{{count}} लोगों द्वारा सत्यापित",
     "verifyCampaign": "इस अभियान को सत्यापित करें",
     "removeVerification": "मेरा सत्यापन हटाएँ",
     "dialogTitle": "इस अभियान को सत्यापित करें",
@@ -1378,10 +1378,10 @@
     "verified": "अभियान सत्यापित",
     "unverified": "सत्यापन हटाया गया",
     "actionFailed": "कार्रवाई विफल",
-    "verifiedByCount_zero": "{{count}} मॉडरेटरों द्वारा सत्यापित",
-    "verifiedByCount_two": "{{count}} मॉडरेटरों द्वारा सत्यापित",
-    "verifiedByCount_few": "{{count}} मॉडरेटरों द्वारा सत्यापित",
-    "verifiedByCount_many": "{{count}} मॉडरेटरों द्वारा सत्यापित"
+    "verifiedByCount_zero": "{{count}} लोगों द्वारा सत्यापित",
+    "verifiedByCount_two": "{{count}} लोगों द्वारा सत्यापित",
+    "verifiedByCount_few": "{{count}} लोगों द्वारा सत्यापित",
+    "verifiedByCount_many": "{{count}} लोगों द्वारा सत्यापित"
   },
   "calendarEvents": {
     "create": {

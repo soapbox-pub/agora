@@ -858,8 +858,8 @@
   "campaignVerification": {
     "verifiedBy": "Verificado por",
     "verifiedLabel": "Verificada",
-    "verifiedByCount_one": "Verificado por {{count}} moderador",
-    "verifiedByCount_other": "Verificado por {{count}} moderadores",
+    "verifiedByCount_one": "Verificado por {{count}} persona",
+    "verifiedByCount_other": "Verificado por {{count}} personas",
     "verifyCampaign": "Verificar esta campaña",
     "removeVerification": "Quitar mi verificación",
     "dialogTitle": "Verificar esta campaña",
@@ -867,10 +867,10 @@
     "verified": "Campaña verificada",
     "unverified": "Verificación eliminada",
     "actionFailed": "La acción falló",
-    "verifiedByCount_zero": "Verificado por {{count}} moderadores",
-    "verifiedByCount_two": "Verificado por {{count}} moderadores",
-    "verifiedByCount_few": "Verificado por {{count}} moderadores",
-    "verifiedByCount_many": "Verificado por {{count}} moderadores"
+    "verifiedByCount_zero": "Verificado por {{count}} personas",
+    "verifiedByCount_two": "Verificado por {{count}} personas",
+    "verifiedByCount_few": "Verificado por {{count}} personas",
+    "verifiedByCount_many": "Verificado por {{count}} personas"
   },
   "calendarEvents": {
     "create": {

@@ -28,10 +28,10 @@ interface VerificationDialogProps {
 }
 
 /**
- * Confirmation dialog shown before a moderator publishes an
- * `agora.verified` label. Previews the moderator's own avatar with the same
+ * Confirmation dialog shown before a moderator or verifier publishes an
+ * `agora.verified` label. Previews the signer's own avatar with the same
  * checkmark badge used on verified campaign cards, and states the
- * attestation the moderator is making.
+ * attestation the signer is making.
  */
 export function VerificationDialog({
   open,
@@ -58,7 +58,7 @@ export function VerificationDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Preview: the moderator's avatar with the checkmark badge,
+        {/* Preview: the signer's avatar with the checkmark badge,
             mirroring how verifications render on campaign cards. */}
         <div className="flex flex-col items-center gap-2 py-2">
           <div className="relative">

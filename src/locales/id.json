@@ -1369,8 +1369,8 @@
   "campaignVerification": {
     "verifiedBy": "Diverifikasi oleh",
     "verifiedLabel": "Terverifikasi",
-    "verifiedByCount_one": "Diverifikasi oleh {{count}} moderator",
-    "verifiedByCount_other": "Diverifikasi oleh {{count}} moderator",
+    "verifiedByCount_one": "Diverifikasi oleh {{count}} orang",
+    "verifiedByCount_other": "Diverifikasi oleh {{count}} orang",
     "verifyCampaign": "Verifikasi kampanye ini",
     "removeVerification": "Hapus verifikasi saya",
     "dialogTitle": "Verifikasi kampanye ini",
@@ -1378,10 +1378,10 @@
     "verified": "Kampanye terverifikasi",
     "unverified": "Verifikasi dihapus",
     "actionFailed": "Tindakan gagal",
-    "verifiedByCount_zero": "Diverifikasi oleh {{count}} moderator",
-    "verifiedByCount_two": "Diverifikasi oleh {{count}} moderator",
-    "verifiedByCount_few": "Diverifikasi oleh {{count}} moderator",
-    "verifiedByCount_many": "Diverifikasi oleh {{count}} moderator"
+    "verifiedByCount_zero": "Diverifikasi oleh {{count}} orang",
+    "verifiedByCount_two": "Diverifikasi oleh {{count}} orang",
+    "verifiedByCount_few": "Diverifikasi oleh {{count}} orang",
+    "verifiedByCount_many": "Diverifikasi oleh {{count}} orang"
   },
   "calendarEvents": {
     "create": {

@@ -7,21 +7,23 @@ import { LABEL_KIND } from '@/lib/agoraModeration';
  * kind 1985 stream in the `agora.verified` namespace, distinct from the
  * `agora.moderation` namespace used for hide / feature decisions.
  *
- * A verification is a positive trust signal: a campaign moderator (a member
- * of the same moderator pack that governs hide / feature labels) publishes
- * a kind 1985 event with `["L", "agora.verified"]`,
+ * A verification is a positive trust signal: any account publishes a kind
+ * 1985 event with `["L", "agora.verified"]`,
  * `["l", "verified", "agora.verified"]`, and an `["a", "33863:<pubkey>:<d>"]`
  * tag pointing at the campaign it vouches for.
  *
- * Multiple moderators can verify the same campaign; the UI stacks their
- * avatars into a badge. A moderator retracts a verification by issuing a
+ * Multiple accounts can verify the same campaign; the UI stacks their
+ * avatars into a badge. A verifier retracts a verification by issuing a
  * kind 5 deletion of their own label event (NIP-09) — there is no
  * "unverified" value, the label simply ceases to exist.
  *
- * The read path filters by `authors: moderators`, so labels from anyone
- * outside the moderator pack never reach the fold. This is the same trust
- * model — and the same signer set — as the moderation labels (see
- * `agoraModeration.ts`), just on its own additive namespace.
+ * **Open trust model.** Unlike the moderation labels (which only honor the
+ * moderator pack — see `agoraModeration.ts`), the verification read path is
+ * deliberately open: labels from anyone feed the badge, and the badge
+ * always shows *who* verified so donors can judge the verifier themselves.
+ * The one hard rule is deletion integrity: a kind 5 only removes a label
+ * when its signer is the label's author ({@link foldVerificationLabels}
+ * enforces this), so nobody can strip someone else's verification.
  */
 
 /** NIP-32 label kind, re-exported for verification call sites. */
@@ -35,9 +37,9 @@ export const AGORA_VERIFIED_VALUE = 'verified';
 
 /** A single verification observed for one campaign coordinate. */
 export interface CampaignVerification {
-  /** Hex pubkey of the moderator who issued the verification. */
+  /** Hex pubkey of the account that issued the verification. */
   pubkey: string;
-  /** The moderator's own label event (kind 1985). Needed to delete it. */
+  /** The verifier's own label event (kind 1985). Needed to delete it. */
   event: NostrEvent;
   /** `created_at` of the label event. */
   createdAt: number;
@@ -47,13 +49,10 @@ export interface CampaignVerification {
 export interface VerificationData {
   /** Map of `33863:<pubkey>:<d>` -> verifications, ordered oldest-first. */
   byCoord: Map<string, CampaignVerification[]>;
-  /** Pubkeys that were considered moderators when the query ran. */
-  moderators: string[];
 }
 
 export const EMPTY_VERIFICATION_DATA: VerificationData = {
   byCoord: new Map(),
-  moderators: [],
 };
 
 /**
@@ -63,40 +62,42 @@ export const EMPTY_VERIFICATION_DATA: VerificationData = {
  * Events are kept only when they carry the `verified` value in the
  * `agora.verified` namespace and an `a` tag whose coordinate starts with
  * `<coordKind>:` — so the verification stream never bleeds across kinds.
+ * Labels from **any** author are folded (open trust model — see the module
+ * docs above).
  *
- * Kind 5 deletion events (NIP-09) mixed into `events` are honored: any label
- * whose id is referenced by a deletion's `e` tag is dropped, so a retracted
- * verification stays gone even on relays that keep serving the original
- * kind 1985 label.
+ * Kind 5 deletion events (NIP-09) mixed into `events` are honored **only
+ * when the deletion's signer is the label's author**: any label whose id is
+ * referenced by an `e` tag of a kind 5 signed by the same pubkey is
+ * dropped, so a retracted verification stays gone even on relays that keep
+ * serving the original kind 1985 label — while a third party's forged
+ * deletion has no effect.
  *
- * Each `(coord, moderator)` pair keeps the newest event; a moderator who
+ * Each `(coord, verifier)` pair keeps the newest event; a verifier who
  * republishes simply refreshes their own entry rather than stacking twice.
  */
 export function foldVerificationLabels(
   events: NostrEvent[],
-  moderators: string[],
   coordKind: number,
 ): VerificationData {
   const coordPrefix = `${coordKind}:`;
 
-  // Collect ids of labels deleted via NIP-09 kind 5 events so we can exclude
-  // them below. Only the label's own author can delete it (a kind 5 only
-  // takes effect on events the signer authored), and the read query already
-  // constrains deletions to `authors: moderators`.
-  const deletedIds = new Set<string>();
+  // Collect `<deleter pubkey>:<event id>` pairs from NIP-09 kind 5 events.
+  // A deletion only takes effect on events its signer authored, so labels
+  // are excluded below only when the label author matches the deleter.
+  const deletedByAuthor = new Set<string>();
   for (const event of events) {
     if (event.kind !== 5) continue;
     for (const [n, id] of event.tags) {
-      if (n === 'e' && id) deletedIds.add(id);
+      if (n === 'e' && id) deletedByAuthor.add(`${event.pubkey}:${id}`);
     }
   }
 
-  // coord -> (moderator pubkey -> verification)
+  // coord -> (verifier pubkey -> verification)
   const byCoordMap = new Map<string, Map<string, CampaignVerification>>();
 
   for (const event of events) {
     if (event.kind === 5) continue;
-    if (deletedIds.has(event.id)) continue;
+    if (deletedByAuthor.has(`${event.pubkey}:${event.id}`)) continue;
 
     const value = event.tags.find(
       ([n, , ns]) => n === 'l' && ns === AGORA_VERIFIED_NAMESPACE,
@@ -108,34 +109,34 @@ export function foldVerificationLabels(
     )?.[1];
     if (!aTag) continue;
 
-    const perModerator = byCoordMap.get(aTag) ?? new Map<string, CampaignVerification>();
-    const existing = perModerator.get(event.pubkey);
+    const perVerifier = byCoordMap.get(aTag) ?? new Map<string, CampaignVerification>();
+    const existing = perVerifier.get(event.pubkey);
     if (!existing || event.created_at > existing.createdAt) {
-      perModerator.set(event.pubkey, {
+      perVerifier.set(event.pubkey, {
         pubkey: event.pubkey,
         event,
         createdAt: event.created_at,
       });
     }
-    byCoordMap.set(aTag, perModerator);
+    byCoordMap.set(aTag, perVerifier);
   }
 
   const byCoord = new Map<string, CampaignVerification[]>();
-  for (const [coord, perModerator] of byCoordMap) {
-    const list = [...perModerator.values()].sort((a, b) => a.createdAt - b.createdAt);
+  for (const [coord, perVerifier] of byCoordMap) {
+    const list = [...perVerifier.values()].sort((a, b) => a.createdAt - b.createdAt);
     byCoord.set(coord, list);
   }
 
-  return { byCoord, moderators };
+  return { byCoord };
 }
 
 /**
  * Return a new {@link VerificationData} with the given label event folded in.
  *
- * Used for optimistic cache updates the moment a moderator publishes a
+ * Used for optimistic cache updates the moment a user publishes a
  * verification, so the badge appears without waiting for the relay to index
  * and re-serve the event. Mirrors {@link foldVerificationLabels}: keeps the
- * newest event per `(coord, moderator)` and preserves oldest-first ordering.
+ * newest event per `(coord, verifier)` and preserves oldest-first ordering.
  *
  * The event must carry the `verified` value in the `agora.verified`
  * namespace and an `a` tag — otherwise the input is returned unchanged.
@@ -156,7 +157,7 @@ export function addVerificationToData(
 
   const byCoord = new Map(base.byCoord);
   const existing = byCoord.get(coord) ?? [];
-  // Drop any prior verification from the same moderator (republish refreshes
+  // Drop any prior verification from the same verifier (republish refreshes
   // their single entry rather than stacking twice), then append the new one.
   const next = existing
     .filter((v) => v.pubkey !== event.pubkey)
@@ -164,13 +165,13 @@ export function addVerificationToData(
     .sort((a, b) => a.createdAt - b.createdAt);
   byCoord.set(coord, next);
 
-  return { byCoord, moderators: base.moderators };
+  return { byCoord };
 }
 
 /**
  * Return a new {@link VerificationData} with the given verification removed.
  *
- * Used for optimistic cache updates when a moderator retracts their own
+ * Used for optimistic cache updates when a verifier retracts their own
  * verification (a NIP-09 deletion), so the badge disappears immediately
  * rather than after the relay processes the kind 5 event.
  */
@@ -192,5 +193,5 @@ export function removeVerificationFromData(
     }
   }
 
-  return { byCoord, moderators: base.moderators };
+  return { byCoord };
 }

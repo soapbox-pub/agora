@@ -858,8 +858,8 @@
   "campaignVerification": {
     "verifiedBy": "تأییدشده توسط",
     "verifiedLabel": "تأییدشده",
-    "verifiedByCount_one": "تأییدشده توسط {{count}} ناظر",
-    "verifiedByCount_other": "تأییدشده توسط {{count}} ناظر",
+    "verifiedByCount_one": "تأییدشده توسط {{count}} نفر",
+    "verifiedByCount_other": "تأییدشده توسط {{count}} نفر",
     "verifyCampaign": "این کمپین را تأیید کنید",
     "removeVerification": "حذف تأیید من",
     "dialogTitle": "این کمپین را تأیید کنید",
@@ -867,10 +867,10 @@
     "verified": "کمپین تأیید شد",
     "unverified": "تأیید حذف شد",
     "actionFailed": "عملیات ناموفق بود",
-    "verifiedByCount_zero": "تأییدشده توسط {{count}} ناظر",
-    "verifiedByCount_two": "تأییدشده توسط {{count}} ناظر",
-    "verifiedByCount_few": "تأییدشده توسط {{count}} ناظر",
-    "verifiedByCount_many": "تأییدشده توسط {{count}} ناظر"
+    "verifiedByCount_zero": "تأییدشده توسط {{count}} نفر",
+    "verifiedByCount_two": "تأییدشده توسط {{count}} نفر",
+    "verifiedByCount_few": "تأییدشده توسط {{count}} نفر",
+    "verifiedByCount_many": "تأییدشده توسط {{count}} نفر"
   },
   "calendarEvents": {
     "create": {
