@@ -3,10 +3,19 @@ import { NostrEvent, NostrFilter, NPool, NRelay1 } from '@nostrify/nostrify';
 import { NostrContext } from '@nostrify/react';
 import { NUser, useNostrLogin } from '@nostrify/react/login';
 import type { NostrSigner } from '@nostrify/types';
+import { NIndexedDB } from '@nostrify/indexeddb';
 import { useAppContext } from '@/hooks/useAppContext';
 import { getEffectiveRelays, DITTO_RELAYS, DIVINE_RELAY, ZAPSTORE_RELAY } from '@/lib/appRelays';
 import { NostrBatcher } from '@/lib/NostrBatcher';
 import { DebugRelay } from '@/lib/relayDebug';
+import { NostrStorageContext } from '@/contexts/NostrStorageContext';
+
+/**
+ * IndexedDB database name for the offline events cache. This is a disposable
+ * cache — everything re-fetches from relays — so it lives under its own
+ * database, separate from the `ditto` app database (`src/lib/db.ts`).
+ */
+const EVENTS_DB_NAME = 'nostr';
 
 interface NostrProviderProps {
   children: React.ReactNode;
@@ -19,6 +28,16 @@ const NostrProvider: React.FC<NostrProviderProps> = (props) => {
 
   // Create NPool instance only once
   const pool = useRef<NPool | undefined>(undefined);
+
+  // Open the IndexedDB event store once. It's shared two ways: the NostrBatcher
+  // writes selected relay results into it (so hooks can read them back while
+  // offline), and it's provided through NostrStorageContext so hooks can query
+  // it directly. Construction is synchronous — NIndexedDB opens the connection
+  // in the background and awaits it internally on every method, and degrades to
+  // a no-op when IndexedDB is unavailable (e.g. iOS Lockdown Mode). The cache
+  // is append-only; it is never automatically pruned.
+  const eventStore = useRef<NIndexedDB | undefined>(undefined);
+  eventStore.current ??= new NIndexedDB(EVENTS_DB_NAME);
 
   // Use refs so the pool always has the latest data
   const effectiveRelays = useRef(getEffectiveRelays(config.relayMetadata, config.useAppRelays, config.useUserRelays));
@@ -147,14 +166,24 @@ const NostrProvider: React.FC<NostrProviderProps> = (props) => {
     });
   }
 
-  // Wrap the pool in a batching proxy. The proxy intercepts `.query()`
-  // calls to automatically combine batchable filter patterns (profiles,
-  // events by ID, reactions, d-tag lookups) into single REQs.
+  // Wrap the pool in a batching + caching proxy. The proxy intercepts
+  // `.query()` calls to automatically combine batchable filter patterns
+  // (profiles, events by ID, reactions, d-tag lookups) into single REQs, and
+  // mirrors selected results into the IndexedDB event store for offline reads.
   // All other methods pass through directly to the underlying pool.
   const batcher = useRef<NostrBatcher | undefined>(undefined);
   if (!batcher.current && pool.current) {
-    batcher.current = new NostrBatcher(pool.current);
+    batcher.current = new NostrBatcher(pool.current, eventStore.current);
+    batcher.current.setLoggedInPubkeys(logins.map((l) => l.pubkey));
   }
+
+  // Keep the batcher's notion of "who is logged in" current. It uses this to
+  // decide which events are worth caching: everything from a logged-in account,
+  // replaceable events from people those accounts follow, plus the app-critical
+  // crowdfunding kinds (campaigns and moderation/verification labels).
+  useEffect(() => {
+    batcher.current?.setLoggedInPubkeys(logins.map((l) => l.pubkey));
+  }, [logins]);
 
   // Cleanup: Close all relay connections when the provider unmounts
   useEffect(() => {
@@ -165,13 +194,16 @@ const NostrProvider: React.FC<NostrProviderProps> = (props) => {
     };
   }, []);
 
-  // Provide the batcher as the `nostr` object. It has the same interface
-  // as NPool, so hooks using `useNostr()` get transparent batching.
-  // The `as unknown as NPool` cast is safe because NostrBatcher exposes
-  // all the same methods hooks use: query, event, req, relay, group, close.
+  // Provide the batcher as the `nostr` object, and the raw event store via
+  // NostrStorageContext. The batcher has the same interface as NPool, so hooks
+  // using `useNostr()` get transparent batching + caching. The
+  // `as unknown as NPool` cast is safe because NostrBatcher exposes all the same
+  // methods hooks use: query, event, req, relay, group, close.
   return (
     <NostrContext.Provider value={{ nostr: (batcher.current ?? pool.current) as unknown as NPool }}>
-      {children}
+      <NostrStorageContext.Provider value={eventStore.current}>
+        {children}
+      </NostrStorageContext.Provider>
     </NostrContext.Provider>
   );
 };

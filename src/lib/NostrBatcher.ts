@@ -1,8 +1,32 @@
 import type { NostrEvent, NostrFilter } from '@nostrify/types';
-import type { NPool } from '@nostrify/nostrify';
+import { NKinds, type NPool, type NStore } from '@nostrify/nostrify';
+
+import { isNostrId } from '@/lib/nostrId';
 
 /** Maximum number of items per batch to avoid hitting relay filter limits. */
 const MAX_BATCH_SIZE = 50;
+
+/**
+ * Kinds that are always mirrored into the offline cache regardless of author.
+ *
+ * These are the crowdfunding core, which the app merges out of the cache into
+ * its network responses (see `useCampaign(s)`, `useCampaignModeration`, and
+ * `useCampaignVerifications`):
+ *
+ *   - 33863 — Agora campaigns (addressable).
+ *   - 1985  — NIP-32 labels (`agora.moderation` hide/feature +
+ *             `agora.verified` verification badges).
+ *   - 5     — NIP-09 deletions, so a retracted label/campaign stays gone
+ *             offline too (NIndexedDB applies author-matched deletions on
+ *             write).
+ *
+ * Kept as literals rather than imported to avoid a module cycle
+ * (`campaign.ts`/`agoraModeration.ts` pull in a wide dependency graph).
+ */
+const CAMPAIGN_KIND = 33863;
+const LABEL_KIND = 1985;
+const DELETION_KIND = 5;
+const APP_CRITICAL_KINDS = new Set<number>([CAMPAIGN_KIND, LABEL_KIND, DELETION_KIND]);
 
 /**
  * Pending request waiting for a batched query result.
@@ -437,18 +461,28 @@ function isDTagFilter(filter: NostrFilter): boolean {
 }
 
 /**
- * Transparent batching proxy for NPool.
+ * Transparent batching + local-caching proxy for NPool.
  *
- * Wraps an NPool and intercepts `.query()` calls. When a query uses a
- * recognizable single-item filter pattern (fetch by ID, profile by pubkey,
- * reaction check, d-tag lookup), the request is held for a microtask.
- * If more queries with the same pattern arrive in the same frame, they're
- * combined into one REQ.
+ * Wraps an NPool and intercepts `.query()` calls. It layers on two behaviors
+ * that every Nostr read and write should go through:
  *
- * All other methods (`.event()`, `.req()`, `.relay()`, `.group()`, `.close()`)
- * pass through directly to the underlying pool.
+ *   1. **Transparent request batching.** When a query uses a recognizable
+ *      single-item filter pattern (fetch by ID, profile by pubkey, reaction
+ *      check, d-tag lookup), the request is held for a microtask; if more
+ *      queries with the same pattern arrive in the same frame, they're
+ *      combined into one REQ.
  *
- * Client code doesn't need to know batching exists — it calls
+ *   2. **Offline caching.** Every event that flows out of `.query()`,
+ *      `.req()`, and `.event()` is selectively mirrored into an IndexedDB
+ *      store (see {@link shouldCache}) so hooks can read data back while
+ *      offline — via `useNostrStorage()`. The store is optional: when it's
+ *      absent (or IndexedDB is unavailable, e.g. iOS Lockdown Mode) the proxy
+ *      behaves exactly like a plain batching proxy.
+ *
+ * All other methods (`.relay()`, `.group()`, `.close()`) pass through directly
+ * to the underlying pool.
+ *
+ * Client code doesn't need to know any of this exists — it calls
  * `nostr.query([{ kinds: [0], authors: [pk], limit: 1 }])` as usual.
  */
 export class NostrBatcher {
@@ -468,7 +502,34 @@ export class NostrBatcher {
   /** Keyed by serialized filter shapes for multi-filter #e/#q batching. */
   private multiFilterCollectors = new Map<string, BatchCollector<NostrEvent[]>>();
 
-  constructor(private pool: NPool) {
+  /**
+   * Optional local cache. We don't mirror *everything* the relays return —
+   * that would bloat the cache with churn from public feeds. Instead
+   * {@link cacheEvents} is selective (see {@link shouldCache}): it keeps every
+   * event authored by a logged-in account, plus replaceable events authored by
+   * anyone those accounts follow, plus a small set of app-critical kinds
+   * (campaigns and moderation/verification labels) so the crowdfunding UI works
+   * offline.
+   */
+  private store?: NStore;
+
+  /**
+   * Pubkeys of the currently logged-in accounts. Kept in sync by
+   * {@link setLoggedInPubkeys} (called from NostrProvider when logins change).
+   * Every event from one of these authors is cached unconditionally.
+   */
+  private loggedInPubkeys = new Set<string>();
+
+  /**
+   * Memoized union of the pubkeys followed by the logged-in accounts, derived
+   * from their kind 3 contact lists read **from the cache only** (never the
+   * network). `undefined` until first computed; invalidated whenever the
+   * logged-in set changes or a logged-in account's kind 3 is written.
+   */
+  private followedPubkeys?: Promise<Set<string>>;
+
+  constructor(private pool: NPool, store?: NStore) {
+    this.store = store;
     this.replaceableCollector = new ReplaceableCollector(pool);
     this.eventCollector = new BatchCollector((ids, signal) =>
       this.executeEventBatch(ids, signal),
@@ -476,10 +537,114 @@ export class NostrBatcher {
   }
 
   /**
+   * Update the set of logged-in account pubkeys. Cheap and idempotent: a no-op
+   * when the set is unchanged, otherwise it swaps in the new set and drops the
+   * memoized followed-set so it's recomputed (from cache) on the next write.
+   */
+  setLoggedInPubkeys(pubkeys: string[]): void {
+    const next = new Set(pubkeys.filter(isNostrId));
+    if (next.size === this.loggedInPubkeys.size && [...next].every((pk) => this.loggedInPubkeys.has(pk))) {
+      return;
+    }
+    this.loggedInPubkeys = next;
+    this.followedPubkeys = undefined;
+  }
+
+  /**
+   * Compute (and memoize) the set of pubkeys followed by the logged-in
+   * accounts, reading each account's kind 3 contact list **from the cache
+   * only**. Returns an empty set when there's no store or nobody is logged in.
+   */
+  private getFollowedPubkeys(store: NStore): Promise<Set<string>> {
+    this.followedPubkeys ??= (async () => {
+      const authors = [...this.loggedInPubkeys];
+      if (authors.length === 0) return new Set<string>();
+
+      const contactLists = await store.query([{ kinds: [3], authors }]);
+
+      const followed = new Set<string>();
+      for (const event of contactLists) {
+        if (!this.loggedInPubkeys.has(event.pubkey)) continue;
+        for (const [name, value] of event.tags) {
+          if (name === 'p' && isNostrId(value)) followed.add(value);
+        }
+      }
+      return followed;
+    })();
+
+    return this.followedPubkeys;
+  }
+
+  /**
+   * Decide whether `event` is worth persisting for offline use:
+   *
+   *   - Always keep events authored by a logged-in account.
+   *   - Keep replaceable events authored by someone a logged-in account
+   *     follows (followers are read from the cache only).
+   *   - Always keep campaign events and moderation/verification labels — the
+   *     crowdfunding core. These are the app-critical kinds that hooks merge
+   *     out of the cache into their network responses, so donors still see
+   *     campaigns and their trust badges while offline.
+   *
+   * Everything else (e.g. kind 1 notes from strangers in a public feed) is
+   * dropped so the cache stays focused on data the app actually reads back.
+   */
+  private shouldCache(event: NostrEvent, followed: Set<string>): boolean {
+    if (this.loggedInPubkeys.has(event.pubkey)) return true;
+    if (APP_CRITICAL_KINDS.has(event.kind)) return true;
+    if (NKinds.replaceable(event.kind)) {
+      return followed.has(event.pubkey);
+    }
+    return false;
+  }
+
+  /**
+   * Persist eligible events to the local cache (fire-and-forget). Called for
+   * every event that flows out of `.query()`, `.req()`, and `.event()`, but
+   * only a selective subset is actually written (see {@link shouldCache}).
+   *
+   * Failures are swallowed: the cache is a best-effort mirror, never on the
+   * critical path of a relay read.
+   */
+  private cacheEvents(events: NostrEvent[]): void {
+    const store = this.store;
+    if (!store || events.length === 0) return;
+    void (async () => {
+      try {
+        const followed = await this.getFollowedPubkeys(store);
+        const toCache = events.filter((event) => this.shouldCache(event, followed));
+        if (toCache.length === 0) return;
+        await Promise.all(toCache.map((event) => store.event(event)));
+        // A logged-in account's contact list just changed who they follow, so
+        // the next write must recompute the followed set from the fresh cache.
+        if (toCache.some((event) => event.kind === 3 && this.loggedInPubkeys.has(event.pubkey))) {
+          this.followedPubkeys = undefined;
+        }
+      } catch {
+        // Best-effort cache; ignore write failures.
+      }
+    })();
+  }
+
+  /**
    * Proxy for `pool.query()`. Detects batchable filter patterns and
-   * combines them; everything else passes through directly.
+   * combines them; everything else passes through directly. Every event
+   * returned (batched or not) is mirrored into the local cache.
    */
   async query(
+    filters: NostrFilter[],
+    opts?: { signal?: AbortSignal },
+  ): Promise<NostrEvent[]> {
+    const events = await this.queryInner(filters, opts);
+    this.cacheEvents(events);
+    return events;
+  }
+
+  /**
+   * The actual query logic. Detects batchable filter patterns and combines
+   * them; everything else passes through directly to the pool.
+   */
+  private async queryInner(
     filters: NostrFilter[],
     opts?: { signal?: AbortSignal },
   ): Promise<NostrEvent[]> {
@@ -611,15 +776,31 @@ export class NostrBatcher {
 
   // --- Pass-through methods ---
 
-  event(event: NostrEvent, opts?: { signal?: AbortSignal }): Promise<void> {
-    return this.pool.event(event, opts);
+  async event(event: NostrEvent, opts?: { signal?: AbortSignal }): Promise<void> {
+    await this.pool.event(event, opts);
+    // Only mirror into the cache once the network publish succeeds, so the app
+    // never reads back a locally-published event the relays rejected. This also
+    // lets a successfully-published kind 5 deletion request prune its targets
+    // from the cache (see NIndexedDB's NIP-09 handling).
+    this.cacheEvents([event]);
   }
 
   req(
     filters: NostrFilter[],
     opts?: { signal?: AbortSignal },
   ): AsyncIterable<import('@nostrify/types').NostrRelayEVENT | import('@nostrify/types').NostrRelayEOSE | import('@nostrify/types').NostrRelayCLOSED> {
-    return this.pool.req(filters, opts);
+    const source = this.pool.req(filters, opts);
+    const cacheEvents = this.cacheEvents.bind(this);
+    // Wrap the stream so each EVENT message is mirrored into the cache as it
+    // streams past, without altering what the consumer sees.
+    return (async function* () {
+      for await (const msg of source) {
+        if (msg[0] === 'EVENT') {
+          cacheEvents([msg[2]]);
+        }
+        yield msg;
+      }
+    })();
   }
 
   relay(url: string) {

@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useNostrPublish } from './useNostrPublish';
 import { useCampaignModerators } from './useCampaignModerators';
+import { useNostrStorage } from '@/hooks/useNostrStorage';
 import { CAMPAIGN_KIND } from '@/lib/campaign';
 import {
   AGORA_MODERATION_NAMESPACE,
@@ -43,6 +44,7 @@ type CampaignModerationData = ModerationData;
 export function useCampaignModeration() {
   const { nostr } = useNostr();
   const queryClient = useQueryClient();
+  const { store } = useNostrStorage();
   const { mutateAsync: publishEvent } = useNostrPublish();
   const { data: moderators } = useCampaignModerators();
 
@@ -66,22 +68,29 @@ export function useCampaignModeration() {
       // querying more relays only improves coverage — and it keeps this
       // moderation surface off the single-relay critical path that was
       // serializing the home page behind relay.ditto.pub.
-      const events = await nostr.query(
-        [
-          {
-            kinds: [LABEL_KIND],
-            authors: moderators,
-            // The capital-L tag is what NIP-32 indexes as the namespace. The
-            // lowercase `l` carries the value + namespace as its 2nd/3rd
-            // elements. We filter relay-side by namespace, then fold
-            // client-side to per-axis decisions.
-            '#L': [AGORA_MODERATION_NAMESPACE],
-            limit: 2000,
-          },
-        ],
-        { signal },
-      );
-      return foldModerationLabels(events, moderators, CAMPAIGN_KIND);
+      const filter = {
+        kinds: [LABEL_KIND],
+        authors: moderators,
+        // The capital-L tag is what NIP-32 indexes as the namespace. The
+        // lowercase `l` carries the value + namespace as its 2nd/3rd
+        // elements. We filter relay-side by namespace, then fold
+        // client-side to per-axis decisions.
+        '#L': [AGORA_MODERATION_NAMESPACE],
+        limit: 2000,
+      };
+
+      // Merge moderation labels from the offline store into the relay
+      // response. Labels are app-critical (they gate what surfaces on the home
+      // page and discover shelf) and always mirrored into IndexedDB, so the
+      // curated view survives a relay outage. `foldModerationLabels` keeps only
+      // the newest event per (coord, axis) and enforces the moderator author
+      // match, so a fresher live label transparently supersedes a stale cached
+      // one — merging never regresses the network view.
+      const [events, cached] = await Promise.all([
+        nostr.query([filter], { signal }),
+        store.query([filter]),
+      ]);
+      return foldModerationLabels([...events, ...cached], moderators, CAMPAIGN_KIND);
     },
     staleTime: 30_000,
   });

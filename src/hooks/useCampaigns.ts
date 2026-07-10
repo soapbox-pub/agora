@@ -2,6 +2,7 @@ import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
 import type { NostrEvent, NostrFilter } from '@nostrify/nostrify';
 
+import { useNostrStorage } from '@/hooks/useNostrStorage';
 import { CAMPAIGN_KIND, parseCampaign, type ParsedCampaign } from '@/lib/campaign';
 import { createCountryIdentifier } from '@/lib/countryIdentifiers';
 
@@ -118,6 +119,7 @@ interface UseCampaignsOptions {
  */
 export function useCampaigns(options: UseCampaignsOptions = {}) {
   const { nostr } = useNostr();
+  const { store } = useNostrStorage();
   const {
     countryCode,
     categories,
@@ -183,8 +185,17 @@ export function useCampaigns(options: UseCampaignsOptions = {}) {
         filters = [filter];
       }
 
-      const events = await nostr.query(filters, { signal: c.signal });
-      return parseCampaignEvents(events, { sortByCreatedAt: true });
+      // Merge campaigns from the offline store into the relay response. The
+      // NostrBatcher mirrors every campaign event into IndexedDB, so a donor
+      // still sees the campaigns they've loaded before even with no relays
+      // reachable. `parseCampaignEvents` already dedupes by `(pubkey, d)` and
+      // keeps the newest revision, so a fresher live copy transparently wins
+      // over a stale cached one — merging never regresses network data.
+      const [events, cached] = await Promise.all([
+        nostr.query(filters, { signal: c.signal }),
+        store.query(filters),
+      ]);
+      return parseCampaignEvents([...events, ...cached], { sortByCreatedAt: true });
     },
     staleTime: 30_000,
   });

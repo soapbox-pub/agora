@@ -5,6 +5,7 @@ import { useNostrPublish } from './useNostrPublish';
 import { useCurrentUser } from './useCurrentUser';
 import { useCampaignModerators } from './useCampaignModerators';
 import { useVerifierStatement } from './useVerifierStatement';
+import { useNostrStorage } from '@/hooks/useNostrStorage';
 import { CAMPAIGN_KIND } from '@/lib/campaign';
 import { LABEL_KIND } from '@/lib/agoraModeration';
 import {
@@ -47,6 +48,7 @@ import {
 export function useCampaignVerifications() {
   const { nostr } = useNostr();
   const queryClient = useQueryClient();
+  const { store } = useNostrStorage();
   const { user } = useCurrentUser();
   const { mutateAsync: publishEvent } = useNostrPublish();
   const { data: moderators } = useCampaignModerators();
@@ -65,27 +67,35 @@ export function useCampaignVerifications() {
   const verificationQuery = useQuery({
     queryKey: ['campaign-verifications'],
     queryFn: async ({ signal }): Promise<VerificationData> => {
-      const events = await nostr.query(
-        [
-          {
-            kinds: [LABEL_KIND],
-            '#L': [AGORA_VERIFIED_NAMESPACE],
-            '#l': [AGORA_VERIFIED_VALUE],
-            limit: 2000,
-          },
-          // Also pull NIP-09 deletions of kind 1985 labels so a retracted
-          // verification stays gone even on relays that keep serving the
-          // original label. `foldVerificationLabels` only honors a deletion
-          // signed by the label's own author.
-          {
-            kinds: [5],
-            '#k': [String(LABEL_KIND)],
-            limit: 2000,
-          },
-        ],
-        { signal },
-      );
-      return foldVerificationLabels(events, CAMPAIGN_KIND);
+      const filters = [
+        {
+          kinds: [LABEL_KIND],
+          '#L': [AGORA_VERIFIED_NAMESPACE],
+          '#l': [AGORA_VERIFIED_VALUE],
+          limit: 2000,
+        },
+        // Also pull NIP-09 deletions of kind 1985 labels so a retracted
+        // verification stays gone even on relays that keep serving the
+        // original label. `foldVerificationLabels` only honors a deletion
+        // signed by the label's own author.
+        {
+          kinds: [5],
+          '#k': [String(LABEL_KIND)],
+          limit: 2000,
+        },
+      ];
+
+      // Merge verification labels (and their deletions) from the offline store
+      // into the relay response. Both kinds are app-critical and always
+      // mirrored into IndexedDB, so the trust badges keep rendering while
+      // offline. `foldVerificationLabels` dedupes and applies author-matched
+      // deletions, so merging a stale cached copy never regresses a fresher
+      // live label or resurrects a deleted one.
+      const [events, cached] = await Promise.all([
+        nostr.query(filters, { signal }),
+        store.query(filters),
+      ]);
+      return foldVerificationLabels([...events, ...cached], CAMPAIGN_KIND);
     },
     staleTime: 30_000,
   });
