@@ -25,6 +25,7 @@ import { useCampaignVerifications } from '@/hooks/useCampaignVerifications';
 import { useOrganizationModeration } from '@/hooks/useOrganizationModeration';
 import { usePledgeModeration } from '@/hooks/usePledgeModeration';
 import type { ModerationLabel } from '@/lib/agoraModeration';
+import { isSelfVerification } from '@/lib/agoraVerification';
 
 /**
  * Which moderation surface we're acting on. Each surface routes the
@@ -305,6 +306,8 @@ function CampaignItemsInner(props: {
  * Verify / remove-verification row for the campaign moderation menu.
  * Gated by {@link useCampaignVerifications}'s `canVerify` — renders for
  * moderators AND self-declared verifiers (kind 14672), `null` otherwise.
+ * Also `null` on the viewer's own campaign: self-verifications are
+ * excluded from the badge fold, so offering the action would be a no-op.
  *
  * Verifying opens a confirmation dialog (owned by {@link ModerationMenu}),
  * so this row only signals intent via `onRequestVerify`. Removing a
@@ -326,6 +329,7 @@ function CampaignVerifyItem({
   const { data, canVerify, verify, unverify } = useCampaignVerifications();
 
   if (!canVerify) return null;
+  if (user && isSelfVerification(user.pubkey, coord)) return null;
 
   const mine = user
     ? (data.byCoord.get(coord) ?? []).find((v) => v.pubkey === user.pubkey)
@@ -504,8 +508,13 @@ export function ModerationMenu({ className, ...rest }: ModerationMenuProps) {
   const { canVerify, verify } = useCampaignVerifications();
 
   // Campaign kebab is visible to moderators AND verifiers (verifiers see
-  // only the verify row inside it). Other surfaces stay moderator-only.
-  const visible = rest.surface === 'campaign' ? isMod || canVerify : isMod;
+  // only the verify row inside it — which hides itself on the verifier's
+  // own campaign, so a pure verifier gets no kebab there). Other surfaces
+  // stay moderator-only.
+  const isOwnCampaign = !!user && isSelfVerification(user.pubkey, rest.coord);
+  const visible = rest.surface === 'campaign'
+    ? isMod || (canVerify && !isOwnCampaign)
+    : isMod;
   if (!visible) return null;
 
   const onConfirmVerify = async () => {

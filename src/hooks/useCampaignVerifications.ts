@@ -15,6 +15,7 @@ import {
   type VerificationData,
   addVerificationToData,
   foldVerificationLabels,
+  isSelfVerification,
   removeVerificationFromData,
 } from '@/lib/agoraVerification';
 
@@ -97,6 +98,11 @@ export function useCampaignVerifications() {
       }
       if (!coord.startsWith(`${CAMPAIGN_KIND}:`)) {
         throw new Error(`Coordinate must start with ${CAMPAIGN_KIND}:`);
+      }
+      // Self-verifications are excluded from the badge fold, so publishing
+      // one would silently do nothing — reject it up front instead.
+      if (isSelfVerification(user.pubkey, coord)) {
+        throw new Error('You cannot verify your own campaign.');
       }
       return publishEvent({
         kind: LABEL_KIND,

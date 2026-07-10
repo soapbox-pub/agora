@@ -734,7 +734,7 @@ A verification label points at one campaign coordinate (`33863:<pubkey>:<d>`):
 }
 ```
 
-**Trust model.** Verification is **open**: labels from any pubkey are honored — clients MUST NOT restrict the read to a moderator allowlist. This works because the badge is attributed, never anonymous: clients MUST display *who* signed each verification (avatar / profile link), so donors judge the verifier rather than trusting a boolean. The one integrity rule is retraction: a kind 5 deletion only removes a label when the deletion's signer is the label's author — clients MUST enforce this author match when honoring deletions, otherwise a third party could strip someone else's verification. (Contrast with the `agora.moderation` namespace above, which remains strictly gated by the moderator pack.)
+**Trust model.** Verification is **open**: labels from any pubkey are honored — clients MUST NOT restrict the read to a moderator allowlist. This works because the badge is attributed, never anonymous: clients MUST display *who* signed each verification (avatar / profile link), so donors judge the verifier rather than trusting a boolean. Two integrity rules apply. **Self-verifications**: a label whose author equals the campaign author (the pubkey inside the `a` coordinate) carries no trust signal and MUST be ignored. **Retraction**: a kind 5 deletion only removes a label when the deletion's signer is the label's author — clients MUST enforce this author match when honoring deletions, otherwise a third party could strip someone else's verification. (Contrast with the `agora.moderation` namespace above, which remains strictly gated by the moderator pack.)
 
 **Reading.** One filter fetches every verification from every author:
 
@@ -752,7 +752,7 @@ Fold by `(coord, verifier)`, keeping the newest label per pair. A campaign is "v
 **Retraction.** There is no `unverified` value. A verifier retracts a verification by publishing a NIP-09 kind 5 deletion of their own label event (referenced by `e` tag plus `k: 1985`). A kind 5 only takes effect on events authored by the signer, so a verifier can only remove their own verification.
 
 **Client behavior.**
-- Clients SHOULD render the verify / remove-verification control for campaign moderators and for self-declared verifiers (accounts with a kind 14672 verifier statement, see below) — but MUST honor labels on read regardless of who signed them.
+- Clients SHOULD render the verify / remove-verification control for campaign moderators and for self-declared verifiers (accounts with a kind 14672 verifier statement, see below) — but MUST honor labels on read regardless of who signed them (except self-verifications, which MUST be ignored). Clients SHOULD hide the verify control on the viewer's own campaigns.
 - Verification is purely additive — it never hides or promotes a campaign on its own. It is a trust hint layered over whatever moderation/discovery state already applies.
 - The label kind 1985 read is routed to Agora's search relays (`relay.ditto.pub`, `relay.dreamith.to`) where these labels are published.
 

@@ -51,6 +51,7 @@ import { usePinnedNotes } from '@/hooks/usePinnedNotes';
 import { useCampaignListActions } from '@/hooks/useCampaignListActions';
 import { useCampaignModeration } from '@/hooks/useCampaignModeration';
 import { useCampaignVerifications } from '@/hooks/useCampaignVerifications';
+import { isSelfVerification } from '@/lib/agoraVerification';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useAuthor } from '@/hooks/useAuthor';
 import { useMuteList } from '@/hooks/useMuteList';
@@ -703,8 +704,14 @@ function CampaignModeratorMenuItems({
   // moderator allowlist that gates the moderation label writes.
   const isModerator = canManageCampaignLists;
 
-  // Nothing to show unless the viewer can verify or moderate.
-  if (!canVerify && !isModerator) return null;
+  // Self-verifications are excluded from the badge fold, so hide the
+  // verify row on the viewer's own campaign — publishing would be a no-op.
+  const isOwnCampaign = !!user && isSelfVerification(user.pubkey, coord);
+  const showVerifyRow = canVerify && !isOwnCampaign;
+
+  // Nothing to show unless the viewer can verify (someone else's campaign)
+  // or moderate — otherwise we'd render an empty "Moderator actions" label.
+  if (!showVerifyRow && !isModerator) return null;
 
   const mine = user
     ? (verificationData.byCoord.get(coord) ?? []).find((v) => v.pubkey === user.pubkey)
@@ -753,7 +760,7 @@ function CampaignModeratorMenuItems({
         <p className="px-5 pt-2 pb-1 text-xs font-medium text-muted-foreground">
           {t('moderation.menu.label')}
         </p>
-        {canVerify && (
+        {showVerifyRow && (
           mine ? (
             <MenuItem
               icon={<BadgeCheck className="size-5" />}

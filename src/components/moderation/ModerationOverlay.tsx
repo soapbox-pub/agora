@@ -4,6 +4,7 @@ import { useCampaignVerifications } from '@/hooks/useCampaignVerifications';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useOrganizationModeration } from '@/hooks/useOrganizationModeration';
 import { usePledgeModeration } from '@/hooks/usePledgeModeration';
+import { isSelfVerification } from '@/lib/agoraVerification';
 
 import { HiddenBadge } from './HiddenBadge';
 import { ModerationMenu, type ModerationAxis, type ModerationSurface } from './ModerationMenu';
@@ -140,14 +141,19 @@ export function ModerationOverlay(props: ModerationOverlayProps) {
  * Campaign overlay gate: visible to moderators (full kebab + hidden
  * badge) and to verifiers (kebab carrying only the verify row). Mounts
  * the verification query so a verifier's eligibility is resolved.
+ *
+ * A verifier who isn't a moderator gets no kebab on their **own**
+ * campaign: self-verifications are excluded from the badge fold and the
+ * verify row hides itself, which would leave the kebab empty.
  */
 function CampaignModerationOverlay(props: ModerationOverlayProps) {
   const { user } = useCurrentUser();
   const { data: moderators } = useCampaignModerators();
   const { canVerify } = useCampaignVerifications();
   const isMod = !!user && !!moderators && moderators.includes(user.pubkey);
+  const isOwnCampaign = !!user && isSelfVerification(user.pubkey, props.coord);
 
-  if (!isMod && !canVerify) return null;
+  if (!isMod && (!canVerify || isOwnCampaign)) return null;
 
   return <CampaignOverlay {...props} isMod={isMod} />;
 }

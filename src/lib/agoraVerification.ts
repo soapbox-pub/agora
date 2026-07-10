@@ -56,6 +56,18 @@ export const EMPTY_VERIFICATION_DATA: VerificationData = {
 };
 
 /**
+ * True when a verification label is a **self-verification** — the label's
+ * author is the campaign's own author (the pubkey embedded in the
+ * `<kind>:<pubkey>:<d>` coordinate). Vouching for your own campaign
+ * carries no trust signal, so these are excluded from the badge fold,
+ * the optimistic add, and the profile "Verified" tab, and the verify
+ * action is hidden on one's own campaigns.
+ */
+export function isSelfVerification(labelPubkey: string, coord: string): boolean {
+  return coord.split(':')[1] === labelPubkey;
+}
+
+/**
  * Fold a flat list of `agora.verified` label events into per-coordinate
  * verification rollups.
  *
@@ -63,7 +75,8 @@ export const EMPTY_VERIFICATION_DATA: VerificationData = {
  * `agora.verified` namespace and an `a` tag whose coordinate starts with
  * `<coordKind>:` — so the verification stream never bleeds across kinds.
  * Labels from **any** author are folded (open trust model — see the module
- * docs above).
+ * docs above), except **self-verifications**: a label whose author is the
+ * campaign's own author is dropped ({@link isSelfVerification}).
  *
  * Kind 5 deletion events (NIP-09) mixed into `events` are honored **only
  * when the deletion's signer is the label's author**: any label whose id is
@@ -108,6 +121,10 @@ export function foldVerificationLabels(
       ([n, v]) => n === 'a' && typeof v === 'string' && v.startsWith(coordPrefix),
     )?.[1];
     if (!aTag) continue;
+
+    // A campaign author vouching for their own campaign is meaningless as
+    // a trust signal — never surface it on the badge.
+    if (isSelfVerification(event.pubkey, aTag)) continue;
 
     const perVerifier = byCoordMap.get(aTag) ?? new Map<string, CampaignVerification>();
     const existing = perVerifier.get(event.pubkey);
@@ -154,6 +171,9 @@ export function addVerificationToData(
 
   const coord = event.tags.find(([n, v]) => n === 'a' && typeof v === 'string')?.[1];
   if (!coord) return base;
+
+  // Mirror the fold: self-verifications never reach the badge.
+  if (isSelfVerification(event.pubkey, coord)) return base;
 
   const byCoord = new Map(base.byCoord);
   const existing = byCoord.get(coord) ?? [];

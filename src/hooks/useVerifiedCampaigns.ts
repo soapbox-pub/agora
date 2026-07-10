@@ -6,6 +6,7 @@ import { LABEL_KIND } from '@/lib/agoraModeration';
 import {
   AGORA_VERIFIED_NAMESPACE,
   AGORA_VERIFIED_VALUE,
+  isSelfVerification,
 } from '@/lib/agoraVerification';
 import { useCampaigns } from './useCampaigns';
 
@@ -47,7 +48,9 @@ export function useVerifiedCampaigns(pubkey: string | undefined) {
       );
 
       // Keep only events carrying the `verified` value in our namespace,
-      // then collect their campaign coordinates (deduped).
+      // then collect their campaign coordinates (deduped). Self-verifications
+      // — the profile vouching for its own campaign — are skipped: they carry
+      // no trust signal and are likewise excluded from the badge fold.
       const coordPrefix = `${CAMPAIGN_KIND}:`;
       const coords = new Set<string>();
 
@@ -61,7 +64,8 @@ export function useVerifiedCampaigns(pubkey: string | undefined) {
           if (
             tag[0] === 'a' &&
             typeof tag[1] === 'string' &&
-            tag[1].startsWith(coordPrefix)
+            tag[1].startsWith(coordPrefix) &&
+            !isSelfVerification(event.pubkey, tag[1])
           ) {
             coords.add(tag[1]);
           }
