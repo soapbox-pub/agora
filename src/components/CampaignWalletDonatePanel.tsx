@@ -130,6 +130,7 @@ export function CampaignWalletDonatePanel({
           useful (e.g. verifying the address, or sharing the link). */}
       <Button
         asChild
+        size="lg"
         variant={primaryAction ? 'outline' : 'default'}
         className={primaryAction ? 'w-full' : 'w-full text-white'}
       >
