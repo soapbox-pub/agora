@@ -10,10 +10,17 @@ interface CampaignsHeroShellProps {
   /**
    * Optional single cover image URL. When provided (and a valid https
    * URL), it's rendered as a still full-bleed banner. When omitted, the
-   * hero falls back to the default rotating WLC photo set — the same
-   * look the /campaigns hero has always had.
+   * hero falls back to {@link fallbackCover} if given, otherwise the
+   * default rotating WLC photo set.
    */
   cover?: string;
+  /**
+   * Optional still image to show when no `cover` is set, instead of the
+   * default rotating WLC gallery. Used by the campaign-list detail page
+   * so lists without a cover get a consistent branded backdrop rather
+   * than the cycling hero photos.
+   */
+  fallbackCover?: string;
   /** Centered overlay content (kicker, headline, description, controls). */
   children: ReactNode;
 }
@@ -25,11 +32,12 @@ interface CampaignsHeroShellProps {
  * with warm atmosphere, top/bottom legibility scrims, and centered
  * overlay copy.
  *
- * The banner is either the caller's single `cover` image (still) or the
- * default rotating WLC gallery. The atmosphere hue cycles on the same
- * 9s cadence as the banner so the whole hero feels coordinated.
+ * The banner is the caller's single `cover` image, else `fallbackCover`
+ * (both rendered as a still), else the default rotating WLC gallery. The
+ * atmosphere hue cycles on the same 9s cadence so the whole hero feels
+ * coordinated.
  */
-export function CampaignsHeroShell({ cover, children }: CampaignsHeroShellProps) {
+export function CampaignsHeroShell({ cover, fallbackCover, children }: CampaignsHeroShellProps) {
   const [hueIndex, setHueIndex] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -39,12 +47,12 @@ export function CampaignsHeroShell({ cover, children }: CampaignsHeroShellProps)
   }, []);
   const activeHue = HOPE_PALETTE[hueIndex];
 
-  const coverUrl = sanitizeUrl(cover);
+  const coverUrl = sanitizeUrl(cover) ?? sanitizeUrl(fallbackCover);
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-secondary/30">
-      {/* Banner: the list's own cover (still) or the default rotating
-          WLC photo set. A single-element array renders as a still. */}
+      {/* Banner: the caller's cover / fallback (still) or the default
+          rotating WLC photo set. A single-element array renders as a still. */}
       <HeroBanner images={coverUrl ? [coverUrl] : undefined} />
 
       {/* Warm atmosphere — campaigns-side hue, same as the Pledges hero. */}

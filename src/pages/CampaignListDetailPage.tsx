@@ -42,6 +42,7 @@ import { toast } from '@/hooks/useToast';
 import { Link } from 'react-router-dom';
 import type { ParsedCampaign } from '@/lib/campaign';
 import { CAMPAIGN_CATEGORY_LABEL_KEYS_BY_SLUG } from '@/lib/campaignCategories';
+import { DEFAULT_LIST_COVER } from '@/lib/campaignLists';
 import { cn } from '@/lib/utils';
 import NotFound from './NotFound';
 
@@ -244,7 +245,7 @@ export function CampaignListDetailPage() {
 
   return (
     <main className="min-h-screen pb-16">
-      <CampaignsHeroShell cover={list.cover}>
+      <CampaignsHeroShell cover={list.cover} fallbackCover={DEFAULT_LIST_COVER}>
         {/* Back link + moderator controls, overlaid at the top edge. */}
         <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 px-4 sm:px-6 pt-[max(env(safe-area-inset-top),1rem)]">
           <Button

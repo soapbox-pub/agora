@@ -44,6 +44,14 @@ import { sanitizeUrl } from '@/lib/sanitizeUrl';
 /** Kind 30003 — NIP-51 Bookmark Set. */
 export const CAMPAIGN_LIST_KIND = 30003;
 
+/**
+ * Default cover image shown in the list detail hero when a list has no
+ * `cover` tag of its own — a single branded still, in place of the
+ * rotating WLC gallery the /campaigns hero uses.
+ */
+export const DEFAULT_LIST_COVER =
+  'https://blossom.ditto.pub/7ed360e75d9a815e347a1ec03b9874331f000807f6233c676586603f2da172c5.jpeg';
+
 /** Hashtag marker that identifies an Agora campaign list. */
 export const CAMPAIGN_LIST_HASHTAG = 'agora.campaign-list';
 
