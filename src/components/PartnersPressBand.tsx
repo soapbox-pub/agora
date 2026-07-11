@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 /**
  * One entry in a logo rail. Brand names are proper nouns and stay
  * untranslated; assets live in `public/logos/` and are flattened to
- * white via CSS `brightness-0 invert`, so any transparent-background
- * mark works regardless of its original colors.
+ * a single theme-aware ink color via CSS filters, so any transparent-
+ * background mark works regardless of its original colors.
  */
 interface LogoDef {
   /** Accessible name + alt text. */
@@ -93,7 +93,7 @@ const PRESS: LogoDef[] = [
 const MARQUEE_COPIES = 4;
 
 /**
- * Dark full-width band with two logo rails:
+ * Theme-aware full-width band with two logo rails:
  *
  *  1. **In partnership with:** — auto-scrolling marquee of partner
  *     org logos (pauses on hover, static rail under reduced motion).
@@ -110,14 +110,14 @@ export function PartnersPressBand({ className }: { className?: string }) {
     <section
       aria-label={t('partners.partnersTitle')}
       className={cn(
-        'relative overflow-hidden bg-[#0a0c14] text-white py-14 md:py-16',
+        'relative overflow-hidden bg-[hsl(38_30%_96%)] text-foreground py-14 md:py-16 dark:bg-[#0a0c14] dark:text-white',
         className,
       )}
     >
       {/* Soft brand glows so the band doesn't read as a flat black slab. */}
       <div
         aria-hidden
-        className="absolute -top-24 -left-24 size-72 rounded-full bg-primary/15 blur-3xl pointer-events-none"
+        className="absolute -top-24 -left-24 size-72 rounded-full bg-primary/10 blur-3xl pointer-events-none dark:bg-primary/15"
       />
       <div
         aria-hidden
@@ -127,7 +127,7 @@ export function PartnersPressBand({ className }: { className?: string }) {
       <div className="relative space-y-12 md:space-y-14">
         {/* ── Partners marquee ─────────────────────────────────── */}
         <div>
-          <p className="text-center text-xs font-semibold tracking-[0.2em] uppercase text-white/60 mb-8 px-4">
+          <p className="text-center text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-8 px-4 dark:text-white/60">
             {t('partners.partnersTitle')}
           </p>
           <PartnerMarquee />
@@ -135,7 +135,7 @@ export function PartnersPressBand({ className }: { className?: string }) {
 
         {/* ── Press row ────────────────────────────────────────── */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-[11px] font-semibold tracking-[0.2em] uppercase text-white/50 mb-7">
+          <p className="text-center text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-7 dark:text-white/50">
             {t('partners.pressTitle')}
           </p>
           <ul className="flex flex-wrap items-center justify-center gap-x-10 sm:gap-x-14 gap-y-6">
@@ -164,14 +164,14 @@ export function PartnersPressBand({ className }: { className?: string }) {
 function PartnerMarquee() {
   return (
     <div className="group relative overflow-hidden motion-reduce:overflow-x-auto">
-      {/* Edge fades so logos slide in/out of darkness instead of clipping. */}
+      {/* Edge fades so logos slide in/out of the band surface instead of clipping. */}
       <div
         aria-hidden
-        className="motion-reduce:hidden absolute inset-y-0 left-0 w-16 sm:w-28 z-10 bg-gradient-to-r from-[#0a0c14] to-transparent pointer-events-none"
+        className="motion-reduce:hidden absolute inset-y-0 left-0 w-16 sm:w-28 z-10 bg-gradient-to-r from-[hsl(38_30%_96%)] to-transparent pointer-events-none dark:from-[#0a0c14]"
       />
       <div
         aria-hidden
-        className="motion-reduce:hidden absolute inset-y-0 right-0 w-16 sm:w-28 z-10 bg-gradient-to-l from-[#0a0c14] to-transparent pointer-events-none"
+        className="motion-reduce:hidden absolute inset-y-0 right-0 w-16 sm:w-28 z-10 bg-gradient-to-l from-[hsl(38_30%_96%)] to-transparent pointer-events-none dark:from-[#0a0c14]"
       />
 
       <div className="flex w-max motion-safe:animate-logo-marquee motion-safe:group-hover:[animation-play-state:paused]">
@@ -197,7 +197,7 @@ function PartnerMarquee() {
 }
 
 /**
- * A single white logo, linked to its destination. `decorative`
+ * A single theme-inked logo, linked to its destination. `decorative`
  * renders a non-focusable span for marquee duplicates.
  */
 function LogoLink({ logo, decorative = false }: { logo: LogoDef; decorative?: boolean }) {
@@ -207,10 +207,10 @@ function LogoLink({ logo, decorative = false }: { logo: LogoDef; decorative?: bo
         src={logo.src}
         alt={decorative ? '' : logo.name}
         loading="lazy"
-        className={cn('w-auto brightness-0 invert', logo.imgClass)}
+        className={cn('w-auto brightness-0 dark:invert', logo.imgClass)}
       />
       {logo.wordmark && (
-        <span className="text-2xl font-bold tracking-tight text-white" aria-hidden>
+        <span className="text-2xl font-bold tracking-tight text-foreground dark:text-white" aria-hidden>
           {logo.wordmark}
         </span>
       )}
@@ -234,7 +234,7 @@ function LogoLink({ logo, decorative = false }: { logo: LogoDef; decorative?: bo
       }}
       className={cn(
         sharedClass,
-        'hover:opacity-100 motion-safe:hover:scale-[1.03] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:opacity-100',
+        'hover:opacity-100 motion-safe:hover:scale-[1.03] rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:focus-visible:ring-white/60 focus-visible:opacity-100',
       )}
     >
       {content}
