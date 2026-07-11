@@ -22,6 +22,8 @@ interface CreateListInput {
   title: string;
   description?: string;
   icon: string;
+  /** Optional cover image URL (https). */
+  cover?: string;
 }
 
 interface UpdateListMetaInput {
@@ -29,6 +31,11 @@ interface UpdateListMetaInput {
   title?: string;
   description?: string;
   icon?: string;
+  /**
+   * Optional cover image URL. Pass `undefined` to leave the existing
+   * cover untouched, or an empty string to clear it.
+   */
+  cover?: string;
 }
 
 /**
@@ -80,6 +87,7 @@ export function useCampaignListActions() {
       title: string;
       description?: string;
       icon: string;
+      cover?: string;
       coords: string[];
     }): string[][] => {
       const tags: string[][] = [
@@ -91,6 +99,9 @@ export function useCampaignListActions() {
       ];
       if (input.description) {
         tags.push(['description', input.description]);
+      }
+      if (input.cover) {
+        tags.push(['cover', input.cover]);
       }
       for (const coord of input.coords) {
         tags.push(['a', coord]);
@@ -146,6 +157,7 @@ export function useCampaignListActions() {
         title: get('title') ?? '',
         description: get('description'),
         icon: get('icon') ?? 'List',
+        cover: get('cover'),
         coords,
       };
     },
@@ -168,6 +180,7 @@ export function useCampaignListActions() {
         throw new Error(`Invalid icon name: ${input.icon}`);
       }
       const description = input.description?.trim() || undefined;
+      const cover = input.cover?.trim() || undefined;
 
       // Generate a unique slug. Collision = the user already authored a
       // list at this slug; suffix `-2`, `-3`, … until clear. We bound the
@@ -193,6 +206,7 @@ export function useCampaignListActions() {
           title,
           description,
           icon: input.icon,
+          cover,
           coords: [],
         }),
       });
@@ -255,6 +269,12 @@ export function useCampaignListActions() {
       if (!isValidIconName(nextIcon)) {
         throw new Error(`Invalid icon name: ${nextIcon}`);
       }
+      // Cover: `undefined` leaves the existing value alone; an explicit
+      // empty string clears it.
+      const nextCover =
+        input.cover === undefined
+          ? current.cover
+          : input.cover.trim() || undefined;
       await publishEvent({
         kind: CAMPAIGN_LIST_KIND,
         content: fresh.content ?? '',
@@ -263,6 +283,7 @@ export function useCampaignListActions() {
           title: nextTitle,
           description: nextDescription,
           icon: nextIcon,
+          cover: nextCover,
           coords: current.coords,
         }),
         prev: fresh,
@@ -292,6 +313,7 @@ export function useCampaignListActions() {
           title: current.title,
           description: current.description,
           icon: current.icon,
+          cover: current.cover,
           coords: nextCoords,
         }),
         prev: fresh,
@@ -318,6 +340,7 @@ export function useCampaignListActions() {
           title: current.title,
           description: current.description,
           icon: current.icon,
+          cover: current.cover,
           coords: nextCoords,
         }),
         prev: fresh,
@@ -356,6 +379,7 @@ export function useCampaignListActions() {
           title: current.title,
           description: current.description,
           icon: current.icon,
+          cover: current.cover,
           coords: nextCoords,
         }),
         prev: fresh,

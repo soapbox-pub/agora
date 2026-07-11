@@ -1568,6 +1568,7 @@
       "descriptionField": "Описание",
       "descriptionPlaceholder": "Короткое описание того, что входит в этот список.",
       "iconField": "Иконка",
+      "coverField": "Обложка",
       "menuAria": "Параметры списка {{title}}",
       "listActions": "Действия со списком",
       "memberMenuAria": "Параметры списка кампаний",

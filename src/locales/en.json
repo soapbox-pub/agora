@@ -1610,6 +1610,7 @@
       "descriptionField": "Description",
       "descriptionPlaceholder": "A short blurb explaining what belongs in this list.",
       "iconField": "Icon",
+      "coverField": "Cover image",
       "menuAria": "{{title}} list options",
       "listActions": "List actions",
       "memberMenuAria": "Campaign list options",

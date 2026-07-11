@@ -1609,6 +1609,7 @@
       "descriptionField": "Description",
       "descriptionPlaceholder": "Un court résumé expliquant ce qui appartient à cette liste.",
       "iconField": "Icône",
+      "coverField": "Image de couverture",
       "menuAria": "Options de la liste {{title}}",
       "listActions": "Actions de la liste",
       "memberMenuAria": "Options de la liste de campagnes",

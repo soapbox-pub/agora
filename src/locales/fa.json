@@ -1057,6 +1057,7 @@
       "descriptionField": "توضیحات",
       "descriptionPlaceholder": "توضیح کوتاهی دربارهٔ اینکه چه چیزی در این فهرست جای می‌گیرد.",
       "iconField": "آیکون",
+      "coverField": "تصویر جلد",
       "menuAria": "گزینه‌های فهرست {{title}}",
       "listActions": "اقدامات فهرست",
       "memberMenuAria": "گزینه‌های فهرست کمپین",

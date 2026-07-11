@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { CoverImageField } from '@/components/CoverImageField';
 import { IconPicker } from '@/components/IconPicker';
 import { LucideIcon } from '@/components/LucideIcon';
 import { toast } from '@/hooks/useToast';
@@ -21,7 +22,11 @@ interface ListFormInitial {
   title: string;
   description?: string;
   icon: string;
+  cover?: string;
 }
+
+/** Values emitted by {@link ListFormDialog} on submit. */
+export type ListFormValues = ListFormInitial;
 
 interface ListFormDialogProps {
   open: boolean;
@@ -53,6 +58,8 @@ export function ListFormDialog({
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [icon, setIcon] = useState(initial?.icon ?? 'List');
+  const [cover, setCover] = useState(initial?.cover ?? '');
+  const [coverUploading, setCoverUploading] = useState(false);
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -62,10 +69,11 @@ export function ListFormDialog({
     setTitle(initial?.title ?? '');
     setDescription(initial?.description ?? '');
     setIcon(initial?.icon ?? 'List');
+    setCover(initial?.cover ?? '');
   }, [open, initial]);
 
   const trimmedTitle = title.trim();
-  const canSubmit = trimmedTitle.length > 0 && !submitting;
+  const canSubmit = trimmedTitle.length > 0 && !submitting && !coverUploading;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -75,6 +83,9 @@ export function ListFormDialog({
         title: trimmedTitle,
         description: description.trim() || undefined,
         icon,
+        // Empty string clears the cover in edit mode; undefined would
+        // instead preserve the existing one, so always send the string.
+        cover: cover.trim(),
       });
       onOpenChange(false);
     } catch (err) {
@@ -110,6 +121,20 @@ export function ListFormDialog({
           </DialogDescription>
 
           <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label>
+                {t('campaigns.lists.coverField')}{' '}
+                <span className="text-muted-foreground font-normal">
+                  ({t('forms.optional')})
+                </span>
+              </Label>
+              <CoverImageField
+                value={cover}
+                onChange={setCover}
+                onUploadingChange={setCoverUploading}
+              />
+            </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="list-title">
                 {t('campaigns.lists.titleField')}

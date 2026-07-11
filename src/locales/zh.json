@@ -1057,6 +1057,7 @@
       "descriptionField": "描述",
       "descriptionPlaceholder": "用一段简短的说明阐明此列表收录的内容。",
       "iconField": "图标",
+      "coverField": "封面图片",
       "menuAria": "{{title}} 列表选项",
       "listActions": "列表操作",
       "memberMenuAria": "活动列表选项",

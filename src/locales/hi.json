@@ -1568,6 +1568,7 @@
       "descriptionField": "विवरण",
       "descriptionPlaceholder": "एक छोटा-सा ब्योरा जो बताए कि इस सूची में क्या आता है।",
       "iconField": "आइकन",
+      "coverField": "कवर छवि",
       "menuAria": "{{title}} सूची विकल्प",
       "listActions": "सूची कार्रवाइयाँ",
       "memberMenuAria": "कैंपेन सूची विकल्प",

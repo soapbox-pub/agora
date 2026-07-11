@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { LucideIcon } from '@/components/LucideIcon';
 import { ListFormDialog } from './ListFormDialog';
+import type { ListFormValues } from './ListFormDialog';
 import { useCampaignLists } from '@/hooks/useCampaignLists';
 import { useCampaignListActions } from '@/hooks/useCampaignListActions';
 import { toast } from '@/hooks/useToast';
@@ -127,11 +128,7 @@ export function CampaignListMembershipDialog({
     }
   };
 
-  const handleCreate = async (values: {
-    title: string;
-    description?: string;
-    icon: string;
-  }) => {
+  const handleCreate = async (values: ListFormValues) => {
     // Create the list, then immediately add this campaign to it.
     const { slug } = await actions.createList(values);
     try {

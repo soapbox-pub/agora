@@ -1568,6 +1568,7 @@
       "descriptionField": "Maelezo",
       "descriptionPlaceholder": "Maelezo mafupi yanayoeleza kinachofaa kwenye orodha hii.",
       "iconField": "Ikoni",
+      "coverField": "Picha ya jalada",
       "menuAria": "Chaguo za orodha ya {{title}}",
       "listActions": "Vitendo vya orodha",
       "memberMenuAria": "Chaguo za orodha ya kampeni",

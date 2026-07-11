@@ -1057,6 +1057,7 @@
       "descriptionField": "描述",
       "descriptionPlaceholder": "簡短說明這個清單適合收錄哪些活動。",
       "iconField": "圖示",
+      "coverField": "封面圖片",
       "menuAria": "{{title}} 清單選項",
       "listActions": "清單操作",
       "memberMenuAria": "活動清單選項",

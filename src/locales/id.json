@@ -1568,6 +1568,7 @@
       "descriptionField": "Deskripsi",
       "descriptionPlaceholder": "Penjelasan singkat tentang apa yang termasuk dalam daftar ini.",
       "iconField": "Ikon",
+      "coverField": "Gambar sampul",
       "menuAria": "Opsi daftar {{title}}",
       "listActions": "Tindakan daftar",
       "memberMenuAria": "Opsi daftar kampanye",

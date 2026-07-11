@@ -24,7 +24,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CampaignCard, CampaignCardSkeleton } from '@/components/CampaignCard';
+import { CampaignsHeroShell } from '@/components/CampaignsHeroShell';
 import { ListFormDialog } from '@/components/campaign-lists/ListFormDialog';
+import type { ListFormValues } from '@/components/campaign-lists/ListFormDialog';
 import { AddCampaignToListDialog } from '@/components/campaign-lists/AddCampaignToListDialog';
 import { CampaignListMembershipDialog } from '@/components/campaign-lists/CampaignListMembershipDialog';
 import { VerificationDialog } from '@/components/VerificationDialog';
@@ -180,13 +182,14 @@ export function CampaignListDetailPage() {
   );
 
   const handleEditSubmit = useCallback(
-    async (values: { title: string; description?: string; icon: string }) => {
+    async (values: ListFormValues) => {
       if (!slug) return;
       await actions.updateListMeta({
         slug,
         title: values.title,
         description: values.description,
         icon: values.icon,
+        cover: values.cover,
       });
     },
     [slug, actions],
@@ -242,66 +245,80 @@ export function CampaignListDetailPage() {
 
   return (
     <main className="min-h-screen pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-12 space-y-8">
-        <header className="space-y-3">
-          <Button asChild variant="ghost" size="sm" className="-ml-2">
+      <CampaignsHeroShell cover={list.cover}>
+        {/* Back link + moderator controls, overlaid at the top edge. */}
+        <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 px-4 sm:px-6 pt-[max(env(safe-area-inset-top),1rem)]">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="text-white hover:text-white hover:bg-white/10 -ml-2"
+          >
             <Link to="/campaigns">
               <ArrowLeft className="size-4 mr-1.5" />
               {t('campaigns.lists.backToCampaigns')}
             </Link>
           </Button>
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="space-y-1 min-w-0">
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight flex items-center gap-3">
-                <span className="inline-flex size-10 sm:size-12 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
-                  <LucideIcon name={list.icon} className="size-5 sm:size-6" />
-                </span>
-                <span className="break-words">{listTitle}</span>
-              </h1>
-              {list.description && (
-                <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
-                  {list.description}
-                </p>
-              )}
-              <p className="text-xs text-muted-foreground pt-1">
-                {t('campaigns.lists.campaignsCount', { count: visibleCount })}
-              </p>
+          {actions.isMod && (
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setAddOpen(true)}
+                variant="outline"
+                size="sm"
+                className="rounded-full text-white border-white/25 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/35 backdrop-blur-xl"
+              >
+                <Plus className="size-4 mr-1.5" />
+                {t('campaigns.lists.addCampaign')}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t('campaigns.lists.listActions')}
+                    className="text-white hover:text-white hover:bg-white/10 rounded-full backdrop-blur-xl bg-white/5 border border-white/25"
+                  >
+                    <MoreVertical className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => setEditOpen(true)}>
+                    <Pencil className="size-4 mr-2" />
+                    {t('campaigns.lists.edit')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => setDeleteOpen(true)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="size-4 mr-2" />
+                    {t('campaigns.lists.delete')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-            {actions.isMod && (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setAddOpen(true)}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Plus className="size-4 mr-1.5" />
-                  {t('campaigns.lists.addCampaign')}
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" aria-label={t('campaigns.lists.listActions')}>
-                      <MoreVertical className="size-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onSelect={() => setEditOpen(true)}>
-                      <Pencil className="size-4 mr-2" />
-                      {t('campaigns.lists.edit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => setDeleteOpen(true)}
-                      className="text-destructive focus:text-destructive"
-                    >
-                      <Trash2 className="size-4 mr-2" />
-                      {t('campaigns.lists.delete')}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
-          </div>
-        </header>
+          )}
+        </div>
 
+        {/* Centered overlay copy — mirrors the /campaigns hero layout. */}
+        <div className="relative flex flex-1 flex-col items-center justify-center space-y-3 max-w-3xl">
+          <span className="inline-flex size-12 sm:size-14 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg">
+            <LucideIcon name={list.icon} className="size-6 sm:size-7" />
+          </span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-white drop-shadow-[0_2px_12px_rgb(0_0_0/0.55)]">
+            {listTitle}
+          </h1>
+          {list.description && (
+            <p className="text-base sm:text-lg text-white/85 max-w-2xl mx-auto drop-shadow-[0_1px_6px_rgb(0_0_0/0.5)]">
+              {list.description}
+            </p>
+          )}
+          <p className="text-xs sm:text-sm font-medium uppercase tracking-[0.14em] text-white/75 drop-shadow">
+            {t('campaigns.lists.campaignsCount', { count: visibleCount })}
+          </p>
+        </div>
+      </CampaignsHeroShell>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-12 space-y-8">
         {isLoadingCampaigns && displayedCampaigns.length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {Array.from({ length: Math.min(4, coords.length) }).map((_, i) => (
@@ -343,6 +360,7 @@ export function CampaignListDetailPage() {
           title: list.title,
           description: list.description,
           icon: list.icon,
+          cover: list.cover,
         }}
         onSubmit={handleEditSubmit}
       />

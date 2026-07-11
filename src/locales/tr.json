@@ -1568,6 +1568,7 @@
       "descriptionField": "Açıklama",
       "descriptionPlaceholder": "Bu listeye nelerin gireceğini açıklayan kısa bir tanıtım.",
       "iconField": "Simge",
+      "coverField": "Kapak görseli",
       "menuAria": "{{title}} liste seçenekleri",
       "listActions": "Liste işlemleri",
       "memberMenuAria": "Kampanya listesi seçenekleri",

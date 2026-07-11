@@ -32,6 +32,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { LucideIcon } from '@/components/LucideIcon';
 import { ListFormDialog } from './ListFormDialog';
+import type { ListFormValues } from './ListFormDialog';
 import { useCampaignLists } from '@/hooks/useCampaignLists';
 import { useCampaignListActions } from '@/hooks/useCampaignListActions';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -135,20 +136,21 @@ export function CampaignListsStrip() {
   );
 
   const handleCreate = useCallback(
-    async (values: { title: string; description?: string; icon: string }) => {
+    async (values: ListFormValues) => {
       await actions.createList(values);
     },
     [actions],
   );
 
   const handleEditSubmit = useCallback(
-    async (values: { title: string; description?: string; icon: string }) => {
+    async (values: ListFormValues) => {
       if (!editTarget) return;
       await actions.updateListMeta({
         slug: editTarget.slug,
         title: values.title,
         description: values.description,
         icon: values.icon,
+        cover: values.cover,
       });
     },
     [actions, editTarget],
@@ -285,6 +287,7 @@ export function CampaignListsStrip() {
             title: editTarget.title,
             description: editTarget.description,
             icon: editTarget.icon,
+            cover: editTarget.cover,
           }}
           onSubmit={handleEditSubmit}
         />

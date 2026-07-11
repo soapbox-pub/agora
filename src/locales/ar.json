@@ -1057,6 +1057,7 @@
       "descriptionField": "الوصف",
       "descriptionPlaceholder": "وصف قصير يوضّح ما الذي ينتمي إلى هذه القائمة.",
       "iconField": "الأيقونة",
+      "coverField": "صورة الغلاف",
       "menuAria": "خيارات قائمة {{title}}",
       "listActions": "إجراءات القائمة",
       "memberMenuAria": "خيارات قائمة الحملة",
