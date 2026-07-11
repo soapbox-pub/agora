@@ -168,18 +168,17 @@ function Hero() {
   return (
     /* Hero.
 
-       Dark, brand-driven, type-led. Three layers:
-         1. Near-black backdrop (`bg-[hsl(220_25%_6%)]`) — the canvas
-            every other element sits on. No campaign photo, no random
-            hue cycling: the hero looks the same on every visit, so
-            quality doesn't depend on which campaign is on top.
-         2. HeroLightningMap — decorative dark world map with curated
-            glowing brand-orange arcs and pulsing city nodes. Pure SVG,
-            negligible render cost, animations honor reduced-motion.
-         3. Headline column on the left, lifted by a left-edge gradient
-            inside HeroLightningMap so type stays readable without any
-            text-shadow at all. */
-    <section className="relative overflow-hidden border-b border-border bg-[hsl(220_25%_6%)] text-white">
+       Brand-driven, type-led, and theme-aware. Three layers:
+          1. A paper-bright light canvas with a near-black dark-mode
+             override. No campaign photo, no random hue cycling: the hero
+             looks the same on every visit, so quality doesn't depend on
+             which campaign is on top.
+          2. HeroLightningMap — decorative SVG world map with curated
+             brand-orange arcs and pulsing city nodes. Pure SVG, negligible
+             render cost, animations honor reduced-motion.
+          3. Headline column on the left, with colors tuned per theme so
+             type stays readable without any text-shadow at all. */
+    <section className="relative overflow-hidden border-b border-border bg-[hsl(38_30%_96%)] text-foreground dark:bg-[hsl(220_25%_6%)] dark:text-white">
       <HeroLightningMap />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-24 min-h-[440px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-center">
@@ -234,7 +233,7 @@ function Hero() {
               ]}
             />
           </h1>
-          <p className="text-base sm:text-lg text-white/80 max-w-xl">
+          <p className="text-base sm:text-lg text-muted-foreground dark:text-white/80 max-w-xl">
             {t('campaigns.home.heroBody')}
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
@@ -253,7 +252,7 @@ function Hero() {
               variant="outline"
               size="lg"
               asChild
-              className="rounded-full h-12 px-6 text-base border-white/30 bg-white/5 text-white hover:bg-white/10 hover:text-white hover:border-white/50 [&_svg]:size-[18px]"
+              className="rounded-full h-12 px-6 text-base bg-background/55 backdrop-blur-sm hover:bg-background/75 dark:border-white/30 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:hover:text-white dark:hover:border-white/50 [&_svg]:size-[18px]"
             >
               <Link to="/about">
                 {t('campaigns.home.howItWorks')}

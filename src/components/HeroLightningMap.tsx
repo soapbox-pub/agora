@@ -4,9 +4,9 @@ import { LAND_RINGS } from '@/lib/landPolygons';
 import { cn } from '@/lib/utils';
 
 /**
- * Decorative dark world map with glowing brand-orange Lightning arcs and
- * pulsing city nodes. Designed as a hero backdrop on near-black surfaces:
- * type sits comfortably over it without any text shadow.
+ * Decorative world map with glowing brand-orange Lightning arcs and pulsing
+ * city nodes. Theme-aware: light mode uses a paper-bright canvas with softer
+ * inked land, while dark mode keeps the original near-black neon treatment.
  *
  * Composition (back to front):
  *   1. Equirectangular world map drawn from {@link LAND_RINGS} — barely
@@ -88,7 +88,14 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}
+      className={cn(
+        'absolute inset-0 overflow-hidden pointer-events-none',
+        '[--hero-glow-fade:38_30%_96%] [--hero-land-from:24_70%_48%] [--hero-land-to:28_62%_42%]',
+        '[--hero-arc-a:24_95%_44%] [--hero-arc-b:30_92%_48%] [--hero-node-a:30_96%_50%] [--hero-node-b:24_92%_48%] [--hero-node-dot:28_96%_45%]',
+        'dark:[--hero-glow-fade:220_30%_8%] dark:[--hero-land-from:24_80%_50%] dark:[--hero-land-to:24_70%_45%]',
+        'dark:[--hero-arc-a:24_100%_60%] dark:[--hero-arc-b:30_100%_65%] dark:[--hero-node-a:30_100%_70%] dark:[--hero-node-b:24_100%_55%] dark:[--hero-node-dot:36_100%_70%]',
+        className,
+      )}
       aria-hidden="true"
     >
       {/* Central radial brand-orange glow. Sits behind the map texture so
@@ -99,7 +106,7 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
         className="absolute -inset-[10%]"
         style={{
           background:
-            'radial-gradient(60% 55% at 62% 45%, hsl(24 100% 55% / 0.12) 0%, hsl(24 95% 50% / 0.07) 28%, hsl(220 30% 8% / 0) 65%)',
+            'radial-gradient(60% 55% at 62% 45%, hsl(24 100% 55% / 0.12) 0%, hsl(24 95% 50% / 0.07) 28%, hsl(var(--hero-glow-fade) / 0) 65%)',
         }}
       />
 
@@ -115,17 +122,17 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
               (which is what painted the visible "latitude line" along the
               equator and other country seams). */}
           <linearGradient id={arcId('land')} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(24 80% 50%)" />
-            <stop offset="100%" stopColor="hsl(24 70% 45%)" />
+            <stop offset="0%" stopColor="hsl(var(--hero-land-from))" />
+            <stop offset="100%" stopColor="hsl(var(--hero-land-to))" />
           </linearGradient>
 
           {/* Arc gradient — bright at midpoint, fading at endpoints, so
               the line reads as energy traveling rather than a solid wire. */}
           <linearGradient id={arcId('arc')} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(24 100% 60%)" stopOpacity="0.0" />
-            <stop offset="35%" stopColor="hsl(24 100% 60%)" stopOpacity="0.85" />
-            <stop offset="65%" stopColor="hsl(30 100% 65%)" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="hsl(30 100% 65%)" stopOpacity="0.0" />
+            <stop offset="0%" stopColor="hsl(var(--hero-arc-a))" stopOpacity="0.0" />
+            <stop offset="35%" stopColor="hsl(var(--hero-arc-a))" stopOpacity="0.85" />
+            <stop offset="65%" stopColor="hsl(var(--hero-arc-b))" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="hsl(var(--hero-arc-b))" stopOpacity="0.0" />
           </linearGradient>
 
           {/* Glow filter for arcs and nodes — wider and softer than a CSS
@@ -142,9 +149,9 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
           {/* Stronger glow for the nodes themselves so they punch through
               the arcs at intersections. */}
           <radialGradient id={arcId('node-halo')}>
-            <stop offset="0%" stopColor="hsl(30 100% 70%)" stopOpacity="0.9" />
-            <stop offset="40%" stopColor="hsl(24 100% 55%)" stopOpacity="0.45" />
-            <stop offset="100%" stopColor="hsl(24 100% 50%)" stopOpacity="0" />
+            <stop offset="0%" stopColor="hsl(var(--hero-node-a))" stopOpacity="0.9" />
+            <stop offset="40%" stopColor="hsl(var(--hero-node-b))" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="hsl(var(--hero-node-b))" stopOpacity="0" />
           </radialGradient>
         </defs>
 
@@ -162,7 +169,7 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
         <g
           fill={`url(#${arcId('land')})`}
           stroke="none"
-          opacity="0.18"
+          className="opacity-[0.14] dark:opacity-[0.18]"
         >
           {landPaths}
         </g>
@@ -239,7 +246,7 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
                   cx={x}
                   cy={y}
                   r="0.55"
-                  fill="hsl(36 100% 70%)"
+                  fill="hsl(var(--hero-node-dot))"
                 />
               </g>
             );
