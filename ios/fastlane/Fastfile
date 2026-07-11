@@ -85,17 +85,15 @@ platform :ios do
       output_directory: "../artifacts",
       output_name: "Agora.ipa",
       clean: true,
-      # Override the Xcode project's Automatic signing for this build only.
-      # Match has already installed the AppStore cert + profile into the
-      # ephemeral keychain; tell xcodebuild to use them explicitly so it
-      # doesn't also try to find an iOS Development cert (which we never
-      # provision in CI).
-      xcargs: [
-        "CODE_SIGN_STYLE=Manual",
-        "CODE_SIGN_IDENTITY='Apple Distribution'",
-        "PROVISIONING_PROFILE_SPECIFIER='match AppStore spot.agora.app'",
-        "DEVELOPMENT_TEAM=GZLTTH5DLM",
-      ].join(" "),
+      # Signing is configured on the App target directly in project.pbxproj
+      # (Release config: CODE_SIGN_STYLE = Manual, the match profile, and the
+      # Apple Distribution identity). We deliberately do NOT pass signing
+      # overrides via xcargs: a global override leaks onto Swift Package
+      # Manager dependency targets (e.g. OSBarcodeLib from
+      # @capacitor/barcode-scanner), which fail the archive because SPM
+      # targets can't take a provisioning profile. Per-target xcargs syntax
+      # (`SETTING[target=App]=...`) is mangled by fastlane's shell quoting,
+      # so the project file is the reliable place for this.
       export_options: {
         method: "app-store",
         signingStyle: "manual",
