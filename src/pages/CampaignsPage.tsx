@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,41 +19,31 @@ import { HeroLightningMap } from '@/components/HeroLightningMap';
 import { PartnersPressBand } from '@/components/PartnersPressBand';
 import { StartCampaignLink } from '@/components/StartCampaignLink';
 import { AppDownloadNudge } from '@/components/AppDownloadNudge';
-import { useCampaigns } from '@/hooks/useCampaigns';
-import { useCampaignList } from '@/hooks/useCampaignLists';
+import { useHomeVerifiedCampaigns } from '@/hooks/useHomeVerifiedCampaigns';
 import { useAppContext } from '@/hooks/useAppContext';
 import { cn } from '@/lib/utils';
 import type { ParsedCampaign } from '@/lib/campaign';
 
 /**
- * Maximum number of skeleton cards to render in the featured hero row
- * while the campaigns are loading. The list itself can hold an
- * arbitrary number of members; the home row caps the visual count.
+ * Maximum number of skeleton cards to render in the verified hero row
+ * while the campaigns are loading.
  */
 const FEATURED_SKELETON_CAP = 8;
-
-/**
- * Slug of the curated list that powers the home-page hero row.
- * Matches the curator-published kind-30003 event with
- * `d=featured-campaigns` and `t=agora.campaign-list`. The list's own
- * detail page lives at `/campaigns/lists/featured-campaigns`.
- */
-const FEATURED_LIST_SLUG = 'featured-campaigns';
 
 /**
  * Home page (`/`).
  *
  * Two public sections:
  *
- *  1. **Featured hero row** — every campaign inside the curated
- *     `featured-campaigns` list (a curator-published kind 30003
- *     NIP-51 bookmark set), in list order. The hero layout gives the
- *     first two cards extra visual weight (column-spanning) and flows
- *     the rest in a 4-up grid, so the row scales to however many
- *     campaigns the curator has added. The list's own detail page at
- *     `/campaigns/lists/featured-campaigns` shows the same membership.
- *     Replaces the previous `featured`-label-based row — featuring is
- *     no longer a campaign-level concept; lists are.
+ *  1. **Verified Campaigns hero row** — every campaign vouched for by a
+ *     member of the verifier follow packs (World Liberty Congress + Team
+ *     Soapbox). Ordered so that campaigns positioned by the curated
+ *     `featured-campaigns` list come first (in list order), then the
+ *     remaining verified campaigns by verifier priority (WLC → Agora →
+ *     Team Soapbox → MK → Leo → Alex → Aaron → anyone else on either
+ *     pack). See {@link useHomeVerifiedCampaigns}. The hero layout gives
+ *     the first two cards extra visual weight (column-spanning) and flows
+ *     the rest in a 4-up grid.
  *  2. **Topic-list strip + Browse all** — the curated
  *     {@link CampaignListsStrip} (moderator-managed topic pills) plus
  *     a single CTA to `/campaigns`, the full discoverable set with
@@ -63,9 +52,8 @@ const FEATURED_LIST_SLUG = 'featured-campaigns';
  * Hidden-campaign moderation lives entirely on `/campaigns` — the
  * Show-hidden toggle there is available to every viewer, and the
  * moderator-only Hidden collapsible there is the structured review
- * surface. The home page applies no label-based filtering of its own:
- * the featured hero row renders exactly what the curated list declares,
- * in list order. Curation here is the list's membership, nothing more.
+ * surface. The home page drops hidden campaigns from the verified row
+ * but applies no other label-based filtering of its own.
  *
  * Campaigns are the home page's sole focus. Groups and Pledges each
  * have their own dedicated browse pages (`/groups`, `/pledges`).
@@ -74,80 +62,36 @@ export function CampaignsPage() {
   const { t } = useTranslation();
   const { config } = useAppContext();
 
-  // The curated list that backs the hero row. The slug is fixed in
-  // code so the home page's editorial framing doesn't drift if a
-  // moderator renames or reorders other lists. The list itself can
-  // still be edited freely — its title isn't read here, only its
-  // membership.
-  const { list: featuredList, isLoading: listLoading } = useCampaignList(FEATURED_LIST_SLUG);
-
-  // All coords declared by the list, in order. The hero row shows
-  // every featured campaign — the layout (two large cards + 4-up
-  // tail) scales to whatever the curator has added, so we don't cap.
-  const coords = useMemo(
-    () => featuredList?.coords ?? [],
-    [featuredList],
-  );
-
-  // `useCampaigns` ignores `limit` when `coordinates` is set, so
-  // we don't pass one. The query is short-circuited to an empty
-  // result when the list isn't loaded yet (so we don't fire a
-  // useless fan-out before the list event arrives).
-  const { data: heroCampaigns, isLoading: heroLoading } = useCampaigns(
-    coords.length > 0
-      ? { coordinates: coords }
-      : { coordinates: [] },
-  );
-
-  // Reorder to match the list's declared order. `useCampaigns` returns
-  // events in network order which we override here so the hero row
-  // always reflects the curator's intent.
-  const orderedCampaigns = useMemo<ParsedCampaign[]>(() => {
-    if (!heroCampaigns || coords.length === 0) return [];
-    const byCoord = new Map(heroCampaigns.map((c) => [c.aTag, c]));
-    const out: ParsedCampaign[] = [];
-    for (const coord of coords) {
-      const found = byCoord.get(coord);
-      if (found) out.push(found);
-    }
-    return out;
-  }, [heroCampaigns, coords]);
+  // Verified campaigns in display order (featured-list placement first,
+  // then verifier priority — see the hook docs).
+  const { campaigns: verifiedCampaigns, isLoading: verifiedLoading } =
+    useHomeVerifiedCampaigns();
 
   useSeoMeta({
     title: `${t('campaigns.home.seoTitle')} | ${config.appName}`,
     description: t('campaigns.home.seoDescription'),
   });
 
-  // Show the featured section as long as there's something to show OR
-  // the list is still loading on first paint (avoids a flash of
-  // empty space for visitors who hit the page before the list
-  // event arrives).
-  const listEmpty = !listLoading && (!featuredList || featuredList.coords.length === 0);
-  const showFeaturedSection =
-    (featuredList && featuredList.coords.length > 0) ||
-    listLoading ||
-    (heroLoading && coords.length > 0);
+  // Render the section while loading (avoids a first-paint flash of empty
+  // space) and whenever there's at least one verified campaign to show.
+  const verifiedEmpty = !verifiedLoading && verifiedCampaigns.length === 0;
+  const showVerifiedSection = verifiedLoading || verifiedCampaigns.length > 0;
 
   return (
     <main className="min-h-screen">
       <Hero />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-14 space-y-12" id="campaigns">
-        {showFeaturedSection && (
+        {showVerifiedSection && (
           <section className="space-y-5">
             <div className="flex items-end justify-between gap-4 flex-wrap">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2 flex-wrap">
-                  <Link
-                    to={`/campaigns/lists/${FEATURED_LIST_SLUG}`}
-                    className="inline-flex items-center gap-2 hover:underline underline-offset-4"
-                  >
-                    <span>{t('campaigns.home.featuredTitle')}</span>
-                  </Link>
+                  <span>{t('campaigns.home.verifiedTitle')}</span>
                   <BadgeCheck className="size-5 sm:size-6 text-primary shrink-0" aria-hidden="true" />
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {t('campaigns.home.featuredDesc', { appName: config.appName })}
+                  {t('campaigns.home.verifiedDesc', { appName: config.appName })}
                 </p>
               </div>
               <Button asChild variant="outline" className="hidden sm:inline-flex">
@@ -158,13 +102,13 @@ export function CampaignsPage() {
               </Button>
             </div>
 
-            {listEmpty ? (
+            {verifiedEmpty ? (
               <EmptyState />
             ) : (
               <HeroRow
-                campaigns={orderedCampaigns}
-                isLoading={heroLoading || listLoading}
-                expectedCount={coords.length || 2}
+                campaigns={verifiedCampaigns}
+                isLoading={verifiedLoading}
+                expectedCount={verifiedCampaigns.length || 2}
               />
             )}
           </section>

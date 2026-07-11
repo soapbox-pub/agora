@@ -1,91 +1,62 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
 import { useTranslation } from 'react-i18next';
-import { BadgeCheck, EyeOff, HandHeart, PlusCircle } from 'lucide-react';
+import { BadgeCheck, EyeOff, HandHeart, PlusCircle, Sparkles } from 'lucide-react';
 
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { CampaignCard, CampaignCardSkeleton } from '@/components/CampaignCard';
-import { CampaignsDiscoverySection } from '@/components/discovery/CampaignsDiscoverySection';
+import { CampaignListShelf } from '@/components/campaign-lists/CampaignListShelf';
 import { CampaignListsStrip } from '@/components/campaign-lists/CampaignListsStrip';
 import { HeroAtmosphere } from '@/components/HeroAtmosphere';
 import { HeroBanner } from '@/components/HeroBanner';
 import { StartCampaignLink } from '@/components/StartCampaignLink';
 import { ModeratorCollapsibleSection } from '@/components/moderation';
-import { useAllCampaigns, toQuerySort } from '@/hooks/useAllCampaigns';
+import { useCampaignsPageSections } from '@/hooks/useCampaignsPageSections';
 import { useCampaignModeration } from '@/hooks/useCampaignModeration';
 import { useCampaignModerators } from '@/hooks/useCampaignModerators';
 import { useAppContext } from '@/hooks/useAppContext';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { parseSort } from '@/hooks/useDiscoveryFilters';
 import { HOPE_PALETTE } from '@/lib/hopePalette';
 import { cn } from '@/lib/utils';
-import type { ParsedCampaign } from '@/lib/campaign';
 
 /**
- * Lists every campaign found on relays.
+ * Browse surface for every campaign on the network, reorganized into three
+ * stacked sections:
  *
- * The page itself is a thin shell: hero, the moderator-curated topic-list
- * strip ({@link CampaignListsStrip}), the shared
- * {@link CampaignsDiscoverySection} (which owns search / sort / country
- * + idle / active grids), and a moderator-only Hidden collapsible.
+ *   1. **Topic-list shelves** — the curated lists named in
+ *      `CAMPAIGNS_PAGE_LIST_ORDER` (Agora-funds, Africa, Palestine,
+ *      Venezuela, Women-and-girls, Democracy, Children), in that order.
+ *      Each renders a row of up to four campaigns with a "View all" link
+ *      to the list's detail page.
+ *   2. **New campaigns** — every other non-hidden campaign not *shown* in a
+ *      shelf above (a list member that fell outside the top four still
+ *      appears here), ordered by update date, newest first.
+ *   3. **Hidden** — a moderator-only collapsible listing every hidden
+ *      campaign for review.
  *
- * URL state (`?q=&sort=&country=`) lives inside the section's
- * `useDiscoveryFilters` hook so search results stay shareable. The
- * page reads the same params independently to compute the Hidden
- * collapsible's contents — TanStack Query dedupes the underlying
- * `useAllCampaigns` call, so there's no extra network round-trip.
- *
- * **Censorship-resistance:** the section's Show-hidden toggle is
- * available to every viewer here, not just moderators. The campaigns
- * page is the canonical browseable index, and the moderation labels
- * sit on public relays anyway, so anyone can flip the toggle to see
- * what mods have suppressed. The Hidden collapsible below the
- * section is still mod-only because it's a review workflow for
- * moderators (one-click hide/unhide affordances), not a discovery
- * surface.
+ * The moderator-curated topic-list strip stays at the top as a quick
+ * navigation affordance. Section assembly lives in
+ * {@link useCampaignsPageSections}; this page is the presentation shell.
  */
 export function AllCampaignsPage() {
   const { t } = useTranslation();
   const { config } = useAppContext();
   const { user } = useCurrentUser();
 
-  const [searchParams] = useSearchParams();
-  const sort = parseSort(searchParams.get('sort'));
-  const urlQuery = searchParams.get('q') ?? '';
-  const urlCountry = searchParams.get('country') ?? undefined;
-
   const { data: moderators } = useCampaignModerators();
   const isMod = !!user && !!moderators && moderators.includes(user.pubkey);
-  const [showHidden, setShowHidden] = useState(false);
 
-  // Mirror the section's underlying query so the Hidden collapsible
-  // can list the exact set of hidden items matching the current
-  // search / sort / country. TanStack dedupes; this is a cache read
-  // on the same key the section uses.
-  const { data: campaigns } = useAllCampaigns({
-    sort: toQuerySort(sort),
-    search: urlQuery,
-    countryCode: urlCountry,
-    limit: 200,
-  });
+  const { shelves, newCampaigns, hiddenCampaigns, isLoading } =
+    useCampaignsPageSections();
 
   const { data: moderation } = useCampaignModeration();
 
-  const { hiddenCount, hiddenCampaigns } = useMemo(() => {
-    const all = campaigns ?? [];
-    const hiddenCoords = moderation?.hiddenCoords ?? new Set<string>();
-    let count = 0;
-    const list: ParsedCampaign[] = [];
-    for (const c of all) {
-      if (hiddenCoords.has(c.aTag)) {
-        count += 1;
-        list.push(c);
-      }
-    }
-    return { hiddenCount: count, hiddenCampaigns: list };
-  }, [campaigns, moderation]);
+  const totalCount =
+    newCampaigns.length +
+    shelves.reduce((n, s) => n + s.totalCount, 0);
 
   useSeoMeta({
     title: `${t('campaigns.all.seoTitle')} | ${config.appName}`,
@@ -94,31 +65,90 @@ export function AllCampaignsPage() {
 
   return (
     <main className="min-h-screen pb-16">
-      <AllCampaignsHero campaignCount={campaigns?.length ?? 0} />
+      <AllCampaignsHero campaignCount={totalCount} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-14 space-y-8">
-        {/* Curated topic-list strip. Moderators can create/edit/reorder
-            lists here; non-moderators see only the published lists (or
-            nothing, if none exist yet). Replaces the previous "Your
-            campaigns" shelf — campaign authors can still find their own
-            campaigns via their profile page. */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-14 space-y-12">
+        {/* Quick-nav strip of all curated topic lists. Moderators can
+            create / edit / reorder lists here. */}
         <CampaignListsStrip />
 
-        <CampaignsDiscoverySection
-          filterPersistence="url"
-          showHidden={{
-            value: showHidden,
-            onChange: setShowHidden,
-            count: hiddenCount,
-          }}
-        />
+        {/* Topic-list shelves, in the configured order. */}
+        {isLoading && shelves.length === 0 ? (
+          <div className="space-y-12">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <div className="h-7 w-48 bg-muted rounded animate-pulse" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <CampaignCardSkeleton key={j} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          shelves.map((shelf) => (
+            <CampaignListShelf
+              key={shelf.list.slug}
+              list={shelf.list}
+              campaigns={shelf.campaigns}
+              totalCount={shelf.totalCount}
+              isLoading={false}
+            />
+          ))
+        )}
 
-        {/* Moderator-only: every hidden campaign on the network matching
-            the current section filters. The section drops hidden items
-            from its main grid unless the toolbar's Show-hidden switch
-            is on; this collapsible always exposes them so a moderator
-            can act on hidden coords without flipping the visibility
-            mode. */}
+        {/* New campaigns — everything not shown above, newest first. */}
+        <section className="space-y-5" aria-labelledby="new-campaigns">
+          <div>
+            <h2
+              id="new-campaigns"
+              className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2"
+            >
+              <Sparkles className="size-5 sm:size-6 text-primary shrink-0" aria-hidden="true" />
+              {t('campaigns.all.newTitle')}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {t('campaigns.all.newDesc')}
+            </p>
+          </div>
+
+          {isLoading && newCampaigns.length === 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <CampaignCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : newCampaigns.length === 0 ? (
+            <Card className="border-dashed">
+              <CardContent className="py-12 px-8 text-center space-y-4">
+                <HandHeart className="size-10 text-muted-foreground mx-auto" />
+                <div className="space-y-1.5">
+                  <h3 className="text-lg font-semibold">
+                    {t('campaigns.all.empty')}
+                  </h3>
+                  <p className="text-muted-foreground max-w-sm mx-auto">
+                    {t('campaigns.all.emptyHint')}
+                  </p>
+                </div>
+                <Button asChild>
+                  <StartCampaignLink>
+                    <PlusCircle className="size-4 mr-2" />
+                    {t('campaigns.all.startCampaign')}
+                  </StartCampaignLink>
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {newCampaigns.map((campaign) => (
+                <CampaignCard key={campaign.aTag} campaign={campaign} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Moderator-only: every hidden campaign on the network. */}
         {isMod && (
           <ModeratorCollapsibleSection
             icon={<EyeOff className="size-4" />}

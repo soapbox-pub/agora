@@ -113,3 +113,75 @@ export const CAMPAIGN_MODERATORS: readonly string[] = [
   '8f53782e8693e88afb710b6d68182ad973973c8822caa237bb60288b125673ca',
   'c839bc85846f24fc6b777548fe654672377f4cc2a04cab19cddec75b2f8b4dbd',
 ] as const;
+
+/**
+ * The two curator follow packs (kind 39089) whose members' verifications
+ * count as a **verified campaign** on the home page.
+ *
+ * A campaign is "verified" on `/` when at least one member of either pack
+ * has published an `agora.verified` label for it (see
+ * `useCampaignVerifications` for the label read path and `useVerifierPacks`
+ * for the live member union). The two packs are:
+ *
+ *  - **World Liberty Congress Verified** — `39089:<TS pubkey>:gllbeu7itctq`
+ *  - **Team Soapbox** — `39089:<TS pubkey>:k4p5w0n22suf`
+ *
+ * Both are authored by the Team Soapbox admin identity ({@link TEAM_SOAPBOX}
+ * `.pubkey`). We pin the read to that author so a kind 39089 with the same
+ * `d` from anyone else never widens the verifier set.
+ */
+export const FOLLOW_PACK_KIND = 39089;
+
+export const VERIFIER_FOLLOW_PACKS: readonly {
+  pubkey: string;
+  identifier: string;
+}[] = [
+  { pubkey: TEAM_SOAPBOX.pubkey, identifier: 'gllbeu7itctq' }, // WLC Verified
+  { pubkey: TEAM_SOAPBOX.pubkey, identifier: 'k4p5w0n22suf' }, // Team Soapbox
+] as const;
+
+/**
+ * Ranking order for **verified** campaigns on the home page, most-preferred
+ * first. When a verified campaign is NOT positioned by the featured list
+ * (see `FEATURED_LIST_SLUG` in the home page), it is ordered by the highest-
+ * priority verifier that vouched for it: a campaign verified by WLC ranks
+ * above one verified only by (say) Aaron.
+ *
+ * A verifier not in this list ranks after every listed verifier (i.e. any
+ * other member of either pack — "anyone else on either list"). Ties break
+ * by campaign `created_at` (newest first).
+ *
+ * Names for reference (resolved from the pack profiles):
+ *   1. WLC              56b3abb9…
+ *   2. Agora            2fb42317…
+ *   3. Team Soapbox     781a1527… (the "Soapbox" org account)
+ *   4. MK Fain          932614…
+ *   5. Leo              219b48ca…
+ *   6. Alex Gleason     0461fcbe…
+ *   7. Aaron Rodríguez  1094e722…
+ */
+export const VERIFICATION_PRIORITY: readonly string[] = [
+  '56b3abb9baed20b6ab81617aa519c8634e920ef0351d2962ec2951a9b233ab2f', // WLC
+  '2fb42317a9835e0fabb405aebbea6c61b6b2d384be7febe8125840b3516685fc', // Agora
+  '781a1527055f74c1f70230f10384609b34548f8ab6a0a6caa74025827f9fdae5', // Team Soapbox
+  '932614571afcbad4d17a191ee281e39eebbb41b93fac8fd87829622aeb112f4d', // MK Fain
+  '219b48caddc09ea21930b5b1be3830c4d28118d5da439de9302ebaf90b276a7b', // Leo
+  '0461fcbecc4c3374439932d6b8f11269ccdb7cc973ad7a50ae362db135a474dd', // Alex Gleason
+  '1094e7220b8ef0d04a3570afda9873d6b7fc0faf9139374d4d1580f9f2966d40', // Aaron
+] as const;
+
+/**
+ * Ordered slugs of the topic lists surfaced (in this order) at the top of
+ * the `/campaigns` page — each as a "row of 4 + view all" shelf. Slugs not
+ * present as a published list are skipped; published lists not in this
+ * array fall through to the "New campaigns" section like any other campaign.
+ */
+export const CAMPAIGNS_PAGE_LIST_ORDER: readonly string[] = [
+  'agora-funds',
+  'africa',
+  'palestine',
+  'venezuela',
+  'women-and-girls',
+  'democracy',
+  'children',
+] as const;
