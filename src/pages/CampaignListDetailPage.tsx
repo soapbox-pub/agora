@@ -31,7 +31,6 @@ import { AddCampaignToListDialog } from '@/components/campaign-lists/AddCampaign
 import { CampaignListMembershipDialog } from '@/components/campaign-lists/CampaignListMembershipDialog';
 import { VerificationDialog } from '@/components/VerificationDialog';
 import { ModerationMenuItems } from '@/components/moderation';
-import { LucideIcon } from '@/components/LucideIcon';
 import { useCampaignList } from '@/hooks/useCampaignLists';
 import { useCampaignListActions } from '@/hooks/useCampaignListActions';
 import { useCampaigns } from '@/hooks/useCampaigns';
@@ -301,9 +300,6 @@ export function CampaignListDetailPage() {
 
         {/* Centered overlay copy — mirrors the /campaigns hero layout. */}
         <div className="relative flex flex-1 flex-col items-center justify-center space-y-3 max-w-3xl">
-          <span className="inline-flex size-12 sm:size-14 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg">
-            <LucideIcon name={list.icon} className="size-6 sm:size-7" />
-          </span>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-white drop-shadow-[0_2px_12px_rgb(0_0_0/0.55)]">
             {listTitle}
           </h1>
