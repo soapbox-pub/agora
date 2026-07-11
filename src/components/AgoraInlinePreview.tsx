@@ -12,7 +12,7 @@ import { useAuthor } from '@/hooks/useAuthor';
 import { useInView } from '@/hooks/useInView';
 import { parseAction } from '@/hooks/useActions';
 import { getGeoDisplayName } from '@/lib/countries';
-import { parseCampaign, getCampaignCountryLabel } from '@/lib/campaign';
+import { parseCampaign, getCampaignCountryLabel, campaignPrettyPath } from '@/lib/campaign';
 import { parseCommunityEvent } from '@/lib/communityUtils';
 import { formatCampaignAmount, formatUsdGoal, satsToUsd } from '@/lib/formatCampaignAmount';
 import { formatCompactPledgeDeadline, formatPledgeAmount } from '@/lib/pledges';
@@ -70,7 +70,7 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
   const cover = sanitizeUrl(campaign.banner)
     ?? sanitizeUrl(authorMetadata?.banner)
     ?? sanitizeUrl(authorMetadata?.picture);
-  const naddr = nip19.naddrEncode({ kind: event.kind, pubkey: event.pubkey, identifier: campaign.identifier });
+  const to = campaignPrettyPath(campaign);
   const countryLabel = getCampaignCountryLabel(campaign);
   const isSilentPayment = !campaign.wallets.onchain;
   const goalLabel = campaign.goalUsd && campaign.goalUsd > 0 ? formatUsdGoal(campaign.goalUsd) : undefined;
@@ -82,7 +82,7 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
     : 0;
 
   return (
-    <Link ref={previewRef} to={`/${naddr}`} onClick={(e) => e.stopPropagation()} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+    <Link ref={previewRef} to={to} onClick={(e) => e.stopPropagation()} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
       <InlineShell
         image={cover}
         fallbackIcon={<HandHeart className="size-12" />}

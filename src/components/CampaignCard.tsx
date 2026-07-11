@@ -17,7 +17,7 @@ import { useEventTranslation } from '@/hooks/useEventTranslation';
 import { useInView } from '@/hooks/useInView';
 import {
   type ParsedCampaign,
-  encodeCampaignNaddr,
+  campaignPrettyPath,
   getCampaignCountryLabel,
   parseCampaign,
 } from '@/lib/campaign';
@@ -161,7 +161,7 @@ interface CampaignCardProps {
 
 /**
  * Renders a single campaign as a clickable card. The whole card is a
- * `<Link>` to the campaign's naddr-based detail route.
+ * `<Link>` to the campaign's pretty, title-based detail route.
  */
 export function CampaignCard({ campaign, variant = 'compact', className, footerBadge, showModerationMenu = true }: CampaignCardProps) {
   const { translatedEvent, translateAction } = useEventTranslation(campaign.event, {
@@ -190,7 +190,7 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
   });
   const { data: btcPrice } = useBtcPrice();
 
-  const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
+  const to = useMemo(() => campaignPrettyPath(campaign), [campaign]);
   const authorMetadata = author.data?.metadata;
   const cover = sanitizeUrl(displayCampaign.banner)
     ?? sanitizeUrl(authorMetadata?.banner)
@@ -207,7 +207,7 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
   return (
     <Link
       ref={cardRef}
-      to={`/${naddr}`}
+      to={to}
       className={cn(
         'group block rounded-xl overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:-translate-y-0.5',
         isShelfVariant && 'h-[430px] w-[280px] shrink-0',

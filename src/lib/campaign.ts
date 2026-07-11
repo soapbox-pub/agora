@@ -309,6 +309,51 @@ export function isCampaignNaddr(value: string): boolean {
   }
 }
 
+/**
+ * Number of leading hex characters of the author pubkey appended to a
+ * campaign's slug to disambiguate the pretty URL.
+ *
+ * A campaign's `d`-tag slug (derived from its title) is NOT globally
+ * unique — two authors can each publish a "help-me" campaign. The pretty
+ * URL `/campaigns/<slug>-<shortid>` resolves by querying every campaign
+ * carrying that exact slug and matching the one whose pubkey starts with
+ * `<shortid>`. Because only same-slug campaigns compete, 6 hex chars
+ * (24 bits, ~16.7M values) makes a collision astronomically unlikely in
+ * practice while keeping the URL short and readable.
+ */
+export const CAMPAIGN_SHORT_ID_LEN = 6;
+
+/** Matches the trailing `-<6 hex>` short-id in a pretty campaign path. */
+const CAMPAIGN_SHORT_ID_RE = new RegExp(`^(.*)-([0-9a-f]{${CAMPAIGN_SHORT_ID_LEN}})$`);
+
+/**
+ * Builds the short, title-based path for a campaign:
+ * `/campaigns/<slug>-<first 6 hex of pubkey>`.
+ *
+ * This mirrors the pretty `/campaigns/lists/<slug>` list URLs while
+ * carrying just enough of the author pubkey to disambiguate campaigns
+ * that happen to share a slug. Use this everywhere a campaign is linked;
+ * the resolver route re-fetches by `(slug, pubkey-prefix)`.
+ */
+export function campaignPrettyPath(campaign: Pick<ParsedCampaign, 'pubkey' | 'identifier'>): string {
+  const shortId = campaign.pubkey.slice(0, CAMPAIGN_SHORT_ID_LEN);
+  return `/campaigns/${campaign.identifier}-${shortId}`;
+}
+
+/**
+ * Parses the `:slugId` param of the pretty campaign route back into its
+ * `{ slug, shortId }` parts. Returns `null` when the value doesn't end in
+ * a `-<6 hex>` short-id (e.g. a malformed or legacy path), so the caller
+ * can 404 rather than issue a doomed query.
+ */
+export function parseCampaignSlugId(slugId: string): { slug: string; shortId: string } | null {
+  const match = CAMPAIGN_SHORT_ID_RE.exec(slugId.trim().toLowerCase());
+  if (!match) return null;
+  const [, slug, shortId] = match;
+  if (!slug) return null;
+  return { slug, shortId };
+}
+
 
 /**
  * Strip Unicode bidi controls, zero-width characters, and BOMs from a
