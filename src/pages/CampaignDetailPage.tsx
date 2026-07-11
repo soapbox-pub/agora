@@ -274,6 +274,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
   const prettyPath = useMemo(() => campaignPrettyPath(campaign), [campaign]);
+  const shareUrl = useMemo(() => `${shareOrigin}${prettyPath}`, [shareOrigin, prettyPath]);
   const storyEvent = useMemo(
     () => ({
       ...displayCampaign.event,
@@ -289,13 +290,12 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
   });
 
   const handleShare = async () => {
-    const url = `${shareOrigin}${prettyPath}`;
     try {
       const nav = typeof navigator !== 'undefined' ? navigator : undefined;
       if (nav?.share) {
-        await nav.share({ title: displayCampaign.title, text: displayCampaign.summary, url });
+        await nav.share({ title: displayCampaign.title, text: displayCampaign.summary, url: shareUrl });
       } else if (nav?.clipboard) {
-        await nav.clipboard.writeText(url);
+        await nav.clipboard.writeText(shareUrl);
         toast({ title: t('campaignsDetail.linkCopied') });
       }
     } catch {
@@ -386,6 +386,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
         countryLabel={countryLabel}
         onReply={() => setReplyOpen(true)}
         onMore={() => setMoreMenuOpen(true)}
+        shareUrl={shareUrl}
         translateAction={translateAction}
       />
 
@@ -965,6 +966,7 @@ interface CampaignHeadingProps {
   countryLabel: string | undefined;
   onReply: () => void;
   onMore: () => void;
+  shareUrl: string;
   translateAction: ReactNode;
 }
 
@@ -974,6 +976,7 @@ function CampaignHeading({
   countryLabel,
   onReply,
   onMore,
+  shareUrl,
   translateAction,
 }: CampaignHeadingProps) {
   const { t } = useTranslation();
@@ -1023,6 +1026,7 @@ function CampaignHeading({
           replyLabel={t('campaignsDetail.commentLabel')}
           hideZap
           showShareInSidebar
+          shareUrl={shareUrl}
           onReply={onReply}
           onMore={onMore}
           translateAction={translateAction}

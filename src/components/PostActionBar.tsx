@@ -32,6 +32,8 @@ interface PostActionBarProps {
   hideZap?: boolean;
   /** Keep the share button visible at sidebar widths. Defaults to false. */
   showShareInSidebar?: boolean;
+  /** Optional absolute URL to share instead of the event's generic NIP-19 URL. */
+  shareUrl?: string;
   /** Optional action rendered next to Share, e.g. Translate. */
   translateAction?: ReactNode;
   /** Extra classes on the outer wrapper div. */
@@ -45,6 +47,7 @@ export function PostActionBar({
   onMore,
   hideZap = false,
   showShareInSidebar = false,
+  shareUrl,
   translateAction,
   className,
 }: PostActionBarProps) {
@@ -71,10 +74,10 @@ export function PostActionBar({
     } else {
       encoded = nip19.neventEncode({ id: event.id, author: event.pubkey });
     }
-    const url = `${shareOrigin}/${encoded}`;
+    const url = shareUrl ?? `${shareOrigin}/${encoded}`;
     const result = await shareOrCopy(url);
     if (result === 'copied') toast({ title: t('feed.actions.linkCopied') });
-  }, [event, shareOrigin, toast, t]);
+  }, [event, shareOrigin, shareUrl, toast, t]);
 
   return (
     <div
