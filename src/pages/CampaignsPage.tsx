@@ -285,13 +285,40 @@ function Hero() {
  *
  * Returning a literal Tailwind string (rather than building it) keeps
  * the JIT happy — `col-span-2` etc. are seen by the scanner.
+ *
+ * Desktop straggler trimming: on `lg` the grid is 4 columns, the first
+ * two cards span 2 each (filling row 1), and the tail (index ≥ 2) flows
+ * four-per-row. Any trailing cards that don't complete a row of four
+ * would leave an ugly ragged gap, so they're hidden at `lg` only via
+ * `lg:hidden` — they stay visible on mobile (1-col) and `sm` (2-col)
+ * where a partial trailing row leaves no gap. `heroTailStragglers`
+ * computes how many that is.
  */
 function heroItemClass(index: number, total: number): string {
   // With ≤2 campaigns the layout is just the natural grid; no spans
   // needed. With 3+, only the first two get the span.
   if (total < 3) return '';
-  if (index < 2) return 'sm:col-span-2 lg:col-span-2';
-  return '';
+
+  const stragglers = heroTailStragglers(total);
+  // The last `stragglers` cards form the incomplete desktop tail row.
+  const isStraggler = stragglers > 0 && index >= total - stragglers;
+
+  if (index < 2) {
+    return cn('sm:col-span-2 lg:col-span-2', isStraggler && 'lg:hidden');
+  }
+  return isStraggler ? 'lg:hidden' : '';
+}
+
+/**
+ * Number of trailing tail cards that don't complete a desktop row of
+ * four. The tail is everything after the two column-spanning hero
+ * cards (index ≥ 2), so `total - 2` cards flow four-per-row on `lg`;
+ * the remainder is the straggler count. Returns 0 when there's no tail
+ * (`total < 3`) or the tail divides evenly.
+ */
+function heroTailStragglers(total: number): number {
+  if (total < 3) return 0;
+  return (total - 2) % 4;
 }
 
 function heroGridContainerClass(total: number): string {
