@@ -397,21 +397,6 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
             </div>
           ) : showLoginOptions ? (
             <>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={goToSignup}
-                className="w-full h-12 rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
-              >
-                {t('auth.createNewAccount')}
-              </Button>
-
-              <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                <div className="h-px flex-1 bg-border" />
-                <span>{t('auth.or')}</span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-
               <LoginForm
                 loginInput={loginInput}
                 setLoginInput={setLoginInput}
@@ -428,6 +413,21 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
                 isMobile={isMobile}
                 t={t}
               />
+
+              <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="h-px flex-1 bg-border" />
+                <span>{t('auth.or')}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={goToSignup}
+                className="w-full h-12 rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+              >
+                {t('auth.createNewAccount')}
+              </Button>
             </>
           ) : null}
         </div>
