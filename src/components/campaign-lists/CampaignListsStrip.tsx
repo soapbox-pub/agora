@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowUpToLine,
-  ChevronDown,
-  ChevronUp,
   MoreVertical,
   Pencil,
   Plus,
@@ -43,9 +41,6 @@ import { cn } from '@/lib/utils';
 
 const DRAG_MIME = 'text/x-agora-campaign-list-coord';
 
-/** How many pills to show before collapsing the rest behind a "Show more". */
-const COLLAPSED_COUNT = 5;
-
 /**
  * Horizontal scrollable strip of moderator-curated campaign list pills.
  *
@@ -76,7 +71,6 @@ export function CampaignListsStrip() {
   const [editTarget, setEditTarget] = useState<ParsedCampaignList | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ParsedCampaignList | null>(null);
   const [optimisticOrder, setOptimisticOrder] = useState<readonly string[] | null>(null);
-  const [expanded, setExpanded] = useState(false);
 
   const lists = useMemo(() => data?.lists ?? [], [data]);
   const authoritativeCoords = useMemo(() => lists.map((l) => l.aTag), [lists]);
@@ -189,10 +183,6 @@ export function CampaignListsStrip() {
     return null;
   }
 
-  const visible = displayed.slice(0, COLLAPSED_COUNT);
-  const overflow = displayed.slice(COLLAPSED_COUNT);
-  const canExpand = overflow.length > 0;
-
   const renderPill = (list: ParsedCampaignList, idx: number) => (
     <ListPill
       key={list.aTag}
@@ -225,35 +215,7 @@ export function CampaignListsStrip() {
         aria-label={t('campaigns.lists.stripAria')}
       >
         <div className="flex flex-wrap gap-2">
-          {visible.map((list, i) => renderPill(list, i))}
-          {expanded &&
-            overflow.map((list, i) => renderPill(list, i + COLLAPSED_COUNT))}
-          {canExpand && (
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              aria-expanded={expanded}
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm whitespace-nowrap shrink-0',
-                'border-border bg-background hover:border-primary/40 hover:bg-primary/5 text-muted-foreground hover:text-foreground',
-                'motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              )}
-            >
-              {expanded ? (
-                <>
-                  <ChevronUp className="size-4 shrink-0" aria-hidden />
-                  <span>{t('campaigns.lists.showLess')}</span>
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="size-4 shrink-0" aria-hidden />
-                  <span>
-                    {t('campaigns.lists.showMore', { count: overflow.length })}
-                  </span>
-                </>
-              )}
-            </button>
-          )}
+          {displayed.map((list, i) => renderPill(list, i))}
           {actions.isMod && (
             <button
               type="button"
