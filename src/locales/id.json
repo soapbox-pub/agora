@@ -139,6 +139,7 @@
   "auth": {
     "join": "Gabung",
     "login": "Masuk",
+    "welcomeBack": "Selamat datang kembali",
     "signup": "Daftar",
     "logout": "Keluar",
     "addAccount": "Tambah akun lain",

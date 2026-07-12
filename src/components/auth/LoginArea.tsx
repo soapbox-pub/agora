@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button.tsx';
-import AuthDialog from './AuthDialog';
+import { AuthFlow } from './AuthFlow';
 import { useLoggedInAccounts } from '@/hooks/useLoggedInAccounts';
 import { AccountSwitcher } from './AccountSwitcher';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export function LoginArea({ className }: LoginAreaProps) {
         </Button>
       )}
 
-      <AuthDialog
+      <AuthFlow
         isOpen={authDialogOpen}
         onClose={() => setAuthDialogOpen(false)}
       />

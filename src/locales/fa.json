@@ -139,6 +139,7 @@
   "auth": {
     "join": "پیوستن",
     "login": "ورود",
+    "welcomeBack": "خوش آمدید",
     "signup": "ثبت‌نام",
     "logout": "خروج",
     "addAccount": "افزودن حساب دیگر",

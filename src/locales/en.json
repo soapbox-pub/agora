@@ -140,6 +140,7 @@
   "auth": {
     "join": "Join",
     "login": "Log in",
+    "welcomeBack": "Welcome back",
     "signup": "Sign up",
     "logout": "Log out",
     "addAccount": "Add another account",

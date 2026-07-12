@@ -139,6 +139,7 @@
   "auth": {
     "join": "ګډون",
     "login": "ننوتل",
+    "welcomeBack": "بېرته ښه راغلاست",
     "signup": "نوم لیکنه",
     "logout": "وتل",
     "addAccount": "بل حساب اضافه کول",

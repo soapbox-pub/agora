@@ -139,6 +139,7 @@
   "auth": {
     "join": "Joinha",
     "login": "Pinda",
+    "welcomeBack": "Mauya zvakare",
     "signup": "Nyoresa",
     "logout": "Buda",
     "addAccount": "Wedzera imwe akaunti",
