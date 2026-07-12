@@ -2738,7 +2738,7 @@
         "label": "Agora Hakkında"
       },
       "payments": {
-        "label": "Agora'da Bitcoin Bağışları"
+        "label": "Bağışlar"
       },
       "verification": {
         "label": "Doğrulama ve Güven"
@@ -2778,6 +2778,13 @@
           "**Gizli** bağışlar **sessiz ödemeleri** (BIP-352) kullanır. Bunlar da zincir üstünde uzlaşır, ancak işlem alıcının bağış koduna bağlanamaz — bu nedenle herkese açık bağışçı listelerinin ve toplamların dışında kalırlar. Bağışçının sessiz ödemeleri destekleyen bir cüzdana ihtiyacı vardır — [Ditto Wallet](https://ditto.pub) veya [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk) öneriyoruz.",
           "Bir kampanya **her ikisini** kabul ettiğinde, {{appName}} her iki uç noktayı kodlayan tek bir QR kod gösterir. Sessiz ödeme cüzdanları bunu gizli olarak okur; diğer cüzdanlar açık adrese geri döner. Bağışçıların seçim yapmasına gerek yoktur — cüzdanları otomatik olarak doğru yolu seçer.",
           "Her durumda ödeme doğrudan alıcıya gider. {{appName}} fonlara hiçbir zaman dokunmaz."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Fonları nedir?",
+        "answer": [
+          "**Agora Fonları**, tek bir davaya bağlı birden fazla kampanyadan oluşan bir havuza bağış yapmanızı sağlayan, {{appName}} tarafından yönetilen kampanyalardır. Tek bir kampanya seçmek yerine fona bir kez bağış yaparsınız ve bağışınız o davadaki her kampanyayı destekler.",
+          "Agora Fonları, Bitcoin'e ek olarak **Stripe üzerinden kart ödemelerini** de kabul eder — Bitcoin ile ödeme yapmak istemeyen bağışçılara, önemsedikleri davaları yine de destekleme imkânı verir. Kart bağışları yalnızca **Agora destekli fonlarda** kullanılabilir; normal kampanyalar yine de aracı bir ödeme işlemcisi olmadan, doğrudan zincir üstünde Bitcoin alır."
         ]
       },
       "connect-wallet": {

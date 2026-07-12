@@ -2738,7 +2738,7 @@
         "label": "Tentang Agora"
       },
       "payments": {
-        "label": "Donasi Bitcoin di Agora"
+        "label": "Donasi"
       },
       "verification": {
         "label": "Verifikasi & Kepercayaan"
@@ -2778,6 +2778,13 @@
           "Donasi **privat** menggunakan **silent payments** (BIP-352). Mereka juga diselesaikan on-chain, tetapi transaksinya tidak bisa dihubungkan kembali ke kode donasi penerima — sehingga tetap di luar daftar donatur publik dan jumlah total. Donatur perlu dompet yang mendukung silent payments — kami merekomendasikan [Ditto Wallet](https://ditto.pub) atau [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Saat kampanye menerima **keduanya**, {{appName}} menampilkan satu kode QR yang mengencode kedua titik. Dompet silent-payment membacanya sebagai privat; dompet lain kembali ke alamat publik. Donatur tidak perlu memilih — dompet mereka memilih jalur yang tepat secara otomatis.",
           "Dengan cara apa pun, pembayaran langsung ke penerima. {{appName}} tidak pernah menyentuh dananya."
+        ]
+      },
+      "agora-funds": {
+        "question": "Apa itu Agora Funds?",
+        "answer": [
+          "**Agora Funds** adalah kampanye yang dikelola oleh {{appName}} yang memungkinkan Anda memberi ke sekumpulan beberapa kampanye yang terkait dengan satu tujuan. Alih-alih memilih satu kampanye, Anda berdonasi sekali ke dana tersebut dan pemberian Anda mendukung setiap kampanye dalam tujuan itu.",
+          "Agora Funds menerima **pembayaran kartu via Stripe** selain Bitcoin — memberi donatur yang tidak ingin membayar dengan Bitcoin cara untuk tetap mendukung tujuan yang mereka pedulikan. Donasi kartu hanya tersedia pada **dana yang disponsori Agora**; kampanye biasa tetap menerima Bitcoin secara langsung, on-chain, tanpa pemroses pembayaran di antaranya."
         ]
       },
       "connect-wallet": {

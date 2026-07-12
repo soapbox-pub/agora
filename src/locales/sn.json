@@ -2810,7 +2810,7 @@
         "label": "Nezve Agora"
       },
       "payments": {
-        "label": "Zvipo zveBitcoin paAgora"
+        "label": "Zvipo"
       },
       "verification": {
         "label": "Kusimbiswa neKuvimba"
@@ -2850,6 +2850,13 @@
           "Zvipo **zvakavanzika** zvinoshandisa **mubhadharo wakanyarara** (BIP-352). Zvinopedzwa pa-chain zvakare, asi chibvumirano hachikwanise kubatanidzwa kudzokera kuchidimbu chechipo chemugamuchiri — saka hazvionekwe muzvinyorwa zvevapi zvepachena uye zvionekwa zvepachena. Mupi anoda walleti inotsigira mibhadharo yakanyarara — tinokurudzira [Ditto Wallet](https://ditto.pub) kana [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Apo kambeni inogamuchira **zvese**, {{appName}} inoratidza imwe kodhi yeQR ine zvinyorwa zvese zviri zviviri. MaWalleti emibhadharo yakanyarara anozviverenga sezvakavanzika; mamwe maWalleti anodzokera kukero yepachena. Vapi havatare kusarudza — walleti yavo inotora nzira yakakodzera ichizvichaira.",
           "Pari pose, mubhadharo unoenda zvakananga kumugamuchiri. {{appName}} haina kana nguva imwe inobata mari iyi."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Funds chii?",
+        "answer": [
+          "**Agora Funds** makambeni anochengetwa na{{appName}} anokutendera kupa kudura remakambeni akawanda akabatanidzwa nechinangwa chimwe chete. Panzvimbo pekusarudza kambeni imwe chete, unopa kamwe kudura uye chipo chako chinotsigira kambeni yega yega mucchinangwa icho.",
+          "Agora Funds anogamuchira **mibhadharo yekadhi kuburikidza neStripe** pamusoro peBitcoin — vachipa vapi vasingade kubhadhara neBitcoin nzira yekutsigira zvinangwa zvavanoda. Zvipo zvekadhi zvinowanikwa chete pa**madura anotsigirwa neAgora**; makambeni akajairika achiri kugashira Bitcoin zvakananga, pa-chain, pasina anoshanda nemibhadharo pakati."
         ]
       },
       "connect-wallet": {

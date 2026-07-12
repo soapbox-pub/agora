@@ -2851,7 +2851,7 @@
         "label": "Sobre o Agora"
       },
       "payments": {
-        "label": "Doações em Bitcoin no Agora"
+        "label": "Doações"
       },
       "verification": {
         "label": "Verificação e confiança"
@@ -2891,6 +2891,13 @@
           "Doações **privadas** usam **pagamentos silenciosos** (BIP-352). Elas também são liquidadas on-chain, mas a transação não pode ser conectada ao código de doação do beneficiário — então ficam fora das listas e totais públicos de doadores. O doador precisa de uma carteira que suporte pagamentos silenciosos — recomendamos [Ditto Wallet](https://ditto.pub) ou [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Quando uma campanha aceita **ambos**, o {{appName}} mostra um único QR code que codifica ambos os endpoints. Carteiras de pagamentos silenciosos leem como privado; outras carteiras recaem para o endereço público. Doadores não precisam escolher — sua carteira seleciona o caminho certo automaticamente.",
           "De qualquer forma, o pagamento vai direto para o beneficiário. O {{appName}} nunca toca nos fundos."
+        ]
+      },
+      "agora-funds": {
+        "question": "O que são os Fundos Agora?",
+        "answer": [
+          "Os **Fundos Agora** são campanhas gerenciadas pelo {{appName}} que permitem doar para um conjunto de várias campanhas ligadas a uma mesma causa. Em vez de escolher uma única campanha, você doa uma vez para o fundo e sua contribuição apoia todas as campanhas dessa causa.",
+          "Os Fundos Agora aceitam **pagamentos com cartão via Stripe** além de Bitcoin — dando aos doadores que não querem pagar em Bitcoin uma forma de ainda apoiar as causas com que se importam. Doações com cartão só estão disponíveis nos **fundos patrocinados pela Agora**; campanhas comuns continuam recebendo Bitcoin diretamente, on-chain, sem nenhum processador de pagamento no meio."
         ]
       },
       "connect-wallet": {

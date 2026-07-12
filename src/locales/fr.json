@@ -2851,7 +2851,7 @@
         "label": "À propos d'Agora"
       },
       "payments": {
-        "label": "Dons Bitcoin sur Agora"
+        "label": "Dons"
       },
       "verification": {
         "label": "Vérification et confiance"
@@ -2891,6 +2891,13 @@
           "Les dons **privés** utilisent des **paiements silencieux** (BIP-352). Ils sont aussi réglés on-chain, mais la transaction ne peut pas être reliée au code de donation du bénéficiaire — ils restent donc hors des listes et totaux publics de donateurs. Le donateur a besoin d'un portefeuille qui prend en charge les paiements silencieux — nous recommandons [Ditto Wallet](https://ditto.pub) ou [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Quand une campagne accepte **les deux**, {{appName}} affiche un seul QR code qui encode les deux points de terminaison. Les portefeuilles de paiements silencieux le lisent comme privé ; les autres portefeuilles se rabattent sur l'adresse publique. Les donateurs n'ont pas à choisir — leur portefeuille sélectionne automatiquement le bon chemin.",
           "Dans tous les cas, le paiement va directement au bénéficiaire. {{appName}} ne touche jamais les fonds."
+        ]
+      },
+      "agora-funds": {
+        "question": "Que sont les Fonds Agora ?",
+        "answer": [
+          "Les **Fonds Agora** sont des campagnes gérées par {{appName}} qui vous permettent de donner à un ensemble de plusieurs campagnes liées à une même cause. Au lieu de choisir une seule campagne, vous donnez une fois au fonds et votre don soutient toutes les campagnes de cette cause.",
+          "Les Fonds Agora acceptent les **paiements par carte via Stripe** en plus de Bitcoin — offrant aux donateurs qui ne veulent pas payer en Bitcoin un moyen de tout de même soutenir les causes qui leur tiennent à cœur. Les dons par carte ne sont disponibles que sur les **fonds sponsorisés par Agora** ; les campagnes ordinaires reçoivent toujours du Bitcoin directement, on-chain, sans aucun processeur de paiement entre les deux."
         ]
       },
       "connect-wallet": {

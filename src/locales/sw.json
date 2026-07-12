@@ -2695,7 +2695,7 @@
         "label": "Kuhusu Agora"
       },
       "payments": {
-        "label": "Michango ya Bitcoin kwenye Agora"
+        "label": "Michango"
       },
       "verification": {
         "label": "Uthibitisho na Uaminifu"
@@ -2735,6 +2735,13 @@
           "Michango ya **faragha** hutumia **malipo ya kimya** (BIP-352). Inaingia pia katika mnyororo, lakini muamala hauwezi kuunganishwa na msimbo wa mchango wa mwapokeaji — kwa hivyo wanabaki nje ya orodha za wafadhili za umma na jumla. Mfadhili anahitaji pochi inayoauni malipo ya kimya — tunapendekeza [Ditto Wallet](https://ditto.pub) au [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Kampeni inapokubali **zote mbili**, {{appName}} inaonyesha msimbo mmoja wa QR unaosimba ncha zote mbili. Pochi za malipo ya kimya huusoma kama wa faragha; pochi nyingine zinarudi kwa anwani ya umma. Wafadhili hawana haja ya kuchagua — pochi yao huchagua njia sahihi kiotomatiki.",
           "Vyovyote, malipo yanaenda moja kwa moja kwa mwapokeaji. {{appName}} kamwe haigusi fedha."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Funds ni nini?",
+        "answer": [
+          "**Agora Funds** ni kampeni zinazosimamiwa na {{appName}} zinazokuruhusu kutoa mchango kwenye kundi la kampeni nyingi zilizounganishwa na lengo moja. Badala ya kuchagua kampeni moja, unatoa mchango mara moja kwenye mfuko na zawadi yako inasaidia kila kampeni katika lengo hilo.",
+          "Agora Funds hukubali **malipo ya kadi kupitia Stripe** zaidi ya Bitcoin — kuwapa wafadhili wasiotaka kulipa kwa Bitcoin njia ya kuendelea kuunga mkono malengo wanayoyajali. Michango ya kadi inapatikana tu kwenye **mifuko inayofadhiliwa na Agora**; kampeni za kawaida bado hupokea Bitcoin moja kwa moja, katika mnyororo, bila mchakataji wa malipo katikati."
         ]
       },
       "connect-wallet": {

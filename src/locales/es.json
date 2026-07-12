@@ -2851,7 +2851,7 @@
         "label": "Sobre Agora"
       },
       "payments": {
-        "label": "Donaciones de Bitcoin en Agora"
+        "label": "Donaciones"
       },
       "verification": {
         "label": "Verificación y confianza"
@@ -2891,6 +2891,13 @@
           "Las donaciones **privadas** usan **silent payments** (BIP-352). También se liquidan en la cadena, pero la transacción no puede vincularse al código de donación del receptor, por lo que quedan fuera de las listas y totales públicos de donantes. El donante necesita una wallet que admita silent payments — recomendamos [Ditto Wallet](https://ditto.pub) o [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Cuando una campaña acepta **ambos**, {{appName}} muestra un único código QR que codifica los dos endpoints. Las wallets con silent payments lo leen como privado; las demás recurren a la dirección pública. Los donantes no tienen que elegir: su wallet escoge automáticamente el camino correcto.",
           "En cualquier caso, el pago llega directamente al receptor. {{appName}} nunca toca los fondos."
+        ]
+      },
+      "agora-funds": {
+        "question": "¿Qué son los Fondos de Agora?",
+        "answer": [
+          "Los **Fondos de Agora** son campañas gestionadas por {{appName}} que te permiten donar a un conjunto de varias campañas ligadas a una misma causa. En lugar de elegir una sola campaña, donas una vez al fondo y tu aportación apoya a todas las campañas de esa causa.",
+          "Los Fondos de Agora aceptan **pagos con tarjeta a través de Stripe** además de Bitcoin — dando a los donantes que no quieren pagar en Bitcoin una manera de apoyar igualmente las causas que les importan. Las donaciones con tarjeta solo están disponibles en los **fondos patrocinados por Agora**; las campañas normales siguen recibiendo Bitcoin directamente, en la cadena, sin ningún procesador de pagos de por medio."
         ]
       },
       "connect-wallet": {

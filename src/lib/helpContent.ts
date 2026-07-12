@@ -84,6 +84,7 @@ const FAQ_STRUCTURE: FAQCategoryStructure[] = [
     id: 'payments',
     items: [
       { id: 'send-bitcoin-onchain' },
+      { id: 'agora-funds' },
       { id: 'connect-wallet' },
       { id: 'export-wallet' },
       { id: 'donations-are-public-general' },
