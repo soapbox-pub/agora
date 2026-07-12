@@ -330,11 +330,12 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
   // pubkey.
   const showProgressView = connectStatus === 'getting-public-key' ||
     (isMobile && hasOpenedSigner);
+  const showLoginOptions = !connectError && !showProgressView && !showQr;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-sm max-h-[90dvh] p-0 gap-0 overflow-hidden rounded-2xl overflow-y-auto">
-        <div className="px-6 pb-5 pt-8 space-y-5 text-center">
+        <div className="px-6 pb-4 pt-8 text-center">
           <div className="flex items-center justify-center">
             <AgoraBoltIcon className="size-20 drop-shadow-md" />
             <DialogTitle
@@ -348,19 +349,6 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
               {config.appName}
             </DialogTitle>
           </div>
-
-          {!connectError && !showProgressView && !showQr && (
-            <p className="text-sm text-muted-foreground">
-              {t('auth.newHere')}{' '}
-              <button
-                type="button"
-                onClick={goToSignup}
-                className="font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
-              >
-                {t('auth.createNewAccount')}
-              </button>
-            </p>
-          )}
         </div>
 
         <div className="px-6 pb-6 space-y-4">
@@ -407,24 +395,41 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
                 {t('auth.back')}
               </button>
             </div>
-          ) : (
-            <LoginForm
-              loginInput={loginInput}
-              setLoginInput={setLoginInput}
-              loginError={loginError}
-              setLoginError={setLoginError}
-              isLoggingIn={isLoggingIn}
-              onSubmit={handleLogin}
-              onFileChange={handleFileUpload}
-              onExtensionLogin={handleExtensionLogin}
-              onOpenSignerApp={handleOpenSignerApp}
-              onShowQr={handleShowQr}
-              fileInputRef={fileInputRef}
-              hasExtension={hasExtension}
-              isMobile={isMobile}
-              t={t}
-            />
-          )}
+          ) : showLoginOptions ? (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={goToSignup}
+                className="w-full h-12 rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+              >
+                {t('auth.createNewAccount')}
+              </Button>
+
+              <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="h-px flex-1 bg-border" />
+                <span>{t('auth.or')}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              <LoginForm
+                loginInput={loginInput}
+                setLoginInput={setLoginInput}
+                loginError={loginError}
+                setLoginError={setLoginError}
+                isLoggingIn={isLoggingIn}
+                onSubmit={handleLogin}
+                onFileChange={handleFileUpload}
+                onExtensionLogin={handleExtensionLogin}
+                onOpenSignerApp={handleOpenSignerApp}
+                onShowQr={handleShowQr}
+                fileInputRef={fileInputRef}
+                hasExtension={hasExtension}
+                isMobile={isMobile}
+                t={t}
+              />
+            </>
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>

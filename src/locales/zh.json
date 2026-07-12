@@ -144,7 +144,7 @@
     "logout": "退出登录",
     "addAccount": "添加其他账户",
     "createNewAccount": "创建账户",
-    "newHere": "新用户？",
+    "or": "或",
     "loginExisting": "使用现有账户登录",
     "loginTitle": "登录",
     "connectSignerTitle": "连接签名器",
