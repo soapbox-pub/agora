@@ -139,7 +139,6 @@
   "auth": {
     "join": "Unirse",
     "login": "Iniciar sesión",
-    "welcomeBack": "Bienvenido de nuevo",
     "signup": "Registrarse",
     "logout": "Cerrar sesión",
     "addAccount": "Agregar otra cuenta",

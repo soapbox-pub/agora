@@ -139,7 +139,6 @@
   "auth": {
     "join": "Katıl",
     "login": "Giriş yap",
-    "welcomeBack": "Tekrar hoş geldiniz",
     "signup": "Kaydol",
     "logout": "Çıkış yap",
     "addAccount": "Başka hesap ekle",

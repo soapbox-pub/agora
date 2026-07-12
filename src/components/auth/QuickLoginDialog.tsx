@@ -53,11 +53,11 @@ export function QuickLoginDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-sm rounded-2xl">
-        <DialogTitle className="text-center text-lg font-semibold leading-none tracking-tight">
-          {t('auth.welcomeBack')}
+        <DialogTitle className="sr-only">
+          {t('auth.login')}
         </DialogTitle>
 
-        <div className="flex flex-col items-center gap-3 py-4">
+        <div className="flex flex-col items-center gap-3 pt-4 pb-3">
           {author.isLoading ? (
             <>
               <Skeleton className="size-20 rounded-full" />
