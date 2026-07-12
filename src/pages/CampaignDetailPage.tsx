@@ -65,6 +65,7 @@ import { useHdWalletAccess } from '@/hooks/useHdWalletAccess';
 import { usePinnedEventComments } from '@/hooks/usePinnedEventComments';
 import { useShareOrigin } from '@/hooks/useShareOrigin';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
+import { useAppHostDirectory } from '@/hooks/useAppHostDirectory';
 import { useToast } from '@/hooks/useToast';
 import { useEventTranslation } from '@/hooks/useEventTranslation';
 import {
@@ -75,6 +76,7 @@ import {
   type ParsedCampaign,
 } from '@/lib/campaign';
 import { satsToUSDWhole } from '@/lib/bitcoin';
+import { AGORA_HOST } from '@/lib/appUrls';
 import { formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { formatNumber } from '@/lib/formatNumber';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
@@ -274,11 +276,18 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
-  // Prefer the pretty `/{nip05}/{d-tag}` path when the author's NIP-05
-  // verifies against their pubkey; fall back to the naddr URL otherwise
-  // (a spoofed NIP-05 can never hijack the shared link).
+  // Prefer the shortest trusted pretty `/{nip05}/{d-tag}` path — app-host
+  // directory name first, then the author's verified kind-0 NIP-05 — and
+  // fall back to the naddr URL otherwise (a spoofed NIP-05 can never hijack
+  // the shared link). See getCampaignUrl for the full precedence.
   const { data: nip05Verified } = useNip05Verify(authorMetadata?.nip05, campaign.pubkey);
-  const campaignPath = getCampaignUrl(campaign, authorMetadata?.nip05, nip05Verified === true);
+  const { data: hostDirectory } = useAppHostDirectory();
+  const campaignPath = getCampaignUrl(campaign, {
+    nip05: authorMetadata?.nip05,
+    nip05Verified: nip05Verified === true,
+    directoryName: hostDirectory?.get(campaign.pubkey),
+    appHost: AGORA_HOST,
+  });
   const shareUrl = useMemo(() => `${shareOrigin}${campaignPath}`, [shareOrigin, campaignPath]);
   const storyEvent = useMemo(
     () => ({

@@ -65,21 +65,66 @@ describe('campaignNip05Path', () => {
   it('collapses a root (_@) identifier to a bare domain', () => {
     expect(campaignNip05Path('_@fiatjaf.com', 'help-me')).toBe('/fiatjaf.com/help-me');
   });
+
+  it('drops the @host suffix for an app-host-local name', () => {
+    expect(campaignNip05Path('agora@agora.spot', 'world-liberty', APP_HOST)).toBe('/agora/world-liberty');
+    expect(campaignNip05Path('mk@agora.spot', 'help-me', APP_HOST)).toBe('/mk/help-me');
+  });
+
+  it('matches the app host case-insensitively when shortening', () => {
+    expect(campaignNip05Path('agora@Agora.Spot', 'x', APP_HOST)).toBe('/agora/x');
+  });
+
+  it('does not shorten a foreign host even when appHost is given', () => {
+    expect(campaignNip05Path('alex@gleasonator.com', 'x', APP_HOST)).toBe('/alex@gleasonator.com/x');
+  });
+
+  it('collapses the root user on the app host to the bare host (not /_ )', () => {
+    // `_` is never shortened to a local name; it still collapses via the _@ rule.
+    expect(campaignNip05Path('_@agora.spot', 'x', APP_HOST)).toBe('/agora.spot/x');
+  });
 });
 
 describe('getCampaignUrl', () => {
   const campaign = makeCampaign('help-me');
+  const naddrPath = `/${encodeCampaignNaddr(campaign)}`;
 
   it('uses the pretty path only when the NIP-05 is verified', () => {
-    expect(getCampaignUrl(campaign, 'alex@gleasonator.com', true)).toBe('/alex@gleasonator.com/help-me');
-    expect(getCampaignUrl(campaign, '_@fiatjaf.com', true)).toBe('/fiatjaf.com/help-me');
+    expect(getCampaignUrl(campaign, { nip05: 'alex@gleasonator.com', nip05Verified: true }))
+      .toBe('/alex@gleasonator.com/help-me');
+    expect(getCampaignUrl(campaign, { nip05: '_@fiatjaf.com', nip05Verified: true }))
+      .toBe('/fiatjaf.com/help-me');
+  });
+
+  it('shortens a verified host-local NIP-05 against appHost', () => {
+    expect(getCampaignUrl(campaign, { nip05: 'agora@agora.spot', nip05Verified: true, appHost: APP_HOST }))
+      .toBe('/agora/help-me');
   });
 
   it('falls back to the naddr path when unverified', () => {
-    const naddrPath = `/${encodeCampaignNaddr(campaign)}`;
     // A spoofed NIP-05 must never hijack the link.
-    expect(getCampaignUrl(campaign, 'attacker@evil.com', false)).toBe(naddrPath);
+    expect(getCampaignUrl(campaign, { nip05: 'attacker@evil.com', nip05Verified: false })).toBe(naddrPath);
     // No NIP-05 at all.
-    expect(getCampaignUrl(campaign, undefined, true)).toBe(naddrPath);
+    expect(getCampaignUrl(campaign, { nip05: undefined, nip05Verified: true })).toBe(naddrPath);
+    // Nothing supplied.
+    expect(getCampaignUrl(campaign)).toBe(naddrPath);
+  });
+
+  it('lets the app-host directory name override a foreign verified kind-0 NIP-05', () => {
+    expect(getCampaignUrl(campaign, {
+      nip05: 'alex@gleasonator.com',
+      nip05Verified: true,
+      directoryName: 'mk',
+      appHost: APP_HOST,
+    })).toBe('/mk/help-me');
+  });
+
+  it('ignores the directory name without an appHost to build the URL against', () => {
+    // Can't safely shorten without knowing the host; fall through to verified nip05.
+    expect(getCampaignUrl(campaign, {
+      nip05: 'alex@gleasonator.com',
+      nip05Verified: true,
+      directoryName: 'mk',
+    })).toBe('/alex@gleasonator.com/help-me');
   });
 });

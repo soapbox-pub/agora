@@ -296,16 +296,40 @@ export function encodeCampaignNaddr(campaign: ParsedCampaign, relays?: string[])
 /**
  * Build the pretty NIP-05-based path for a campaign: `/{nip05}/{d-tag}`.
  *
- * Mirrors {@link getProfileUrl}'s `_@domain.com → /domain.com` collapse so
- * a root-user NIP-05 yields the shortest possible URL
- * (`/domain.com/help-me` rather than `/_@domain.com/help-me`). The
- * campaign resolver page ({@link normalizeCampaignNip05}) re-expands the
- * bare domain to `_@domain.com` before resolving.
+ * Two shortenings keep URLs as terse as possible; both are re-expanded by
+ * the resolver page ({@link normalizeCampaignNip05}) before lookup:
  *
- * Callers MUST only use this path when the NIP-05 has been verified to
- * resolve back to the campaign author's pubkey — see {@link getCampaignUrl}.
+ * - **Root user** — `_@domain.com` collapses to `/domain.com/<d>` (mirrors
+ *   {@link getProfileUrl}).
+ * - **App-host local name** — when `appHost` is supplied and the NIP-05's
+ *   domain is the app's own host, the `@{appHost}` suffix is dropped:
+ *   `agora@agora.spot` → `/agora/<d>`. A root user on the app host
+ *   (`_@agora.spot`) still collapses to the bare host (`/agora.spot/<d>`)
+ *   via the rule above, since a bare `agora.spot` param normalizes back to
+ *   `_@agora.spot`.
+ *
+ * Callers MUST only use this path when the NIP-05 is trusted for this
+ * pubkey — either verified against kind-0 or sourced from the app-host
+ * directory. See {@link getCampaignUrl}.
  */
-export function campaignNip05Path(nip05: string, identifier: string): string {
+export function campaignNip05Path(
+  nip05: string,
+  identifier: string,
+  appHost?: string,
+): string {
+  // App-host local name: agora@agora.spot → /agora (drop the @host suffix),
+  // but never for the root user (_@agora.spot), which is handled below as a
+  // bare-domain collapse to /agora.spot.
+  if (appHost) {
+    const atIndex = nip05.indexOf('@');
+    if (atIndex > 0) {
+      const name = nip05.slice(0, atIndex);
+      const domain = nip05.slice(atIndex + 1);
+      if (name !== '_' && domain.toLowerCase() === appHost.toLowerCase()) {
+        return `/${name}/${identifier}`;
+      }
+    }
+  }
   // _@domain.com → /domain.com/<d>
   const namePart = nip05.startsWith('_@') ? nip05.slice(2) : nip05;
   return `/${namePart}/${identifier}`;
@@ -314,22 +338,45 @@ export function campaignNip05Path(nip05: string, identifier: string): string {
 /**
  * Resolve the canonical URL path for a campaign.
  *
- * Returns the pretty `/{nip05}/{d-tag}` form **only** when `nip05Verified`
- * is explicitly `true` — i.e. the author's kind-0 `nip05` has been
- * confirmed to resolve to their pubkey via /.well-known/nostr.json.
+ * Precedence (highest wins):
  *
- * Without verification it falls back to the addressable `naddr1…` path so
- * an attacker who claims someone else's NIP-05 in their kind-0 profile
- * cannot hijack campaign links (same trust model as {@link getProfileUrl}).
+ * 1. **App-host directory name** (`directoryName`) — the local name the
+ *    app's own `/.well-known/nostr.json` lists for this pubkey. The app
+ *    server is authoritative for its own directory, so no per-link
+ *    verification is needed and it overrides the author's self-declared
+ *    kind-0 NIP-05. Yields the shortest URL: `/{name}/{d}`.
+ * 2. **Verified kind-0 NIP-05** (`nip05` + `nip05Verified === true`) — the
+ *    author's self-declared identifier, but only once confirmed to resolve
+ *    back to their pubkey via /.well-known/nostr.json. Shortened against
+ *    `appHost` when host-local.
+ * 3. **`naddr1…` fallback** — used when nothing above is trusted, so an
+ *    attacker who claims someone else's NIP-05 in their kind-0 profile
+ *    cannot hijack campaign links (same trust model as {@link getProfileUrl}).
  */
 export function getCampaignUrl(
   campaign: ParsedCampaign,
-  nip05: string | undefined,
-  nip05Verified = false,
+  opts: {
+    /** Author's self-declared kind-0 NIP-05, if any. */
+    nip05?: string;
+    /** Whether `nip05` has been verified to resolve to the author's pubkey. */
+    nip05Verified?: boolean;
+    /** Local name for this pubkey in the app-host directory, if listed. */
+    directoryName?: string;
+    /** The app's own host (e.g. `agora.spot`), used to shorten host-local URLs. */
+    appHost?: string;
+  } = {},
 ): string {
-  if (nip05Verified && nip05) {
-    return campaignNip05Path(nip05, campaign.identifier);
+  const { nip05, nip05Verified = false, directoryName, appHost } = opts;
+
+  // 1. App-host directory is authoritative for the app's own domain.
+  if (directoryName && appHost) {
+    return campaignNip05Path(`${directoryName}@${appHost}`, campaign.identifier, appHost);
   }
+  // 2. Verified self-declared kind-0 NIP-05.
+  if (nip05Verified && nip05) {
+    return campaignNip05Path(nip05, campaign.identifier, appHost);
+  }
+  // 3. Fallback to the addressable coordinate.
   return `/${encodeCampaignNaddr(campaign)}`;
 }
 

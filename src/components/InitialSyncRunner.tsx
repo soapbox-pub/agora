@@ -1,4 +1,5 @@
 import { useInitialSync } from "@/hooks/useInitialSync";
+import { useAppHostDirectory } from "@/hooks/useAppHostDirectory";
 
 /**
  * Non-rendering component that runs the initial sync side effects
@@ -11,5 +12,8 @@ import { useInitialSync } from "@/hooks/useInitialSync";
  */
 export function InitialSyncRunner() {
   useInitialSync();
+  // Prime the app-host NIP-05 directory on pageload so campaign links can
+  // resolve to short `/{name}/…` URLs immediately (see useCampaignUrl).
+  useAppHostDirectory();
   return null;
 }

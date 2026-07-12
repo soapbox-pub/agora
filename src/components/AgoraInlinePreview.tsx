@@ -10,10 +10,12 @@ import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
 import { useAuthor } from '@/hooks/useAuthor';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
+import { useAppHostDirectory } from '@/hooks/useAppHostDirectory';
 import { useInView } from '@/hooks/useInView';
 import { parseAction } from '@/hooks/useActions';
 import { getGeoDisplayName } from '@/lib/countries';
 import { parseCampaign, getCampaignCountryLabel, getCampaignUrl } from '@/lib/campaign';
+import { AGORA_HOST } from '@/lib/appUrls';
 import { parseCommunityEvent } from '@/lib/communityUtils';
 import { formatCampaignAmount, formatUsdGoal, satsToUsd } from '@/lib/formatCampaignAmount';
 import { formatCompactPledgeDeadline, formatPledgeAmount } from '@/lib/pledges';
@@ -67,13 +69,19 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
   const author = useAuthor(event.pubkey);
   const authorNip05 = author.data?.metadata?.nip05;
   const { data: nip05Verified } = useNip05Verify(authorNip05, event.pubkey);
+  const { data: directory } = useAppHostDirectory();
   if (!campaign) return null;
 
   const authorMetadata = author.data?.metadata;
   const cover = sanitizeUrl(campaign.banner)
     ?? sanitizeUrl(authorMetadata?.banner)
     ?? sanitizeUrl(authorMetadata?.picture);
-  const campaignUrl = getCampaignUrl(campaign, authorNip05, nip05Verified === true);
+  const campaignUrl = getCampaignUrl(campaign, {
+    nip05: authorNip05,
+    nip05Verified: nip05Verified === true,
+    directoryName: directory?.get(event.pubkey),
+    appHost: AGORA_HOST,
+  });
   const countryLabel = getCampaignCountryLabel(campaign);
   const isSilentPayment = !campaign.wallets.onchain;
   const goalLabel = campaign.goalUsd && campaign.goalUsd > 0 ? formatUsdGoal(campaign.goalUsd) : undefined;
