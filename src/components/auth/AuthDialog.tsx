@@ -2,21 +2,19 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Upload,
   ChevronDown,
-  ChevronUp,
-  ArrowLeft,
-  ArrowRight,
   Loader2,
   ExternalLink,
+  QrCode,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { QRCodeCanvas } from '@/components/ui/qrcode';
 import { AgoraBoltIcon } from '@/components/icons/AgoraBoltIcon';
 import { useAppContext } from '@/hooks/useAppContext';
@@ -39,13 +37,11 @@ interface AuthDialogProps {
 }
 
 /**
- * The dialog covers the three login paths only — nsec, NIP-07 extension, and
- * NIP-46 (nostrconnect QR + bunker URI). New-account signup is handled by
- * the captive `<OnboardingGate>` flow; the welcome step's "Create" button
- * closes this dialog and hands off to that flow.
+ * The dialog covers the login paths only — nsec, NIP-07 extension, bunker URI,
+ * and NIP-46 nostrconnect. New-account signup is handled by the captive
+ * `<OnboardingGate>` flow; the "Create account" link closes this dialog and
+ * hands off to that flow.
  */
-type Step = 'welcome' | 'login' | 'connect';
-
 const validateNsec = (nsec: string) => /^nsec1[a-zA-Z0-9]{58}$/.test(nsec);
 const validateBunkerUri = (uri: string) => uri.startsWith('bunker://');
 
@@ -56,10 +52,8 @@ function isMobileDevice(): boolean {
 }
 
 const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState<Step>('welcome');
-
   // Login state
-  const [loginNsec, setLoginNsec] = useState('');
+  const [loginInput, setLoginInput] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -74,13 +68,12 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
   const [connectStatus, setConnectStatus] = useState<NostrConnectStatus | null>(null);
   // Tracks whether the user has explicitly initiated the handshake from the
   // mobile UI. The listen subscription itself starts the moment params are
-  // generated — without this flag we'd flip into the progress view as soon
-  // as the user enters the Remote Signer step, before they've done anything.
+  // generated — without this flag we'd flip into the progress view before
+  // they've launched the signer app.
   // Desktop doesn't need this: it stays on the QR until the handshake
   // advances past `awaiting-connect`.
   const [hasOpenedSigner, setHasOpenedSigner] = useState(false);
-  const [showBunkerInput, setShowBunkerInput] = useState(false);
-  const [bunkerUri, setBunkerUri] = useState('');
+  const [showQr, setShowQr] = useState(false);
 
   const login = useLoginActions();
   const { config } = useAppContext();
@@ -125,8 +118,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
   // reset here. The multiple setState calls are intentional.
   useEffect(() => {
     if (!isOpen) {
-      setStep('welcome');
-      setLoginNsec('');
+      setLoginInput('');
       setIsLoggingIn(false);
       setLoginError('');
       setNostrConnectParams(null);
@@ -134,24 +126,25 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
       setConnectError(null);
       setConnectStatus(null);
       setHasOpenedSigner(false);
-      setShowBunkerInput(false);
-      setBunkerUri('');
+      setShowQr(false);
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
     }
   }, [isOpen]);
 
   // Generate a nostrconnect session (QR code data).
-  const generateConnectSession = useCallback(() => {
+  const generateConnectSession = useCallback((): string => {
     const relayUrls = login.getRelayUrls();
     const params = generateNostrConnectParams(relayUrls);
     const uri = generateNostrConnectURI(params, {
+      name: config.appName,
       callback: isMobileDevice() ? `${window.location.origin}/remoteloginsuccess` : undefined,
     });
     setNostrConnectParams(params);
     setNostrConnectUri(uri);
     setConnectError(null);
-  }, [login]);
+    return uri;
+  }, [login, config.appName]);
 
   // Start listening for a nostrconnect response once params are set.
   //
@@ -210,59 +203,73 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
     setConnectError(null);
     setConnectStatus(null);
     setHasOpenedSigner(false);
+    setShowQr(false);
     setTimeout(() => generateConnectSession(), 0);
   }, [generateConnectSession]);
 
+  const handleConnectCancel = useCallback(() => {
+    abortControllerRef.current?.abort();
+    setNostrConnectParams(null);
+    setNostrConnectUri('');
+    setConnectError(null);
+    setConnectStatus(null);
+    setHasOpenedSigner(false);
+    setShowQr(false);
+  }, []);
+
   const handleOpenSignerApp = () => {
-    if (!nostrConnectUri) return;
+    setLoginError('');
     // Flip into the progress view *synchronously* before navigating so that
     // when the user returns from the signer app, the dialog is already
     // showing "Waiting for signer connection…" — not the original button
     // they're worried they need to re-tap.
     setHasOpenedSigner(true);
-    window.location.href = nostrConnectUri;
+    const uri = nostrConnectUri || generateConnectSession();
+    window.location.href = uri;
   };
 
-  const handleBunkerLogin = async () => {
-    if (!bunkerUri.trim() || !validateBunkerUri(bunkerUri)) return;
-
-    setIsLoggingIn(true);
-    try {
-      await login.bunker(bunkerUri);
-      onClose();
-    } catch {
-      setConnectError(t('auth.errorBunkerConnect'));
-      setIsLoggingIn(false);
-    }
-  };
-
-  const goToConnect = () => {
-    setStep('connect');
+  const handleShowQr = () => {
+    setLoginError('');
     if (!nostrConnectParams && !connectError) {
       generateConnectSession();
     }
+    setShowQr(true);
   };
 
   /**
    * Hand off from this login-focused dialog to the captive signup flow.
    * Closes the dialog first so the captive overlay isn't competing with a
    * still-open dialog (the captive overlay's z-50 would visually win, but
-   * leaving the dialog mounted means a stale "welcome" step would flash
-   * when the captive flow finishes and the dialog re-opens for any reason).
+   * leaving the dialog mounted would keep stale login state around when the
+   * dialog re-opens for any reason).
    */
   const goToSignup = useCallback(() => {
     onClose();
     startSignup();
   }, [onClose, startSignup]);
 
-  // Login: submit the entered nsec.
+  // Login: submit the entered nsec or bunker URI.
   const handleLogin = () => {
-    if (!loginNsec.trim()) {
-      setLoginError(t('auth.errorEnterSecretKey'));
+    const value = loginInput.trim();
+    if (!value) {
+      setLoginError(t('auth.errorEnterLoginInput'));
       return;
     }
-    if (!validateNsec(loginNsec)) {
-      setLoginError(t('auth.errorInvalidSecretKey'));
+
+    if (validateBunkerUri(value)) {
+      setIsLoggingIn(true);
+      setLoginError('');
+      login.bunker(value)
+        .then(() => onClose())
+        .catch(() => {
+          setLoginError(t('auth.errorBunkerConnect'));
+          setIsLoggingIn(false);
+        });
+      return;
+    }
+
+    if (!validateNsec(value)) {
+      setLoginError(t('auth.errorInvalidLoginInput'));
       return;
     }
 
@@ -271,7 +278,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
     // Timeout gives the UI a chance to repaint before the synchronous login.
     setTimeout(() => {
       try {
-        login.nsec(loginNsec);
+        login.nsec(value);
         onClose();
       } catch {
         setLoginError(t('auth.errorLoginFailed'));
@@ -288,7 +295,8 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       if (content && validateNsec(content.trim())) {
-        setLoginNsec(content.trim());
+        setLoginInput(content.trim());
+        setLoginError('');
       } else {
         setLoginError(t('auth.errorFileNoKey'));
       }
@@ -313,17 +321,6 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const getTitle = () => {
-    switch (step) {
-      case 'login':
-        return t('auth.loginTitle');
-      case 'connect':
-        return t('auth.connectSignerTitle');
-      default:
-        return '';
-    }
-  };
-
   // Decide whether to render the progress view in place of the QR/button.
   // Mobile: flip in as soon as the user taps "Open signer app" (tracked by
   // `hasOpenedSigner`) so they see feedback the moment they return from the
@@ -331,221 +328,141 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ isOpen, onClose }) => {
   // phase (it's still actionable — they might scan with another device) and
   // only swap in once the signer has acknowledged and we're fetching the
   // pubkey.
-  const showProgressView = connectStatus !== null && (
-    connectStatus === 'getting-public-key' ||
-    (isMobile && hasOpenedSigner)
-  );
+  const showProgressView = connectStatus === 'getting-public-key' ||
+    (isMobile && hasOpenedSigner);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-sm max-h-[90dvh] p-0 gap-0 overflow-hidden rounded-2xl overflow-y-auto">
-        {step === 'welcome' ? (
-          /* Welcome step — the unified entry point. The Agora logo and
-             wordmark are the focal point (and double as the dialog's
-             accessible title), so there's no separate header row or
-             subtext — just the brand and the two paths in. */
-          <div className="px-6 pb-8 pt-10 space-y-8 text-center">
-            <div className="flex items-center justify-center">
-              <AgoraBoltIcon className="size-20 drop-shadow-md" />
-              <DialogTitle
-                className="latin-display font-display font-normal tracking-wide leading-none uppercase text-6xl text-primary inline-block -ml-0.5"
-                style={{
-                  WebkitTextStroke: '0.022em currentColor',
-                  transform: 'skewX(-6deg) scaleX(1.1)',
-                  transformOrigin: '0 100%',
-                }}
-              >
-                {config.appName}
-              </DialogTitle>
-            </div>
-
-            <div className="space-y-2">
-              <Button onClick={goToSignup} className="w-full h-12">
-                {t('auth.createNewAccount')}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setStep('login')}
-                className="w-full h-12"
-              >
-                {t('auth.loginExisting')}
-              </Button>
-            </div>
+        <div className="px-6 pb-5 pt-8 space-y-5 text-center">
+          <div className="flex items-center justify-center">
+            <AgoraBoltIcon className="size-20 drop-shadow-md" />
+            <DialogTitle
+              className="latin-display font-display font-normal tracking-wide leading-none uppercase text-6xl text-primary inline-block -ml-0.5"
+              style={{
+                WebkitTextStroke: '0.022em currentColor',
+                transform: 'skewX(-6deg) scaleX(1.1)',
+                transformOrigin: '0 100%',
+              }}
+            >
+              {config.appName}
+            </DialogTitle>
           </div>
-        ) : (
-        <>
-        <div className="relative px-6 pt-6">
-          <button
-            type="button"
-            onClick={() => setStep(step === 'connect' ? 'login' : 'welcome')}
-            aria-label={t('auth.back')}
-            className="absolute left-2 top-2 size-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <ArrowLeft className="size-5 rtl:rotate-180" />
-          </button>
-          <DialogTitle className="text-lg font-semibold leading-none tracking-tight text-center px-9">
-            {getTitle()}
-          </DialogTitle>
-        </div>
 
-        <div className="px-6 pb-6 pt-4 space-y-5">
-
-          {/* Login step. The secret-key form is always visible and first,
-              followed by the extension button (when available), then a
-              text link out to the remote-signer (connect) step. */}
-          {step === 'login' && (
-            <div className="space-y-4">
-              <NsecLoginForm
-                loginNsec={loginNsec}
-                setLoginNsec={setLoginNsec}
-                loginError={loginError}
-                setLoginError={setLoginError}
-                isLoggingIn={isLoggingIn}
-                onSubmit={handleLogin}
-                onFileChange={handleFileUpload}
-                fileInputRef={fileInputRef}
-                t={t}
-              />
-
-              {hasExtension && (
-                <Button
-                  variant="outline"
-                  onClick={handleExtensionLogin}
-                  disabled={isLoggingIn}
-                  className="w-full h-12"
-                >
-                  {isLoggingIn ? t('auth.loggingIn') : t('auth.loginWithExtension')}
-                </Button>
-              )}
-
+          {!connectError && !showProgressView && !showQr && (
+            <p className="text-sm text-muted-foreground">
+              {t('auth.newHere')}{' '}
               <button
                 type="button"
-                onClick={goToConnect}
-                className="w-full flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground motion-safe:transition-colors py-2"
+                onClick={goToSignup}
+                className="font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
               >
-                <span>{t('auth.useRemoteSigner')}</span>
-                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                {t('auth.createNewAccount')}
               </button>
-            </div>
-          )}
-
-          {/* Connect step — nostrconnect QR + bunker URI fallback. */}
-          {step === 'connect' && (
-            <div className="space-y-4">
-              <div className="flex flex-col items-center space-y-4">
-                {connectError ? (
-                  <div className="flex flex-col items-center space-y-3 py-4">
-                    <p className="text-sm text-destructive text-center">{connectError}</p>
-                    <Button variant="outline" onClick={handleConnectRetry}>
-                      {t('auth.tryAgain')}
-                    </Button>
-                  </div>
-                ) : showProgressView ? (
-                  // Progress view — replaces the QR/button once the handshake
-                  // is under way. Gives the user live feedback through each
-                  // phase so a stuck signer is visibly stuck, not silently
-                  // stuck.
-                  <div className="flex flex-col items-center space-y-4 py-6 w-full">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground text-center min-h-[1.25rem]">
-                      {connectStatusLabel(connectStatus)}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleConnectRetry}
-                      className="text-sm text-primary hover:underline underline-offset-4 font-medium"
-                    >
-                      {t('auth.cancel')}
-                    </button>
-                  </div>
-                ) : nostrConnectUri ? (
-                  <>
-                    {!isMobile && (
-                      <div className="p-4 bg-white rounded-xl">
-                        <QRCodeCanvas value={nostrConnectUri} size={180} level="M" />
-                      </div>
-                    )}
-
-                    {isMobile && (
-                      <Button onClick={handleOpenSignerApp} className="w-full h-12">
-                        <ExternalLink className="w-5 h-5 mr-2" />
-                        {t('auth.openSignerApp')}
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center h-[100px]">
-                    <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-                  </div>
-                )}
-              </div>
-
-              {/* Manual bunker URI fallback. */}
-              <Collapsible open={showBunkerInput} onOpenChange={setShowBunkerInput}>
-                <CollapsibleTrigger className="w-full flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground py-2">
-                  <span>{t('auth.enterBunkerManually')}</span>
-                  {showBunkerInput ? (
-                    <ChevronUp className="w-4 h-4" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4" />
-                  )}
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-3 pt-2">
-                  <Input
-                    value={bunkerUri}
-                    onChange={(e) => setBunkerUri(e.target.value)}
-                    placeholder={t('auth.bunkerPlaceholder')}
-                    className="text-base md:text-sm"
-                  />
-                  {bunkerUri && !validateBunkerUri(bunkerUri) && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{t('auth.invalidBunkerFormat')}</AlertDescription>
-                    </Alert>
-                  )}
-                  <Button
-                    variant="outline"
-                    onClick={handleBunkerLogin}
-                    disabled={
-                      isLoggingIn || !bunkerUri.trim() || !validateBunkerUri(bunkerUri)
-                    }
-                    className="w-full"
-                  >
-                    {isLoggingIn ? t('auth.connecting') : t('auth.connect')}
-                  </Button>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+            </p>
           )}
         </div>
-        </>
-        )}
+
+        <div className="px-6 pb-6 space-y-4">
+          {connectError ? (
+            <div className="flex flex-col items-center space-y-3 py-4">
+              <p className="text-sm text-destructive text-center">{connectError}</p>
+              <Button variant="outline" onClick={handleConnectRetry} className="rounded-full">
+                {t('auth.tryAgain')}
+              </Button>
+            </div>
+          ) : showProgressView ? (
+            <div className="flex flex-col items-center space-y-4 py-6 w-full">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground text-center min-h-[1.25rem]">
+                {connectStatusLabel(connectStatus) || t('auth.waitingForSigner')}
+              </p>
+              <button
+                type="button"
+                onClick={handleConnectCancel}
+                className="text-sm text-primary hover:underline underline-offset-4 font-medium"
+              >
+                {t('auth.cancel')}
+              </button>
+            </div>
+          ) : showQr ? (
+            <div className="flex flex-col items-center space-y-4">
+              {nostrConnectUri ? (
+                <div className="p-4 bg-white rounded-xl">
+                  <QRCodeCanvas value={nostrConnectUri} size={180} level="M" />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-[180px]">
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground text-center">
+                {t('auth.scanSignerPrompt')}
+              </p>
+              <button
+                type="button"
+                onClick={handleConnectCancel}
+                className="text-sm text-muted-foreground hover:text-foreground motion-safe:transition-colors"
+              >
+                {t('auth.back')}
+              </button>
+            </div>
+          ) : (
+            <LoginForm
+              loginInput={loginInput}
+              setLoginInput={setLoginInput}
+              loginError={loginError}
+              setLoginError={setLoginError}
+              isLoggingIn={isLoggingIn}
+              onSubmit={handleLogin}
+              onFileChange={handleFileUpload}
+              onExtensionLogin={handleExtensionLogin}
+              onOpenSignerApp={handleOpenSignerApp}
+              onShowQr={handleShowQr}
+              fileInputRef={fileInputRef}
+              hasExtension={hasExtension}
+              isMobile={isMobile}
+              t={t}
+            />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-/** Shared nsec input + submit + file-upload block used in the login step. */
-interface NsecLoginFormProps {
-  loginNsec: string;
-  setLoginNsec: (v: string) => void;
+/** Combined nsec/bunker login form with Ditto-style secondary options. */
+interface LoginFormProps {
+  loginInput: string;
+  setLoginInput: (v: string) => void;
   loginError: string;
   setLoginError: (v: string) => void;
   isLoggingIn: boolean;
   onSubmit: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onExtensionLogin: () => void;
+  onOpenSignerApp: () => void;
+  onShowQr: () => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
+  hasExtension: boolean;
+  isMobile: boolean;
   t: (key: string) => string;
 }
 
-const NsecLoginForm: React.FC<NsecLoginFormProps> = ({
-  loginNsec,
-  setLoginNsec,
+const LoginForm: React.FC<LoginFormProps> = ({
+  loginInput,
+  setLoginInput,
   loginError,
   setLoginError,
   isLoggingIn,
   onSubmit,
   onFileChange,
+  onExtensionLogin,
+  onOpenSignerApp,
+  onShowQr,
   fileInputRef,
+  hasExtension,
+  isMobile,
   t,
 }) => (
   <form
@@ -556,23 +473,18 @@ const NsecLoginForm: React.FC<NsecLoginFormProps> = ({
     className="space-y-3"
     data-nsec-allowed
   >
-    <span className="block text-sm font-medium text-foreground">
-      {t('auth.secretKeyLabel')}
-    </span>
-
-    {/* nsec input and the key-file upload icon share a row. */}
-    <div className="flex gap-2">
+    <div className="relative">
       <Input
         type="password"
-        value={loginNsec}
+        value={loginInput}
         onChange={(e) => {
-          setLoginNsec(e.target.value);
+          setLoginInput(e.target.value);
           if (loginError) setLoginError('');
         }}
-        placeholder={t('auth.nsecPlaceholder')}
+        placeholder={t('auth.loginInputPlaceholder')}
         autoComplete="off"
         className={cn(
-          'flex-1 h-12',
+          'h-12 pr-12 text-base md:text-sm',
           loginError && 'border-destructive focus-visible:ring-destructive',
         )}
       />
@@ -583,25 +495,63 @@ const NsecLoginForm: React.FC<NsecLoginFormProps> = ({
         ref={fileInputRef}
         onChange={onFileChange}
       />
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="shrink-0 size-12"
-        aria-label={t('auth.uploadKeyFile')}
-        title={t('auth.uploadKeyFile')}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <Upload className="w-4 h-4" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-0 h-full w-11 rounded-l-none border-l border-input bg-muted/40 hover:bg-muted"
+            title={t('auth.moreLoginOptions')}
+            aria-label={t('auth.moreLoginOptions')}
+          >
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onSelect={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Upload className="h-4 w-4" />
+            {t('auth.uploadKeyFile')}
+          </DropdownMenuItem>
+          {hasExtension && (
+            <DropdownMenuItem
+              onSelect={onExtensionLogin}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <ExternalLink className="h-4 w-4" />
+              {t('auth.loginWithExtension')}
+            </DropdownMenuItem>
+          )}
+          {isMobile ? (
+            <DropdownMenuItem
+              onSelect={onOpenSignerApp}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <ExternalLink className="h-4 w-4" />
+              {t('auth.openSignerApp')}
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              onSelect={onShowQr}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <QrCode className="h-4 w-4" />
+              {t('auth.useRemoteSigner')}
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
 
     {loginError && <p className="text-sm text-destructive">{loginError}</p>}
 
     <Button
       type="submit"
-      disabled={isLoggingIn || !loginNsec.trim()}
-      className="w-full h-12"
+      disabled={isLoggingIn || !loginInput.trim()}
+      className="w-full h-12 rounded-full"
     >
       {isLoggingIn ? t('auth.loggingIn') : t('auth.login')}
     </Button>
