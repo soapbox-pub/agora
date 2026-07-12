@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { HandHeart, ShieldCheck } from 'lucide-react';
@@ -13,11 +13,11 @@ import { ModerationOverlay } from '@/components/moderation';
 import { useAuthor } from '@/hooks/useAuthor';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
+import { useCampaignUrl } from '@/hooks/useCampaignUrl';
 import { useEventTranslation } from '@/hooks/useEventTranslation';
 import { useInView } from '@/hooks/useInView';
 import {
   type ParsedCampaign,
-  encodeCampaignNaddr,
   getCampaignCountryLabel,
   parseCampaign,
 } from '@/lib/campaign';
@@ -190,7 +190,7 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
   });
   const { data: btcPrice } = useBtcPrice();
 
-  const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
+  const campaignUrl = useCampaignUrl(campaign);
   const authorMetadata = author.data?.metadata;
   const cover = sanitizeUrl(displayCampaign.banner)
     ?? sanitizeUrl(authorMetadata?.banner)
@@ -207,7 +207,7 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
   return (
     <Link
       ref={cardRef}
-      to={`/${naddr}`}
+      to={campaignUrl}
       className={cn(
         'group block rounded-xl overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:-translate-y-0.5',
         isShelfVariant && 'h-[430px] w-[280px] shrink-0',

@@ -64,11 +64,13 @@ import { useEventStats } from '@/hooks/useTrending';
 import { useHdWalletAccess } from '@/hooks/useHdWalletAccess';
 import { usePinnedEventComments } from '@/hooks/usePinnedEventComments';
 import { useShareOrigin } from '@/hooks/useShareOrigin';
+import { useNip05Verify } from '@/hooks/useNip05Verify';
 import { useToast } from '@/hooks/useToast';
 import { useEventTranslation } from '@/hooks/useEventTranslation';
 import {
   encodeCampaignNaddr,
   getCampaignCountryLabel,
+  getCampaignUrl,
   parseCampaign,
   type ParsedCampaign,
 } from '@/lib/campaign';
@@ -272,7 +274,12 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
-  const shareUrl = useMemo(() => `${shareOrigin}/${naddr}`, [shareOrigin, naddr]);
+  // Prefer the pretty `/{nip05}/{d-tag}` path when the author's NIP-05
+  // verifies against their pubkey; fall back to the naddr URL otherwise
+  // (a spoofed NIP-05 can never hijack the shared link).
+  const { data: nip05Verified } = useNip05Verify(authorMetadata?.nip05, campaign.pubkey);
+  const campaignPath = getCampaignUrl(campaign, authorMetadata?.nip05, nip05Verified === true);
+  const shareUrl = useMemo(() => `${shareOrigin}${campaignPath}`, [shareOrigin, campaignPath]);
   const storyEvent = useMemo(
     () => ({
       ...displayCampaign.event,
@@ -1407,7 +1414,7 @@ function CampaignTombstoneView({
 // Skeletons
 // ─────────────────────────────────────────────────────────────────────
 
-function CampaignDetailSkeleton() {
+export function CampaignDetailSkeleton() {
   return (
     <main className="min-h-screen pb-16">
       <Skeleton className="w-full min-h-[78svh] sm:min-h-0 sm:aspect-[21/9] lg:aspect-[24/9] rounded-none" />

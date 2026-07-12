@@ -25,6 +25,7 @@ const CampaignsPage = lazy(() => import("./pages/CampaignsPage").then(m => ({ de
 const CreateCampaignPage = lazy(() => import("./pages/CreateCampaignPage").then(m => ({ default: m.CreateCampaignPage })));
 const AllCampaignsPage = lazy(() => import("./pages/AllCampaignsPage").then(m => ({ default: m.AllCampaignsPage })));
 const CampaignListDetailPage = lazy(() => import("./pages/CampaignListDetailPage").then(m => ({ default: m.CampaignListDetailPage })));
+const CampaignByNip05Page = lazy(() => import("./pages/CampaignByNip05Page").then(m => ({ default: m.CampaignByNip05Page })));
 
 // All other pages: code-split via React.lazy
 const ActionsPage = lazy(() => import("./pages/ActionsPage"));
@@ -245,6 +246,14 @@ export function AppRouter() {
               before the "activist" → "recipient" copy change. Redirect so
               external links and bookmarks still resolve. */}
           <Route path="/about/activists" element={<Navigate to="/about/recipients" replace />} />
+          {/* Pretty campaign URLs: `/{nip05}/{d-tag}`, e.g.
+              `/alex@gleasonator.com/help-me` or the short `/mk/help-me`.
+              Two-segment dynamic route — React Router ranks the static
+              two-segment routes above (`/campaigns/new`, `/about/donors`,
+              …) ahead of it, and the single-segment `/:nip19` below it, so
+              neither collides. The resolver 404s on any NIP-05 that doesn't
+              resolve, so non-campaign two-segment URLs fall through cleanly. */}
+          <Route path="/:nip05/:dtag" element={<CampaignByNip05Page />} />
           {/* NIP-19 route for npub1, note1, naddr1, nevent1, nprofile1.
               Goes through the wide layout because the dispatch may resolve to
               a profile, campaign, action, or community page — all of which

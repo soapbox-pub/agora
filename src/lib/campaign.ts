@@ -294,6 +294,79 @@ export function encodeCampaignNaddr(campaign: ParsedCampaign, relays?: string[])
 }
 
 /**
+ * Build the pretty NIP-05-based path for a campaign: `/{nip05}/{d-tag}`.
+ *
+ * Mirrors {@link getProfileUrl}'s `_@domain.com → /domain.com` collapse so
+ * a root-user NIP-05 yields the shortest possible URL
+ * (`/domain.com/help-me` rather than `/_@domain.com/help-me`). The
+ * campaign resolver page ({@link normalizeCampaignNip05}) re-expands the
+ * bare domain to `_@domain.com` before resolving.
+ *
+ * Callers MUST only use this path when the NIP-05 has been verified to
+ * resolve back to the campaign author's pubkey — see {@link getCampaignUrl}.
+ */
+export function campaignNip05Path(nip05: string, identifier: string): string {
+  // _@domain.com → /domain.com/<d>
+  const namePart = nip05.startsWith('_@') ? nip05.slice(2) : nip05;
+  return `/${namePart}/${identifier}`;
+}
+
+/**
+ * Resolve the canonical URL path for a campaign.
+ *
+ * Returns the pretty `/{nip05}/{d-tag}` form **only** when `nip05Verified`
+ * is explicitly `true` — i.e. the author's kind-0 `nip05` has been
+ * confirmed to resolve to their pubkey via /.well-known/nostr.json.
+ *
+ * Without verification it falls back to the addressable `naddr1…` path so
+ * an attacker who claims someone else's NIP-05 in their kind-0 profile
+ * cannot hijack campaign links (same trust model as {@link getProfileUrl}).
+ */
+export function getCampaignUrl(
+  campaign: ParsedCampaign,
+  nip05: string | undefined,
+  nip05Verified = false,
+): string {
+  if (nip05Verified && nip05) {
+    return campaignNip05Path(nip05, campaign.identifier);
+  }
+  return `/${encodeCampaignNaddr(campaign)}`;
+}
+
+/**
+ * Normalize a `:nip05` route parameter into a full NIP-05 identifier for
+ * resolution, applying the app's short-URL conveniences:
+ *
+ * - `fiatjaf.com` (bare domain, no `@`) → `_@fiatjaf.com` (the default/root
+ *   user), so `/fiatjaf.com/help-me` works.
+ * - `mk` (bare local name, no `@` and no `.`) → `mk@{appHost}`, so very
+ *   short URLs like `/mk/help-me` resolve against the app's own domain.
+ * - `alex@gleasonator.com` (already a full NIP-05) → returned unchanged.
+ *
+ * A leading `@` (e.g. copied from a `/@handle` URL) is stripped first.
+ * Returns `undefined` for empty/whitespace-only input.
+ */
+export function normalizeCampaignNip05(
+  param: string | undefined,
+  appHost: string,
+): string | undefined {
+  if (!param) return undefined;
+  const cleaned = param.trim().replace(/^@+/, '');
+  if (!cleaned) return undefined;
+
+  if (cleaned.includes('@')) {
+    // Already a full NIP-05 identifier (user@domain).
+    return cleaned;
+  }
+  if (cleaned.includes('.')) {
+    // Bare domain → default/root user at that domain.
+    return `_@${cleaned}`;
+  }
+  // Bare local name → resolve against the app's own domain.
+  return `${cleaned}@${appHost}`;
+}
+
+/**
  * True if `value` is a bare NIP-19 `naddr1…` (optionally `nostr:`-prefixed)
  * that decodes to a campaign coordinate (kind 33863). Any decode failure or
  * non-campaign kind returns `false`.

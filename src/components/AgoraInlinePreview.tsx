@@ -9,10 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
 import { useAuthor } from '@/hooks/useAuthor';
+import { useNip05Verify } from '@/hooks/useNip05Verify';
 import { useInView } from '@/hooks/useInView';
 import { parseAction } from '@/hooks/useActions';
 import { getGeoDisplayName } from '@/lib/countries';
-import { parseCampaign, getCampaignCountryLabel } from '@/lib/campaign';
+import { parseCampaign, getCampaignCountryLabel, getCampaignUrl } from '@/lib/campaign';
 import { parseCommunityEvent } from '@/lib/communityUtils';
 import { formatCampaignAmount, formatUsdGoal, satsToUsd } from '@/lib/formatCampaignAmount';
 import { formatCompactPledgeDeadline, formatPledgeAmount } from '@/lib/pledges';
@@ -64,13 +65,15 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
   const inView = useInView(previewRef);
   const { data: stats } = useCampaignDonations(campaign ?? undefined, { enabled: inView });
   const author = useAuthor(event.pubkey);
+  const authorNip05 = author.data?.metadata?.nip05;
+  const { data: nip05Verified } = useNip05Verify(authorNip05, event.pubkey);
   if (!campaign) return null;
 
   const authorMetadata = author.data?.metadata;
   const cover = sanitizeUrl(campaign.banner)
     ?? sanitizeUrl(authorMetadata?.banner)
     ?? sanitizeUrl(authorMetadata?.picture);
-  const naddr = nip19.naddrEncode({ kind: event.kind, pubkey: event.pubkey, identifier: campaign.identifier });
+  const campaignUrl = getCampaignUrl(campaign, authorNip05, nip05Verified === true);
   const countryLabel = getCampaignCountryLabel(campaign);
   const isSilentPayment = !campaign.wallets.onchain;
   const goalLabel = campaign.goalUsd && campaign.goalUsd > 0 ? formatUsdGoal(campaign.goalUsd) : undefined;
@@ -82,7 +85,7 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
     : 0;
 
   return (
-    <Link ref={previewRef} to={`/${naddr}`} onClick={(e) => e.stopPropagation()} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+    <Link ref={previewRef} to={campaignUrl} onClick={(e) => e.stopPropagation()} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
       <InlineShell
         image={cover}
         fallbackIcon={<HandHeart className="size-12" />}
