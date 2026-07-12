@@ -508,7 +508,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="z-[300]">
           <DropdownMenuItem
             onSelect={() => fileInputRef.current?.click()}
             className="flex items-center gap-2 cursor-pointer"
