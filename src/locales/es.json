@@ -876,7 +876,16 @@
     "verifiedByCount_zero": "Verificado por {{count}} personas",
     "verifiedByCount_two": "Verificado por {{count}} personas",
     "verifiedByCount_few": "Verificado por {{count}} personas",
-    "verifiedByCount_many": "Verificado por {{count}} personas"
+    "verifiedByCount_many": "Verificado por {{count}} personas",
+    "unverifiedBanner": "Esta campaña no ha sido verificada por una fuente de confianza.",
+    "unverifiedBannerReadMore": "Más información"
+  },
+  "campaignHidden": {
+    "title": "Esta campaña ha sido ocultada",
+    "body": "Esta campaña ha sido ocultada por los moderadores de Agora, normalmente porque parece spam, una estafa o una suplantación de identidad. Aun así, puedes elegir verla.",
+    "learnMore": "Más información",
+    "back": "Atrás",
+    "proceed": "Continuar de todos modos"
   },
   "calendarEvents": {
     "create": {
@@ -2714,6 +2723,10 @@
       "chapter3": {
         "label": "Sobre Nostr",
         "description": "El protocolo abierto sobre el que se construye Agora y cómo funciona tu cuenta."
+      },
+      "chapter4": {
+        "label": "Verificación y confianza",
+        "description": "Qué significa la insignia de verificado, quién la otorga y cómo juzgar una campaña por ti mismo."
       }
     },
     "guides": {
@@ -2840,6 +2853,9 @@
       "payments": {
         "label": "Donaciones de Bitcoin en Agora"
       },
+      "verification": {
+        "label": "Verificación y confianza"
+      },
       "about-nostr": {
         "label": "Sobre Nostr"
       },
@@ -2956,6 +2972,50 @@
         "answer": [
           "Bitcoin es, con diferencia, la criptomoneda más adoptada. Eso significa que es la más fácil para que los donantes la compren y la envíen, y la más fácil para que los receptores la reciban, la guarden y la gasten.",
           "Las monedas centradas en la privacidad como Monero ofrecen distintas compensaciones de privacidad respecto a Bitcoin, pero no las admiten la mayoría de las apps de consumo y son más difíciles de convertir a moneda local. Pedir a cualquiera de los dos extremos de una donación que primero adquiera una criptomoneda de nicho es una barrera que {{appName}} no va a poner. Para las donaciones de Bitcoin en sí, los silent payments cubren el caso de uso de la no vinculabilidad sin salir del ecosistema Bitcoin."
+        ]
+      },
+      "what-is-verification": {
+        "question": "¿Qué significa la insignia de «Verificado» en una campaña?",
+        "answer": [
+          "Una campaña verificada es aquella por la que un **verificador de confianza** ha respondido públicamente. Ese verificador afirma que conoce personalmente al organizador, o que ha comprobado de forma significativa que las afirmaciones de la campaña son ciertas.",
+          "La insignia muestra exactamente **quién** dio el respaldo, y cada verificador enlaza a su perfil. La verificación es una señal, no un sello de aprobación de {{appName}}. No realizamos verificaciones de antecedentes. Existe para que puedas decidir si *tú* confías en las personas que respaldan una campaña.",
+          "Cuando ninguna fuente de confianza ha verificado una campaña, su página muestra en su lugar un aviso de precaución. Ese aviso no es una acusación. Solo significa que nadie de la lista de confianza ha respondido por ella todavía."
+        ]
+      },
+      "who-verifies": {
+        "question": "¿Quién cuenta como una «fuente de confianza»?",
+        "answer": [
+          "Los verificadores de confianza son los miembros de dos paquetes de seguimiento curados: **World Liberty Congress Verified** y **Team Soapbox** (el equipo que construye {{appName}}, en colaboración con el [World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Técnicamente, cualquier persona en Nostr puede publicar una etiqueta de verificación para cualquier campaña, y aparecerá en la insignia. Pero solo un respaldo de un miembro de esos dos paquetes elimina el aviso de precaución y puede promover una campaña a la sección de Verified Campaigns de la página de inicio. Un organizador que verifica su propia campaña no cuenta."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Una campaña no está verificada. ¿Es una estafa?",
+        "answer": [
+          "**No necesariamente.** La verificación es deliberadamente difícil de conseguir, por lo que la mayoría de las campañas legítimas comienzan sin verificar, especialmente las nuevas y las de personas que los verificadores de confianza aún no conocen.",
+          "Considera la insignia como una confianza adicional, no como lo único que importa. Lee la campaña, mira el perfil y el historial del organizador, y recuerda cómo funciona {{appName}}: las donaciones van **directamente** a la dirección de Bitcoin del organizador en la cadena. {{appName}} nunca retiene los fondos y no puede revertir, reembolsar ni congelar un pago, así que dona como si le entregaras dinero en efectivo a alguien."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "¿Por qué algunas campañas están ocultas y puedo verlas de todos modos?",
+        "answer": [
+          "Los moderadores pueden ocultar una campaña que parezca spam, una estafa o una suplantación de identidad de otra persona. Las campañas ocultas se mantienen fuera de los feeds y la búsqueda de {{appName}} para que la mayoría de las personas no las encuentren por accidente.",
+          "**Esto no es censura, y no se elimina nada.** Una campaña vive en la red abierta de Nostr sin importar lo que {{appName}} muestre. Ocultar solo cambia lo que {{appName}} muestra de forma predeterminada. Si abres una campaña oculta directamente, por ejemplo desde un enlace compartido, verás un aviso que explica por qué y un botón para **continuar de todos modos**. La decisión de verla, y de donar, siempre es tuya.",
+          "El objetivo es simplemente dar contexto a los donantes antes de que donen: una advertencia de que un moderador de confianza señaló algo, no una decisión tomada por ti."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Soy organizador. ¿Cómo consigo que verifiquen mi campaña?",
+        "answer": [
+          "No puedes verificarte a ti mismo; un verificador de confianza tiene que responder por ti. El camino más fiable es construir un historial genuino: un perfil completo, una campaña clara y una relación real con las personas de la comunidad.",
+          "Si tu trabajo está relacionado con el World Liberty Congress o con el equipo de {{appName}}, ponte en contacto a través de tus contactos existentes allí. Un verificador que te conozca puede añadir su respaldo, y aparecerá en tu campaña automáticamente."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "¿Garantiza la verificación que mi donación es segura?",
+        "answer": [
+          "No. La verificación te dice que una persona de confianza responde por la campaña. **No** garantiza resultados, no asegura tu dinero ni hace que {{appName}} sea responsable de cómo se usan los fondos.",
+          "Como las donaciones no son custodiadas y son en la cadena, cada pago es definitivo en el momento en que lo envías. Un verificador también puede **retirar** su respaldo más tarde si algo cambia, lo que eliminaría la insignia. Dona siempre una cantidad que te sientas cómodo entregando directamente a otra persona."
         ]
       },
       "what-is-nostr": {

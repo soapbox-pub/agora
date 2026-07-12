@@ -776,6 +776,10 @@
       "chapter3": {
         "label": "About Nostr",
         "description": "The open protocol Agora is built on, and how your account works."
+      },
+      "chapter4": {
+        "label": "Verification & trust",
+        "description": "What the verified badge means, who grants it, and how to judge a campaign yourself."
       }
     },
     "guides": {
@@ -1429,7 +1433,16 @@
     "attestation": "By verifying this campaign you attest that the campaign is authentic and true. You know the campaign organizer personally or have verified meaningfully that their claims are true. Beware of impersonators and scammers.",
     "verified": "Campaign verified",
     "unverified": "Verification removed",
-    "actionFailed": "Action failed"
+    "actionFailed": "Action failed",
+    "unverifiedBanner": "This campaign has not been verified by a trusted source.",
+    "unverifiedBannerReadMore": "Learn more"
+  },
+  "campaignHidden": {
+    "title": "This campaign has been hidden",
+    "body": "This campaign has been hidden by Agora moderators, usually because it looks like spam, a scam, or an impersonation. You can still choose to view it.",
+    "learnMore": "Learn more",
+    "back": "Back",
+    "proceed": "Proceed anyway"
   },
   "calendarEvents": {
     "create": {
@@ -2904,6 +2917,9 @@
       "payments": {
         "label": "Bitcoin Donations on Agora"
       },
+      "verification": {
+        "label": "Verification & Trust"
+      },
       "about-nostr": {
         "label": "About Nostr"
       },
@@ -3020,6 +3036,50 @@
         "answer": [
           "Bitcoin is by far the most widely adopted cryptocurrency. That means it's the easiest for donors to buy and send, and the easiest for recipients to receive, hold, and spend.",
           "Privacy-focused coins like Monero offer different privacy tradeoffs than Bitcoin, but they're unsupported by most consumer apps and harder to convert back to local currency. Asking either side of a donation to first acquire a niche cryptocurrency is a barrier {{appName}} won't put in the way. For Bitcoin donations themselves, silent payments cover the unlinkability use case without leaving the Bitcoin ecosystem."
+        ]
+      },
+      "what-is-verification": {
+        "question": "What does the \"Verified\" badge on a campaign mean?",
+        "answer": [
+          "A verified campaign is one that a **trusted verifier** has publicly vouched for. That verifier says they personally know the organizer, or has meaningfully checked that the campaign's claims are true.",
+          "The badge shows exactly **who** did the vouching, and each verifier links to their profile. Verification is a signal, not a seal of approval from {{appName}}. We don't run background checks. It exists so you can decide whether *you* trust the people standing behind a campaign.",
+          "When no trusted source has verified a campaign, its page shows a caution notice instead. That notice isn't an accusation. It just means nobody on the trusted list has vouched for it yet."
+        ]
+      },
+      "who-verifies": {
+        "question": "Who counts as a \"trusted source\"?",
+        "answer": [
+          "The trusted verifiers are the members of two curated follow packs: **World Liberty Congress Verified** and **Team Soapbox** (the team that builds {{appName}}, in collaboration with the [World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Anyone on Nostr can technically publish a verification label for any campaign, and it will show on the badge. But only a vouch from a member of those two packs clears the caution notice and can promote a campaign into the home page's Verified Campaigns section. An organizer verifying their own campaign doesn't count."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "A campaign isn't verified. Is it a scam?",
+        "answer": [
+          "**Not necessarily.** Verification is deliberately hard to earn, so most legitimate campaigns start out unverified, especially new ones and those from people the trusted verifiers haven't met yet.",
+          "Treat the badge as extra confidence, not the only thing that matters. Read the campaign, look at the organizer's profile and history, and remember how {{appName}} works: donations go **directly** to the organizer's Bitcoin address on-chain. {{appName}} never holds the funds and can't reverse, refund, or freeze a payment, so give the way you'd hand someone cash."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Why are some campaigns hidden, and can I still see them?",
+        "answer": [
+          "Moderators can hide a campaign that looks like spam, a scam, or an impersonation of someone else. Hidden campaigns are kept out of the {{appName}} feeds and search so most people don't stumble into them by accident.",
+          "**This isn't censorship, and nothing is deleted.** A campaign lives on the open Nostr network no matter what {{appName}} shows. Hiding only changes what {{appName}} surfaces by default. If you open a hidden campaign directly, such as from a shared link, you'll see a notice explaining why and a button to **proceed anyway**. The choice to view it, and to donate, is always yours.",
+          "The goal is simply to give donors context before they give: a heads-up that a trusted moderator flagged something, not a decision made for you."
+        ]
+      },
+      "how-get-verified": {
+        "question": "I'm an organizer. How do I get my campaign verified?",
+        "answer": [
+          "You can't verify yourself; a trusted verifier has to vouch for you. The most reliable path is to build a genuine track record: a complete profile, a clear campaign, and a real relationship with people in the community.",
+          "If your work is connected to the World Liberty Congress or the {{appName}} team, reach out through your existing contacts there. A verifier who knows you can add their vouch, and it will appear on your campaign automatically."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "Does verification guarantee my donation is safe?",
+        "answer": [
+          "No. Verification tells you a trusted person vouches for the campaign. It does **not** guarantee outcomes, insure your money, or make {{appName}} responsible for how funds are used.",
+          "Because donations are non-custodial and on-chain, every payment is final the moment you send it. A verifier can also **withdraw** their vouch later if something changes, which would remove the badge. Always donate an amount you're comfortable giving directly to another person."
         ]
       },
       "what-is-nostr": {

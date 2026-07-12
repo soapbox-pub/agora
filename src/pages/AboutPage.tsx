@@ -1,5 +1,5 @@
 import { useSeoMeta } from '@unhead/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   AlertTriangle,
@@ -14,7 +14,7 @@ import {
   ShieldOff,
 } from 'lucide-react';
 import { nip19 } from 'nostr-tools';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { useAppContext } from '@/hooks/useAppContext';
 import { HelpFAQSection } from '@/components/HelpFAQSection';
@@ -51,6 +51,22 @@ export function AboutPage() {
   });
 
   const appName = config.appName;
+
+  // Deep-link support. `ScrollToTop` unconditionally scrolls to the top on
+  // PUSH navigation, which clobbers the browser's native anchor scroll when
+  // arriving via a hash link (e.g. `/about#faq-verification` from the
+  // unverified-campaign banner). Re-run the scroll ourselves after paint so
+  // the targeted section lands under the sticky nav (`scroll-mt-*`).
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (!hash) return;
+    const id = decodeURIComponent(hash.slice(1));
+    // rAF: wait for layout so the element exists and offsets are settled.
+    const raf = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [hash]);
 
   // In-app link to the Team Soapbox follow pack, via the addressable
   // /:nip19 route. Encoded once per render (cheap).
@@ -535,8 +551,14 @@ const FAQ_CHAPTERS: Array<{
     descriptionKey: 'about.faq.chapter2.description',
   },
   {
-    id: 'about-nostr',
+    id: 'verification',
     number: '03',
+    labelKey: 'about.faq.chapter4.label',
+    descriptionKey: 'about.faq.chapter4.description',
+  },
+  {
+    id: 'about-nostr',
+    number: '04',
     labelKey: 'about.faq.chapter3.label',
     descriptionKey: 'about.faq.chapter3.description',
   },

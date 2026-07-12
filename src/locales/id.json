@@ -775,6 +775,10 @@
       "chapter3": {
         "label": "Tentang Nostr",
         "description": "Protokol terbuka yang menjadi fondasi Agora, dan cara kerja akun Anda."
+      },
+      "chapter4": {
+        "label": "Verifikasi & kepercayaan",
+        "description": "Apa arti lencana terverifikasi, siapa yang memberikannya, dan cara menilai sendiri sebuah kampanye."
       }
     },
     "guides": {
@@ -1387,7 +1391,16 @@
     "verifiedByCount_zero": "Diverifikasi oleh {{count}} orang",
     "verifiedByCount_two": "Diverifikasi oleh {{count}} orang",
     "verifiedByCount_few": "Diverifikasi oleh {{count}} orang",
-    "verifiedByCount_many": "Diverifikasi oleh {{count}} orang"
+    "verifiedByCount_many": "Diverifikasi oleh {{count}} orang",
+    "unverifiedBanner": "Kampanye ini belum diverifikasi oleh sumber tepercaya.",
+    "unverifiedBannerReadMore": "Pelajari selengkapnya"
+  },
+  "campaignHidden": {
+    "title": "Kampanye ini telah disembunyikan",
+    "body": "Kampanye ini telah disembunyikan oleh moderator Agora, biasanya karena terlihat seperti spam, penipuan, atau peniruan identitas. Anda tetap dapat memilih untuk melihatnya.",
+    "learnMore": "Pelajari selengkapnya",
+    "back": "Kembali",
+    "proceed": "Tetap lanjutkan"
   },
   "calendarEvents": {
     "create": {
@@ -2727,6 +2740,9 @@
       "payments": {
         "label": "Donasi Bitcoin di Agora"
       },
+      "verification": {
+        "label": "Verifikasi & Kepercayaan"
+      },
       "about-nostr": {
         "label": "Tentang Nostr"
       },
@@ -2843,6 +2859,50 @@
         "answer": [
           "Bitcoin sejauh ini adalah kripto yang paling banyak diadopsi. Itu berarti paling mudah bagi donatur untuk dibeli dan dikirim, dan paling mudah bagi penerima untuk diterima, dipegang, dan dibelanjakan.",
           "Koin berfokus privasi seperti Monero menawarkan konsekuensi privasi berbeda dari Bitcoin, tetapi tidak didukung oleh sebagian besar aplikasi konsumen dan lebih sulit dikonversi kembali ke mata uang lokal. Meminta salah satu sisi donasi untuk pertama-tama memperoleh kripto khusus adalah hambatan yang tidak akan diletakkan {{appName}}. Untuk donasi Bitcoin sendiri, silent payments mencakup kasus penggunaan ketakterhubungan tanpa meninggalkan ekosistem Bitcoin."
+        ]
+      },
+      "what-is-verification": {
+        "question": "Apa arti lencana \"Terverifikasi\" pada sebuah kampanye?",
+        "answer": [
+          "Kampanye terverifikasi adalah kampanye yang **penjamin tepercaya** telah menyatakan dukungannya secara publik. Penjamin tersebut menyatakan bahwa mereka mengenal langsung penyelenggaranya, atau telah memeriksa secara sungguh-sungguh bahwa klaim kampanye tersebut benar.",
+          "Lencana ini menunjukkan dengan tepat **siapa** yang memberikan jaminan, dan setiap penjamin menautkan ke profil mereka. Verifikasi adalah sebuah sinyal, bukan segel persetujuan dari {{appName}}. Kami tidak melakukan pemeriksaan latar belakang. Verifikasi ada agar Anda dapat memutuskan apakah *Anda* memercayai orang-orang yang berada di balik sebuah kampanye.",
+          "Ketika tidak ada sumber tepercaya yang memverifikasi sebuah kampanye, halamannya justru menampilkan pemberitahuan kehati-hatian. Pemberitahuan itu bukan sebuah tuduhan. Itu hanya berarti belum ada seorang pun dalam daftar tepercaya yang menjaminnya."
+        ]
+      },
+      "who-verifies": {
+        "question": "Siapa yang dianggap sebagai \"sumber tepercaya\"?",
+        "answer": [
+          "Para penjamin tepercaya adalah anggota dari dua paket ikuti terkurasi: **World Liberty Congress Verified** dan **Team Soapbox** (tim yang membangun {{appName}}, bekerja sama dengan [World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Secara teknis, siapa pun di Nostr dapat menerbitkan label verifikasi untuk kampanye mana pun, dan itu akan tampil pada lencana. Namun, hanya jaminan dari anggota kedua paket tersebut yang menghilangkan pemberitahuan kehati-hatian dan dapat mengangkat sebuah kampanye ke bagian Verified Campaigns di halaman beranda. Penyelenggara yang memverifikasi kampanyenya sendiri tidak dihitung."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Sebuah kampanye tidak terverifikasi. Apakah itu penipuan?",
+        "answer": [
+          "**Belum tentu.** Verifikasi memang sengaja dibuat sulit untuk didapatkan, sehingga sebagian besar kampanye yang sah dimulai dalam keadaan belum terverifikasi, terutama yang baru dan yang berasal dari orang-orang yang belum ditemui oleh para penjamin tepercaya.",
+          "Perlakukan lencana sebagai keyakinan tambahan, bukan satu-satunya hal yang penting. Baca kampanyenya, lihat profil dan riwayat penyelenggaranya, dan ingat cara kerja {{appName}}: donasi masuk **langsung** ke alamat Bitcoin penyelenggara secara on-chain. {{appName}} tidak pernah menyimpan dananya dan tidak dapat membatalkan, mengembalikan, atau membekukan pembayaran, jadi berikanlah dengan cara seperti Anda menyerahkan uang tunai kepada seseorang."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Mengapa beberapa kampanye disembunyikan, dan apakah saya masih bisa melihatnya?",
+        "answer": [
+          "Moderator dapat menyembunyikan kampanye yang terlihat seperti spam, penipuan, atau peniruan identitas orang lain. Kampanye tersembunyi dijauhkan dari umpan dan pencarian {{appName}} agar kebanyakan orang tidak menemukannya secara tidak sengaja.",
+          "**Ini bukan penyensoran, dan tidak ada yang dihapus.** Sebuah kampanye tetap hidup di jaringan Nostr yang terbuka, apa pun yang ditampilkan {{appName}}. Menyembunyikan hanya mengubah apa yang ditampilkan {{appName}} secara bawaan. Jika Anda membuka kampanye tersembunyi secara langsung, misalnya dari tautan yang dibagikan, Anda akan melihat pemberitahuan yang menjelaskan alasannya serta tombol untuk **tetap lanjutkan**. Pilihan untuk melihatnya, dan untuk berdonasi, selalu ada pada Anda.",
+          "Tujuannya hanyalah memberikan konteks kepada donatur sebelum mereka memberi: sebuah peringatan bahwa moderator tepercaya menandai sesuatu, bukan keputusan yang dibuat untuk Anda."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Saya seorang penyelenggara. Bagaimana cara agar kampanye saya terverifikasi?",
+        "answer": [
+          "Anda tidak dapat memverifikasi diri sendiri; seorang penjamin tepercaya harus menjamin Anda. Jalur yang paling andal adalah membangun rekam jejak yang tulus: profil yang lengkap, kampanye yang jelas, dan hubungan yang nyata dengan orang-orang di komunitas.",
+          "Jika pekerjaan Anda terhubung dengan World Liberty Congress atau tim {{appName}}, hubungi melalui kontak Anda yang sudah ada di sana. Seorang penjamin yang mengenal Anda dapat menambahkan jaminannya, dan itu akan muncul pada kampanye Anda secara otomatis."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "Apakah verifikasi menjamin bahwa donasi saya aman?",
+        "answer": [
+          "Tidak. Verifikasi memberi tahu Anda bahwa seseorang yang tepercaya menjamin kampanye tersebut. Itu **tidak** menjamin hasil, tidak mengasuransikan uang Anda, dan tidak membuat {{appName}} bertanggung jawab atas bagaimana dana digunakan.",
+          "Karena donasi bersifat non-kustodial dan on-chain, setiap pembayaran bersifat final begitu Anda mengirimnya. Seorang penjamin juga dapat **menarik** jaminannya di kemudian hari jika ada sesuatu yang berubah, yang akan menghapus lencananya. Selalu donasikan jumlah yang Anda nyaman berikan secara langsung kepada orang lain."
         ]
       },
       "what-is-nostr": {

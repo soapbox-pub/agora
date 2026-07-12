@@ -97,6 +97,17 @@ const FAQ_STRUCTURE: FAQCategoryStructure[] = [
     ],
   },
   {
+    id: 'verification',
+    items: [
+      { id: 'what-is-verification' },
+      { id: 'who-verifies' },
+      { id: 'unverified-meaning' },
+      { id: 'why-campaigns-hidden' },
+      { id: 'how-get-verified' },
+      { id: 'verification-guarantee' },
+    ],
+  },
+  {
     id: 'about-nostr',
     items: [
       { id: 'what-is-nostr' },
