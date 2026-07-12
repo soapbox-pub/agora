@@ -68,7 +68,6 @@ import { useToast } from '@/hooks/useToast';
 import { useEventTranslation } from '@/hooks/useEventTranslation';
 import {
   encodeCampaignNaddr,
-  campaignPrettyPath,
   getCampaignCountryLabel,
   parseCampaign,
   type ParsedCampaign,
@@ -273,8 +272,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
-  const prettyPath = useMemo(() => campaignPrettyPath(campaign), [campaign]);
-  const shareUrl = useMemo(() => `${shareOrigin}${prettyPath}`, [shareOrigin, prettyPath]);
+  const shareUrl = useMemo(() => `${shareOrigin}/${naddr}`, [shareOrigin, naddr]);
   const storyEvent = useMemo(
     () => ({
       ...displayCampaign.event,
@@ -1409,7 +1407,7 @@ function CampaignTombstoneView({
 // Skeletons
 // ─────────────────────────────────────────────────────────────────────
 
-export function CampaignDetailSkeleton() {
+function CampaignDetailSkeleton() {
   return (
     <main className="min-h-screen pb-16">
       <Skeleton className="w-full min-h-[78svh] sm:min-h-0 sm:aspect-[21/9] lg:aspect-[24/9] rounded-none" />

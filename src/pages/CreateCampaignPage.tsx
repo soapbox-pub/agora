@@ -54,7 +54,7 @@ import { formatBTC, satsToUSD } from '@/lib/bitcoin';
 import {
   CAMPAIGN_KIND,
   buildCampaignSlug,
-  campaignPrettyPath,
+  encodeCampaignNaddr,
   parseCampaign,
   parseCampaignWallet,
   sanitizeCampaignTitle,
@@ -701,7 +701,7 @@ export function CreateCampaignPage() {
         title: isEditMode ? t('campaignsCreate.successEdit') : t('campaignsCreate.successCreate'),
         description: isEditMode ? t('campaignsCreate.successEditDesc') : t('campaignsCreate.successCreateDesc'),
       });
-      navigate(campaignPrettyPath(campaign));
+      navigate(`/${encodeCampaignNaddr(campaign)}`);
     },
     onError: (error: unknown) => {
       const msg = error instanceof Error ? error.message : String(error);

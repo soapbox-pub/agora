@@ -1,5 +1,5 @@
 import { nip19 } from 'nostr-tools';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
 import NotFound from './NotFound';
@@ -7,7 +7,8 @@ import { ProfilePage } from './ProfilePage';
 import { PostDetailPage, AddrPostDetailPage, PostDetailShell, PostDetailSkeleton } from './PostDetailPage';
 import { ListDetailPage } from './ListDetailPage';
 import { ActionDetailPage } from './ActionDetailPage';
-import { CAMPAIGN_KIND, campaignPrettyPath } from '@/lib/campaign';
+import { CampaignDetailPage } from './CampaignDetailPage';
+import { CAMPAIGN_KIND } from '@/lib/campaign';
 import type { AddressPointer } from 'nostr-tools/nip19';
 
 const HEX_64_RE = /^[0-9a-f]{64}$/;
@@ -122,13 +123,11 @@ export function NIP19Page() {
         return <ActionDetailPage pubkey={addr.pubkey} identifier={addr.identifier} />;
       }
       if (addr.kind === CAMPAIGN_KIND) {
-        // Canonicalize legacy naddr campaign links to the pretty,
-        // title-based URL (`/campaigns/<slug>-<pubkey prefix>`). Old
-        // shared naddr links keep working; the address bar upgrades.
         return (
-          <Navigate
-            to={campaignPrettyPath({ pubkey: addr.pubkey, identifier: addr.identifier })}
-            replace
+          <CampaignDetailPage
+            pubkey={addr.pubkey}
+            identifier={addr.identifier}
+            relays={addr.relays}
           />
         );
       }

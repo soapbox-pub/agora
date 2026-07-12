@@ -25,7 +25,6 @@ const CampaignsPage = lazy(() => import("./pages/CampaignsPage").then(m => ({ de
 const CreateCampaignPage = lazy(() => import("./pages/CreateCampaignPage").then(m => ({ default: m.CreateCampaignPage })));
 const AllCampaignsPage = lazy(() => import("./pages/AllCampaignsPage").then(m => ({ default: m.AllCampaignsPage })));
 const CampaignListDetailPage = lazy(() => import("./pages/CampaignListDetailPage").then(m => ({ default: m.CampaignListDetailPage })));
-const CampaignSlugPage = lazy(() => import("./pages/CampaignSlugPage").then(m => ({ default: m.CampaignSlugPage })));
 
 // All other pages: code-split via React.lazy
 const ActionsPage = lazy(() => import("./pages/ActionsPage"));
@@ -223,11 +222,6 @@ export function AppRouter() {
               `/campaigns/all` for a while. Keep it as a redirect so
               external links and bookmarks still resolve. */}
           <Route path="/campaigns/all" element={<Navigate to="/campaigns" replace />} />
-          {/* Pretty campaign URL: `/campaigns/<slug>-<6 hex of pubkey>`.
-              Kept below the static/two-segment campaign routes above so
-              `new`, `lists/*`, and `all` win over this single dynamic
-              segment. */}
-          <Route path="/campaigns/:slugId" element={<CampaignSlugPage />} />
           <Route path="/groups" element={<CommunitiesPage />} />
           <Route path="/groups/new" element={<CreateCommunityPage />} />
           <Route path="/events/new" element={<CreateEventPage />} />
