@@ -95,10 +95,10 @@ export function CampaignsPage() {
                 </p>
               </div>
               <Button asChild variant="outline" className="hidden sm:inline-flex">
-                <StartCampaignLink>
-                  <PlusCircle className="size-4 mr-2" />
-                  {t('campaigns.home.startCampaign')}
-                </StartCampaignLink>
+                <Link to="/campaigns">
+                  <ArrowRight className="size-4 mr-2 rtl:rotate-180" />
+                  {t('campaigns.home.browseAll')}
+                </Link>
               </Button>
             </div>
 
@@ -131,18 +131,6 @@ export function CampaignsPage() {
                 {t('campaigns.home.browseAll')}
                 <ArrowRight className="ml-2 size-4 rtl:rotate-180" />
               </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full">
-              <Link to="/verify">
-                <BadgeCheck className="mr-2 size-4" />
-                {t('campaigns.home.verifyCampaigns')}
-              </Link>
-            </Button>
-            <Button asChild size="lg" className="rounded-full">
-              <StartCampaignLink>
-                <PlusCircle className="mr-2 size-4" />
-                {t('campaigns.home.startCampaign')}
-              </StartCampaignLink>
             </Button>
           </div>
         </section>
