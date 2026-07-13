@@ -198,7 +198,7 @@ export function ConfigDrawer({ open, onOpenChange }: ConfigDrawerProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
-        <SheetHeader className="px-4 pt-4 pb-2">
+        <SheetHeader className="safe-area-top px-4 pt-4 pb-2">
           <SheetTitle className="flex items-center gap-2">
             <Settings className="size-4" />
             Dashboard Configuration

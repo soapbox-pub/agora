@@ -381,7 +381,7 @@ function PledgeHero({
         className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent"
       />
 
-      <div className="absolute inset-x-0 top-0 z-10 px-5 sm:px-6 lg:px-0 pt-[max(env(safe-area-inset-top),1rem)]">
+      <div className="absolute inset-x-0 top-0 z-10 px-5 sm:px-6 lg:px-0 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),1rem)]">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
           <button
             onClick={onBack}
@@ -406,7 +406,7 @@ function PledgeHero({
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 z-10 px-5 sm:px-6 lg:px-0 pb-[max(env(safe-area-inset-bottom),1.75rem)] pt-16 sm:pt-20">
+      <div className="absolute inset-x-0 bottom-0 z-10 px-5 sm:px-6 lg:px-0 pb-[max(var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px)),1.75rem)] pt-16 sm:pt-20">
         <div className="max-w-6xl mx-auto [text-shadow:0_1px_3px_rgba(0,0,0,0.7)]">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-white max-w-4xl">
             {action.title}

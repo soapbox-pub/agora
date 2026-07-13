@@ -407,7 +407,7 @@ function CaptiveOverlay() {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-background overflow-y-auto flex flex-col"
+      className="safe-area-top fixed inset-0 z-50 bg-background overflow-y-auto flex flex-col"
       role="dialog"
       aria-modal="true"
       aria-label={t('onboarding.ariaLabel')}

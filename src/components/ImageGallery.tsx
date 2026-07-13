@@ -666,7 +666,10 @@ export function Lightbox({ images, currentIndex, onClose, onNext, onPrev, mediaT
 
         {/* Dot indicators */}
         {hasMultiple && images.length <= maxDotIndicators && (
-          <div className={cn('absolute left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:hidden', bottomBar ? 'bottom-20' : 'bottom-6')}>
+          <div
+            className={cn('absolute left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:hidden', bottomBar ? 'bottom-20' : '')}
+            style={bottomBar ? undefined : { bottom: 'calc(1.5rem + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)))' }}
+          >
             {images.map((_, i) => (
               <div key={i} className={cn('rounded-full transition-all duration-200', i === currentIndex ? 'size-2 bg-white' : 'size-1.5 bg-white/40')} />
             ))}
@@ -675,7 +678,7 @@ export function Lightbox({ images, currentIndex, onClose, onNext, onPrev, mediaT
 
         {/* Bottom bar — author info, reactions, captions, etc. */}
         {bottomBar && (
-          <div className="absolute inset-x-0 bottom-0 z-10" onClick={(e) => e.stopPropagation()}>
+          <div className="absolute inset-x-0 bottom-0 z-10 safe-area-bottom" onClick={(e) => e.stopPropagation()}>
             {bottomBar}
           </div>
         )}

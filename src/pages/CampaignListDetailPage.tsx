@@ -247,7 +247,7 @@ export function CampaignListDetailPage() {
     <main className="min-h-screen pb-16">
       <CampaignsHeroShell cover={list.cover} fallbackCover={DEFAULT_LIST_COVER}>
         {/* Back link + moderator controls, overlaid at the top edge. */}
-        <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 px-4 sm:px-6 pt-[max(env(safe-area-inset-top),1rem)]">
+        <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 px-4 sm:px-6 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),1rem)]">
           <Button
             asChild
             variant="ghost"

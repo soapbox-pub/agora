@@ -826,7 +826,7 @@ function CampaignHero({
           window into the image rather than a floating block on the
           page background. */}
       <div className="bg-black text-white">
-        <div className="sm:hidden flex items-center justify-between gap-3 px-3 pt-[max(env(safe-area-inset-top),0.5rem)] pb-2">
+        <div className="sm:hidden flex items-center justify-between gap-3 px-3 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),0.5rem)] pb-2">
           <button
             onClick={onBack}
             className="inline-flex items-center gap-1.5 h-10 -ml-2 pl-2 pr-3.5 rounded-full text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 motion-safe:transition-colors"
@@ -932,7 +932,7 @@ function CampaignHero({
             bleed without an opaque pill. On mobile we use the plain
             toolbar above the banner instead so chips can't cover
             baked-in image text. */}
-        <div className="hidden sm:block absolute inset-x-0 top-0 z-10 px-5 sm:px-6 lg:px-0 pt-[max(env(safe-area-inset-top),1rem)]">
+        <div className="hidden sm:block absolute inset-x-0 top-0 z-10 px-5 sm:px-6 lg:px-0 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),1rem)]">
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
             <button
               onClick={onBack}
