@@ -31,7 +31,10 @@ await downloadTextFile('backup.txt', fileContents);
 
 ### `openUrl(url)`
 
-Opens a URL in a new browser tab on web, or presents the native share sheet on Capacitor.
+Opens a URL in a new browser tab on web. On native the behavior depends on the URL scheme:
+
+- **`http:` / `https:`** open in an in-app browser (Safari View Controller on iOS, Chrome Custom Tab on Android) via `@capacitor/browser`.
+- **Non-web schemes** (`mailto:`, `lightning:`, `bitcoin:`, etc.) are handed to the OS via the native share sheet, since an in-app browser can't route them to the appropriate app.
 
 ```typescript
 import { openUrl } from '@/lib/downloadFile';
@@ -60,6 +63,7 @@ Reserve platform forks for cases where behavior genuinely differs (share sheets,
 ## Installed Capacitor Plugins
 
 - `@capacitor/app` — app lifecycle events (deep links, back button)
+- `@capacitor/browser` — in-app browser (Safari View Controller / Chrome Custom Tab)
 - `@capacitor/core` — core runtime and platform detection
 - `@capacitor/filesystem` — read/write files on the native filesystem
 - `@capacitor/haptics` — native haptics
