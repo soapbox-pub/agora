@@ -12,6 +12,7 @@ import {
   HandHeart,
   Pencil,
   Share2,
+  ShieldAlert,
   ShieldCheck,
   Trash2,
   Wallet,
@@ -20,6 +21,8 @@ import {
 import { AuthorByline } from '@/components/AuthorByline';
 import { CampaignLedger } from '@/components/CampaignLedger';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
+import { UnverifiedCampaignBanner } from '@/components/UnverifiedCampaignBanner';
+import { HiddenCampaignGate } from '@/components/HiddenCampaignGate';
 import { CommentsSection } from '@/components/CommentsSection';
 import {
   CampaignWalletDonatePanel,
@@ -56,6 +59,8 @@ import { useAuthor } from '@/hooks/useAuthor';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaign } from '@/hooks/useCampaign';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
+import { useCampaignModeration } from '@/hooks/useCampaignModeration';
+import { useCampaignTrustedVerification } from '@/hooks/useCampaignTrustedVerification';
 import { useCampaignTombstone } from '@/hooks/useCampaignTombstone';
 import { useComments } from '@/hooks/useComments';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -81,6 +86,7 @@ import { formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { formatNumber } from '@/lib/formatNumber';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { openUrl } from '@/lib/downloadFile';
+import { cn } from '@/lib/utils';
 import NotFound from './NotFound';
 
 interface CampaignDetailPageProps {
@@ -276,6 +282,26 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
+
+  // Whether to surface the "not verified by a trusted source" caution UI.
+  // Computed once here so the top banner and the hero's mobile toolbar band
+  // stay in sync (the band tints amber to merge visually with the banner
+  // above it, instead of leaving a stray black strip between banner and
+  // cover image on mobile). Suppressed while loading and for trusted-
+  // verified campaigns.
+  const { isTrustedVerified, isLoading: verificationLoading } =
+    useCampaignTrustedVerification(campaign.aTag);
+  const showUnverified = !verificationLoading && !isTrustedVerified;
+
+  // Hidden-campaign gate. Campaigns moderators have hidden (an
+  // `agora.moderation` `hidden` label) are filtered out of the app's feeds,
+  // so this only fires when a visitor arrives via a direct/shared link. We
+  // show a soft interstitial (not censorship — one click reveals it) until
+  // the visitor chooses to proceed. Gated on `isReady` so a verified-live
+  // campaign never flashes the gate before moderation labels resolve.
+  const { data: moderation, isReady: moderationReady } = useCampaignModeration();
+  const [hiddenRevealed, setHiddenRevealed] = useState(false);
+  const isHidden = moderationReady && moderation.hiddenCoords.has(campaign.aTag);
   // Prefer the shortest trusted pretty `/{nip05}/{d-tag}` path — app-host
   // directory name first, then the author's verified kind-0 NIP-05 — and
   // fall back to the naddr URL otherwise (a spoofed NIP-05 can never hijack
@@ -378,8 +404,25 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
     />
   );
 
+  // Block hidden campaigns behind the soft interstitial until the visitor
+  // opts in. The real campaign UI below is not rendered while gated.
+  if (isHidden && !hiddenRevealed) {
+    return (
+      <HiddenCampaignGate
+        onBack={() => navigate(-1)}
+        onProceed={() => setHiddenRevealed(true)}
+      />
+    );
+  }
+
   return (
     <main className="min-h-screen pb-16">
+      {/* Full-bleed caution strip above the hero for campaigns not verified
+          by a trusted source. Desktop-only: on mobile the same notice is
+          rendered inside the hero's amber toolbar band (see `CampaignHero`)
+          so it merges with the back/admin controls into one region. */}
+      {showUnverified && <UnverifiedCampaignBanner className="hidden sm:flex" />}
+
       {/* Full-bleed cover image. Title, summary, byline, meta, and the
           action bar live in `CampaignHeading` below the banner — the
           image stays unobstructed so banners with baked-in text are
@@ -388,6 +431,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
         cover={cover}
         isCreator={isCreator}
         naddr={naddr}
+        unverified={showUnverified}
         deleteDisabled={deleteMutation.isPending}
         onBack={() => navigate(-1)}
         onDelete={() => setDeleteConfirmOpen(true)}
@@ -796,6 +840,9 @@ interface CampaignHeroProps {
   cover: string | undefined;
   isCreator: boolean;
   naddr: string;
+  /** When true, the mobile toolbar band tints amber so it merges with the
+      unverified caution strip rendered directly above the hero. */
+  unverified?: boolean;
   deleteDisabled: boolean;
   onBack: () => void;
   onDelete: () => void;
@@ -808,6 +855,7 @@ function CampaignHero({
   cover,
   isCreator,
   naddr,
+  unverified = false,
   deleteDisabled,
   onBack,
   onDelete,
@@ -817,45 +865,103 @@ function CampaignHero({
 
   return (
     <>
-      {/* Black band ABOVE the banner. On mobile it hosts the back /
-          admin toolbar so the chips sit on a plain dark surface
-          instead of overlaying the banner image (and any baked-in
-          text). On `sm:` upward the toolbar moves inside the header
-          (chip overlay), but this band stays as a thin strip of
-          black above the banner so the banner reads as a framed
-          window into the image rather than a floating block on the
-          page background. */}
-      <div className="bg-black text-white">
-        <div className="sm:hidden flex items-center justify-between gap-3 px-3 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),0.5rem)] pb-2">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center gap-1.5 h-10 -ml-2 pl-2 pr-3.5 rounded-full text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 motion-safe:transition-colors"
-            aria-label={t('common.goBack')}
-          >
-            <ChevronLeft className="size-5 rtl:rotate-180" />
-          </button>
+      {/* Band ABOVE the banner. On mobile it hosts the back / admin
+          toolbar so the chips sit on a plain surface instead of overlaying
+          the banner image (and any baked-in text). On `sm:` upward the
+          toolbar moves inside the header (chip overlay), but this band stays
+          as a thin strip above the banner so the banner reads as a framed
+          window into the image rather than a floating block on the page
+          background.
 
-          <div className="flex items-center gap-1.5">
-            {isCreator && (
-              <>
-                <Button asChild size="sm" variant="ghost" className="h-10 rounded-full text-white hover:bg-white/10 hover:text-white">
-                  <Link to={`/campaigns/new?edit=${encodeURIComponent(naddr)}`} aria-label={t('campaignsDetail.edit')}>
-                    <Pencil className="size-4" />
+          When the campaign is unverified, this band becomes the mobile home
+          of the caution notice: it tints amber and renders the warning text
+          as a second row directly beneath the toolbar, so the back arrow,
+          admin actions, and warning read as one cohesive amber region. The
+          standalone full-width `UnverifiedCampaignBanner` is desktop-only
+          (`sm:`+); on mobile the message lives here instead. */}
+      <div
+        className={cn(
+          unverified
+            ? 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'
+            : 'bg-black text-white',
+        )}
+      >
+        <div className="sm:hidden px-3 pt-[max(var(--safe-area-inset-top,env(safe-area-inset-top,0px)),0.5rem)] pb-2">
+          {/* Single row: back arrow on the left, then the caution message
+              inline beside it (when unverified), then admin actions on the
+              right — so the arrow and warning read as one connected unit
+              rather than stacked rows. */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onBack}
+              className={cn(
+                'inline-flex shrink-0 items-center justify-center size-10 -ml-2 rounded-full focus-visible:outline-none focus-visible:ring-2 motion-safe:transition-colors',
+                unverified
+                  ? 'text-amber-900 hover:bg-amber-900/10 focus-visible:ring-amber-500 dark:text-amber-100 dark:hover:bg-amber-100/10'
+                  : 'text-white hover:bg-white/10 focus-visible:ring-white/80',
+              )}
+              aria-label={t('common.goBack')}
+            >
+              <ChevronLeft className="size-5 rtl:rotate-180" />
+            </button>
+
+            {/* Caution message, inline beside the arrow. Takes the remaining
+                width so the admin actions stay pinned right. */}
+            {unverified && (
+              <p className="flex-1 min-w-0 flex items-start gap-1.5 text-[13px] leading-snug">
+                <ShieldAlert aria-hidden className="mt-px size-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <span>
+                  {t(
+                    'campaignVerification.unverifiedBanner',
+                    'This campaign has not been verified by a trusted source.',
+                  )}{' '}
+                  <Link
+                    to="/about#faq-verification"
+                    className="font-semibold underline underline-offset-2 hover:text-amber-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:hover:text-white"
+                  >
+                    {t('campaignVerification.unverifiedBannerReadMore', 'Learn more')}
                   </Link>
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={onDelete}
-                  disabled={deleteDisabled}
-                  aria-label={t('campaignsDetail.delete')}
-                  className="h-10 rounded-full text-white hover:bg-destructive/30 hover:text-white"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </>
+                </span>
+              </p>
             )}
+
+            <div className={cn('flex items-center gap-1.5 shrink-0', !unverified && 'ml-auto')}>
+              {isCreator && (
+                <>
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className={cn(
+                      'h-10 rounded-full',
+                      unverified
+                        ? 'text-amber-900 hover:bg-amber-900/10 hover:text-amber-900 dark:text-amber-100 dark:hover:bg-amber-100/10 dark:hover:text-amber-100'
+                        : 'text-white hover:bg-white/10 hover:text-white',
+                    )}
+                  >
+                    <Link to={`/campaigns/new?edit=${encodeURIComponent(naddr)}`} aria-label={t('campaignsDetail.edit')}>
+                      <Pencil className="size-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={onDelete}
+                    disabled={deleteDisabled}
+                    aria-label={t('campaignsDetail.delete')}
+                    className={cn(
+                      'h-10 rounded-full',
+                      unverified
+                        ? 'text-amber-900 hover:bg-destructive/20 hover:text-amber-900 dark:text-amber-100 dark:hover:text-amber-100'
+                        : 'text-white hover:bg-destructive/30 hover:text-white',
+                    )}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -775,6 +775,10 @@
       "chapter3": {
         "label": "Kuhusu Nostr",
         "description": "Protokoli wazi ambayo Agora imejengwa juu yake, na jinsi akaunti yako inavyofanya kazi."
+      },
+      "chapter4": {
+        "label": "Uthibitisho na uaminifu",
+        "description": "Maana ya beji ya uthibitisho, nani anayeitoa, na jinsi ya kutathmini kampeni wewe mwenyewe."
       }
     },
     "guides": {
@@ -849,7 +853,7 @@
     }
   },
   "partners": {
-    "partnersTitle": "Kwa ushirikiano na:",
+    "partnersTitle": "Jenga kwa ushirikiano na:",
     "pressTitle": "Kama ilivyoonekana kwenye:"
   },
   "forms": {
@@ -1387,7 +1391,16 @@
     "verifiedByCount_zero": "Imethibitishwa na watu {{count}}",
     "verifiedByCount_two": "Imethibitishwa na watu {{count}}",
     "verifiedByCount_few": "Imethibitishwa na watu {{count}}",
-    "verifiedByCount_many": "Imethibitishwa na watu {{count}}"
+    "verifiedByCount_many": "Imethibitishwa na watu {{count}}",
+    "unverifiedBanner": "Kampeni hii haijathibitishwa na chanzo cha kuaminika.",
+    "unverifiedBannerReadMore": "Jifunze zaidi"
+  },
+  "campaignHidden": {
+    "title": "Kampeni hii imefichwa",
+    "body": "Kampeni hii imefichwa na wasimamizi wa Agora, kwa kawaida kwa sababu inaonekana kama taka, ulaghai, au uigaji wa mtu mwingine. Bado unaweza kuchagua kuiona.",
+    "learnMore": "Jifunze zaidi",
+    "back": "Rudi",
+    "proceed": "Endelea hata hivyo"
   },
   "calendarEvents": {
     "create": {
@@ -1470,7 +1483,7 @@
     "home": {
       "seoTitle": "Wakusanyaji wa fedha",
       "seoDescription": "Toa Bila Mipaka. Utoaji wa moja kwa moja, mtu kwa mtu, unaowezeshwa na Bitcoin na Nostr.",
-      "heroTagline": "Toa bila<1></1><0>mipaka.</0>",
+      "heroTagline": "Changisha fedha<1></1>bila <0>mipaka</0>",
       "heroBody": "Unga mkono watu na malengo popote duniani kwa kutumia Bitcoin. Kila zawadi huenda moja kwa moja kwenye pochi ya mpokeaji, bila mipaka, bila wapatanishi, bila marejesho, na bila jukwaa kushikilia fedha.",
       "startCampaign": "Anza kampeni",
       "howItWorks": "Jinsi inavyofanya kazi",
@@ -2682,7 +2695,10 @@
         "label": "Kuhusu Agora"
       },
       "payments": {
-        "label": "Michango ya Bitcoin kwenye Agora"
+        "label": "Michango"
+      },
+      "verification": {
+        "label": "Uthibitisho na Uaminifu"
       },
       "about-nostr": {
         "label": "Kuhusu Nostr"
@@ -2719,6 +2735,13 @@
           "Michango ya **faragha** hutumia **malipo ya kimya** (BIP-352). Inaingia pia katika mnyororo, lakini muamala hauwezi kuunganishwa na msimbo wa mchango wa mwapokeaji — kwa hivyo wanabaki nje ya orodha za wafadhili za umma na jumla. Mfadhili anahitaji pochi inayoauni malipo ya kimya — tunapendekeza [Ditto Wallet](https://ditto.pub) au [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Kampeni inapokubali **zote mbili**, {{appName}} inaonyesha msimbo mmoja wa QR unaosimba ncha zote mbili. Pochi za malipo ya kimya huusoma kama wa faragha; pochi nyingine zinarudi kwa anwani ya umma. Wafadhili hawana haja ya kuchagua — pochi yao huchagua njia sahihi kiotomatiki.",
           "Vyovyote, malipo yanaenda moja kwa moja kwa mwapokeaji. {{appName}} kamwe haigusi fedha."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Funds ni nini?",
+        "answer": [
+          "**Agora Funds** ni kampeni zinazosimamiwa na {{appName}} zinazokuruhusu kutoa mchango kwenye kundi la kampeni nyingi zilizounganishwa na lengo moja. Badala ya kuchagua kampeni moja, unatoa mchango mara moja kwenye mfuko na zawadi yako inasaidia kila kampeni katika lengo hilo.",
+          "Agora Funds hukubali **malipo ya kadi kupitia Stripe** zaidi ya Bitcoin — kuwapa wafadhili wasiotaka kulipa kwa Bitcoin njia ya kuendelea kuunga mkono malengo wanayoyajali. Michango ya kadi inapatikana tu kwenye **mifuko inayofadhiliwa na Agora**; kampeni za kawaida bado hupokea Bitcoin moja kwa moja, katika mnyororo, bila mchakataji wa malipo katikati."
         ]
       },
       "connect-wallet": {
@@ -2800,6 +2823,50 @@
         "answer": [
           "Bitcoin ni cryptocurrency iliyo na matumizi makubwa zaidi. Hiyo inamaanisha ni rahisi zaidi kwa wafadhili kununua na kutuma, na rahisi zaidi kwa wapokeaji kupokea, kuhifadhi, na kutumia.",
           "Sarafu zinazojikita kwenye faragha kama Monero zinatoa athari tofauti za faragha kuliko Bitcoin, lakini hazitumiwi na programu nyingi za watumiaji na ni ngumu zaidi kubadilisha kurudi kwa sarafu ya ndani. Kuomba pande zote mbili za mchango kwanza kupata cryptocurrency ya kiwango kidogo ni kizuizi ambacho {{appName}} haitaweka njiani. Kwa michango ya Bitcoin yenyewe, malipo ya kimya yanafunika kesi ya matumizi ya kutounganika bila kuondoka kwenye mfumo wa Bitcoin."
+        ]
+      },
+      "what-is-verification": {
+        "question": "Beji ya \"Imethibitishwa\" kwenye kampeni ina maana gani?",
+        "answer": [
+          "Kampeni iliyothibitishwa ni ile ambayo **mthibitishaji wa kuaminika** ameidhinisha hadharani. Mthibitishaji huyo anasema anamfahamu mwandaaji binafsi, au amehakiki kwa umakini kwamba madai ya kampeni ni ya kweli.",
+          "Beji inaonyesha kwa uwazi **nani** aliyeidhinisha, na kila mthibitishaji ana kiungo kinachoelekeza kwenye wasifu wake. Uthibitisho ni ishara, siyo muhuri wa idhini kutoka {{appName}}. Hatufanyi uchunguzi wa asili ya watu. Upo ili uweze kuamua kama *wewe* unawaamini watu wanaoisimamia kampeni.",
+          "Wakati hakuna chanzo cha kuaminika kilichothibitisha kampeni, ukurasa wake unaonyesha ilani ya tahadhari badala yake. Ilani hiyo siyo shutuma. Ina maana tu kwamba hakuna mtu kwenye orodha ya kuaminika aliyeidhinisha bado."
+        ]
+      },
+      "who-verifies": {
+        "question": "Nani anahesabika kama \"chanzo cha kuaminika\"?",
+        "answer": [
+          "Wathibitishaji wa kuaminika ni wanachama wa vifurushi viwili vilivyoteuliwa vya kufuata: **World Liberty Congress Verified** na **Team Soapbox** (timu inayojenga {{appName}}, kwa ushirikiano na [World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Kitaalamu, mtu yeyote kwenye Nostr anaweza kuchapisha lebo ya uthibitisho kwa kampeni yoyote, nayo itaonekana kwenye beji. Lakini idhini kutoka kwa mwanachama wa vifurushi hivyo viwili pekee ndiyo inayoondoa ilani ya tahadhari na inayoweza kuipandisha kampeni hadi sehemu ya Verified Campaigns kwenye ukurasa wa nyumbani. Mwandaaji anayethibitisha kampeni yake mwenyewe haihesabiki."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Kampeni haijathibitishwa. Je, ni ulaghai?",
+        "answer": [
+          "**Si lazima.** Uthibitisho umefanywa mgumu kwa makusudi kuupata, hivyo kampeni nyingi halali huanza bila kuthibitishwa, hasa zile mpya na zile kutoka kwa watu ambao wathibitishaji wa kuaminika hawajakutana nao bado.",
+          "Chukulia beji kama uhakika wa ziada, siyo kitu pekee kinachohesabika. Soma kampeni, angalia wasifu na historia ya mwandaaji, na kumbuka jinsi {{appName}} inavyofanya kazi: michango huenda **moja kwa moja** kwenye anwani ya Bitcoin ya mwandaaji kwenye mnyororo. {{appName}} haishiki fedha kamwe na haiwezi kubatilisha, kurejesha, au kufungia malipo, kwa hivyo toa kama vile ungempa mtu fedha taslimu."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Kwa nini baadhi ya kampeni zimefichwa, na je bado naweza kuziona?",
+        "answer": [
+          "Wasimamizi wanaweza kuficha kampeni inayoonekana kama taka, ulaghai, au uigaji wa mtu mwingine. Kampeni zilizofichwa huwekwa nje ya mlisho na utafutaji wa {{appName}} ili watu wengi wasiingie ndani yake kwa bahati mbaya.",
+          "**Hii siyo udhibiti wa habari, na hakuna kinachofutwa.** Kampeni inaishi kwenye mtandao wazi wa Nostr bila kujali {{appName}} inaonyesha nini. Kuficha kunabadilisha tu kile {{appName}} inachoonyesha kwa chaguomsingi. Ukifungua kampeni iliyofichwa moja kwa moja, kama vile kutoka kwenye kiungo kilichoshirikiwa, utaona ilani inayoeleza sababu na kitufe cha **endelea hata hivyo**. Uamuzi wa kuiona, na kuchangia, daima ni wako.",
+          "Lengo ni kutoa tu muktadha kwa wachangiaji kabla hawajatoa: taarifa ya awali kwamba msimamizi wa kuaminika ameweka alama ya tahadhari kwenye kitu, siyo uamuzi uliofanywa kwa niaba yako."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Mimi ni mwandaaji. Ninawezaje kupata kampeni yangu ithibitishwe?",
+        "answer": [
+          "Huwezi kujithibitisha mwenyewe; mthibitishaji wa kuaminika lazima aidhinishe kwa niaba yako. Njia ya kuaminika zaidi ni kujenga rekodi halisi: wasifu kamili, kampeni iliyo wazi, na uhusiano wa kweli na watu ndani ya jamii.",
+          "Kama kazi yako inahusiana na World Liberty Congress au timu ya {{appName}}, wasiliana kupitia mawasiliano yako yaliyopo huko. Mthibitishaji anayekufahamu anaweza kuongeza idhini yake, nayo itaonekana kwenye kampeni yako moja kwa moja."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "Je, uthibitisho unahakikisha mchango wangu uko salama?",
+        "answer": [
+          "Hapana. Uthibitisho unakuambia kwamba mtu wa kuaminika ameidhinisha kampeni. **Hauhakikishi** matokeo, hauhakikishi fedha yako, wala hauifanyi {{appName}} kuwajibika kwa jinsi fedha zinavyotumika.",
+          "Kwa sababu michango haishikwi na yeyote na iko kwenye mnyororo, kila malipo ni ya mwisho mara tu unapoyatuma. Mthibitishaji anaweza pia **kuondoa** idhini yake baadaye kama kitu kikibadilika, jambo ambalo lingeondoa beji. Daima changia kiasi ambacho unaridhika kumpa mtu mwingine moja kwa moja."
         ]
       },
       "what-is-nostr": {

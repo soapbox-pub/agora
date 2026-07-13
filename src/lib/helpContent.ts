@@ -84,6 +84,7 @@ const FAQ_STRUCTURE: FAQCategoryStructure[] = [
     id: 'payments',
     items: [
       { id: 'send-bitcoin-onchain' },
+      { id: 'agora-funds' },
       { id: 'connect-wallet' },
       { id: 'export-wallet' },
       { id: 'donations-are-public-general' },
@@ -94,6 +95,17 @@ const FAQ_STRUCTURE: FAQCategoryStructure[] = [
       { id: 'why-not-lightning' },
       { id: 'why-not-rotating-addresses' },
       { id: 'why-not-other-crypto' },
+    ],
+  },
+  {
+    id: 'verification',
+    items: [
+      { id: 'what-is-verification' },
+      { id: 'who-verifies' },
+      { id: 'unverified-meaning' },
+      { id: 'why-campaigns-hidden' },
+      { id: 'how-get-verified' },
+      { id: 'verification-guarantee' },
     ],
   },
   {

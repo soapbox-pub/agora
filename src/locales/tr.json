@@ -775,6 +775,10 @@
       "chapter3": {
         "label": "Nostr hakkında",
         "description": "Agora'nın üzerine kurulduğu açık protokol ve hesabınızın nasıl çalıştığı."
+      },
+      "chapter4": {
+        "label": "Doğrulama ve güven",
+        "description": "Doğrulanmış rozetinin ne anlama geldiği, kimin verdiği ve bir kampanyayı kendiniz nasıl değerlendireceğiniz."
       }
     },
     "guides": {
@@ -849,7 +853,7 @@
     }
   },
   "partners": {
-    "partnersTitle": "İş birliğiyle:",
+    "partnersTitle": "İş birliğiyle inşa edin:",
     "pressTitle": "Basında biz:"
   },
   "forms": {
@@ -1387,7 +1391,16 @@
     "verifiedByCount_zero": "{{count}} kişi tarafından doğrulandı",
     "verifiedByCount_two": "{{count}} kişi tarafından doğrulandı",
     "verifiedByCount_few": "{{count}} kişi tarafından doğrulandı",
-    "verifiedByCount_many": "{{count}} kişi tarafından doğrulandı"
+    "verifiedByCount_many": "{{count}} kişi tarafından doğrulandı",
+    "unverifiedBanner": "Bu kampanya güvenilir bir kaynak tarafından doğrulanmamıştır.",
+    "unverifiedBannerReadMore": "Daha fazla bilgi"
+  },
+  "campaignHidden": {
+    "title": "Bu kampanya gizlendi",
+    "body": "Bu kampanya, genellikle spam, dolandırıcılık veya başkasının kimliğine bürünme gibi göründüğü için Agora moderatörleri tarafından gizlendi. Yine de görüntülemeyi seçebilirsiniz.",
+    "learnMore": "Daha fazla bilgi",
+    "back": "Geri",
+    "proceed": "Yine de devam et"
   },
   "calendarEvents": {
     "create": {
@@ -1470,7 +1483,7 @@
     "home": {
       "seoTitle": "Fon Toplama Kampanyaları",
       "seoDescription": "Sınır Tanımadan Ver. Bitcoin ve Nostr ile güçlendirilen doğrudan, kişiden kişiye bağış.",
-      "heroTagline": "Sınır tanımadan<1></1><0>ver.</0>",
+      "heroTagline": "Bağış toplayın<1></1><0>sınır</0> tanımadan",
       "heroBody": "Dünyanın her yerindeki insanları ve davaları Bitcoin ile destekleyin. Her bağış doğrudan alıcının cüzdanına ulaşır; sınır yok, aracı yok, geri ödeme yok ve fonları tutan bir platform yok.",
       "startCampaign": "Kampanya başlat",
       "howItWorks": "Nasıl çalışır",
@@ -2725,7 +2738,10 @@
         "label": "Agora Hakkında"
       },
       "payments": {
-        "label": "Agora'da Bitcoin Bağışları"
+        "label": "Bağışlar"
+      },
+      "verification": {
+        "label": "Doğrulama ve Güven"
       },
       "about-nostr": {
         "label": "Nostr Hakkında"
@@ -2762,6 +2778,13 @@
           "**Gizli** bağışlar **sessiz ödemeleri** (BIP-352) kullanır. Bunlar da zincir üstünde uzlaşır, ancak işlem alıcının bağış koduna bağlanamaz — bu nedenle herkese açık bağışçı listelerinin ve toplamların dışında kalırlar. Bağışçının sessiz ödemeleri destekleyen bir cüzdana ihtiyacı vardır — [Ditto Wallet](https://ditto.pub) veya [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk) öneriyoruz.",
           "Bir kampanya **her ikisini** kabul ettiğinde, {{appName}} her iki uç noktayı kodlayan tek bir QR kod gösterir. Sessiz ödeme cüzdanları bunu gizli olarak okur; diğer cüzdanlar açık adrese geri döner. Bağışçıların seçim yapmasına gerek yoktur — cüzdanları otomatik olarak doğru yolu seçer.",
           "Her durumda ödeme doğrudan alıcıya gider. {{appName}} fonlara hiçbir zaman dokunmaz."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Fonları nedir?",
+        "answer": [
+          "**Agora Fonları**, tek bir davaya bağlı birden fazla kampanyadan oluşan bir havuza bağış yapmanızı sağlayan, {{appName}} tarafından yönetilen kampanyalardır. Tek bir kampanya seçmek yerine fona bir kez bağış yaparsınız ve bağışınız o davadaki her kampanyayı destekler.",
+          "Agora Fonları, Bitcoin'e ek olarak **Stripe üzerinden kart ödemelerini** de kabul eder — Bitcoin ile ödeme yapmak istemeyen bağışçılara, önemsedikleri davaları yine de destekleme imkânı verir. Kart bağışları yalnızca **Agora destekli fonlarda** kullanılabilir; normal kampanyalar yine de aracı bir ödeme işlemcisi olmadan, doğrudan zincir üstünde Bitcoin alır."
         ]
       },
       "connect-wallet": {
@@ -2843,6 +2866,50 @@
         "answer": [
           "Bitcoin, en yaygın benimsenmiş kripto paradır. Bu, bağışçıların satın alıp göndermesini ve alıcıların almasını, tutmasını ve harcamasını en kolay olan demektir.",
           "Monero gibi gizlilik odaklı paralar Bitcoin'den farklı gizlilik takasları sunar, ancak tüketici uygulamalarının çoğunluğunca desteklenmezler ve yerel para birimine geri dönüştürmek daha zordur. Bir bağışın iki tarafından birine önce niş bir kripto parayı edinmesini istemek, {{appName}}'nın koymayacağı bir engeldir. Bitcoin bağışlarının kendisi için, sessiz ödemeler Bitcoin ekosistemini terk etmeden izlenemezlik kullanım durumunu karşılar."
+        ]
+      },
+      "what-is-verification": {
+        "question": "Bir kampanyadaki \"Doğrulanmış\" rozeti ne anlama gelir?",
+        "answer": [
+          "Doğrulanmış bir kampanya, bir **güvenilir doğrulayıcının** kamuya açık olarak kefil olduğu kampanyadır. Bu doğrulayıcı, düzenleyiciyi kişisel olarak tanıdığını ya da kampanyanın iddialarının doğru olduğunu anlamlı bir şekilde kontrol ettiğini söyler.",
+          "Rozet, kefilliği tam olarak **kimin** yaptığını gösterir ve her doğrulayıcı kendi profiline bağlantı verir. Doğrulama bir sinyaldir, {{appName}} tarafından verilen bir onay mührü değildir. Biz geçmiş araştırması yapmıyoruz. Bu, bir kampanyanın arkasındaki kişilere *sizin* güvenip güvenmeyeceğinize karar verebilmeniz için vardır.",
+          "Güvenilir bir kaynak bir kampanyayı doğrulamadığında, sayfasında bunun yerine bir uyarı bildirimi görünür. Bu bildirim bir suçlama değildir. Yalnızca güvenilir listedeki hiç kimsenin henüz ona kefil olmadığı anlamına gelir."
+        ]
+      },
+      "who-verifies": {
+        "question": "Kimler \"güvenilir kaynak\" sayılır?",
+        "answer": [
+          "Güvenilir doğrulayıcılar, özenle hazırlanmış iki takip paketinin üyeleridir: **World Liberty Congress Verified** ve **Team Soapbox** ([World Liberty Congress](https://worldlibertycongress.org/) ile iş birliği içinde {{appName}} uygulamasını geliştiren ekip).",
+          "Teknik olarak Nostr üzerindeki herkes herhangi bir kampanya için bir doğrulama etiketi yayımlayabilir ve bu rozette görünür. Ancak yalnızca bu iki paketin bir üyesinden gelen bir kefillik uyarı bildirimini kaldırır ve bir kampanyayı ana sayfanın Verified Campaigns bölümüne yükseltebilir. Bir düzenleyicinin kendi kampanyasını doğrulaması sayılmaz."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Bir kampanya doğrulanmamış. Bu bir dolandırıcılık mı?",
+        "answer": [
+          "**Şart değil.** Doğrulama kasıtlı olarak kazanılması zor tutulmuştur, bu nedenle çoğu meşru kampanya doğrulanmamış olarak başlar; özellikle yeni olanlar ve güvenilir doğrulayıcıların henüz tanışmadığı kişilerden gelenler.",
+          "Rozeti önemli olan tek şey olarak değil, fazladan bir güven olarak görün. Kampanyayı okuyun, düzenleyicinin profiline ve geçmişine bakın ve {{appName}} uygulamasının nasıl çalıştığını hatırlayın: bağışlar zincir üstünde **doğrudan** düzenleyicinin Bitcoin adresine gider. {{appName}} fonları asla tutmaz ve bir ödemeyi geri alamaz, iade edemez veya donduramaz; bu yüzden birine nakit para verir gibi bağış yapın."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Bazı kampanyalar neden gizli ve yine de görebilir miyim?",
+        "answer": [
+          "Moderatörler, spam, dolandırıcılık veya başkasının kimliğine bürünme gibi görünen bir kampanyayı gizleyebilir. Gizlenen kampanyalar, çoğu kişinin yanlışlıkla denk gelmemesi için {{appName}} akışlarının ve aramasının dışında tutulur.",
+          "**Bu sansür değildir ve hiçbir şey silinmez.** Bir kampanya, {{appName}} ne gösterirse göstersin açık Nostr ağında yaşamaya devam eder. Gizleme yalnızca {{appName}} uygulamasının varsayılan olarak öne çıkardığı şeyi değiştirir. Gizli bir kampanyayı doğrudan açarsanız, örneğin paylaşılan bir bağlantıdan, nedenini açıklayan bir bildirim ve **yine de devam et** düğmesi görürsünüz. Onu görüntüleme ve bağış yapma seçimi her zaman sizindir.",
+          "Amaç yalnızca bağışçılara vermeden önce bağlam sunmaktır: güvenilir bir moderatörün bir şeyi işaretlediğine dair bir uyarı, sizin adınıza verilmiş bir karar değil."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Ben bir düzenleyiciyim. Kampanyamı nasıl doğrulatırım?",
+        "answer": [
+          "Kendinizi doğrulayamazsınız; güvenilir bir doğrulayıcının size kefil olması gerekir. En güvenilir yol, gerçek bir sicil oluşturmaktır: eksiksiz bir profil, açık bir kampanya ve topluluktaki insanlarla gerçek bir ilişki.",
+          "Çalışmanız World Liberty Congress veya {{appName}} ekibiyle bağlantılıysa, oradaki mevcut bağlantılarınız aracılığıyla iletişime geçin. Sizi tanıyan bir doğrulayıcı kefilliğini ekleyebilir ve bu, kampanyanızda otomatik olarak görünür."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "Doğrulama, bağışımın güvende olduğunu garanti eder mi?",
+        "answer": [
+          "Hayır. Doğrulama, güvenilir bir kişinin kampanyaya kefil olduğunu size bildirir. Sonuçları **garanti etmez**, paranızı sigortalamaz veya fonların nasıl kullanıldığından {{appName}} uygulamasını sorumlu kılmaz.",
+          "Bağışlar emanetsiz ve zincir üstü olduğundan, her ödeme gönderdiğiniz anda kesinleşir. Bir doğrulayıcı, bir şeyler değişirse kefilliğini daha sonra **geri çekebilir** ve bu, rozeti kaldırır. Her zaman başka bir kişiye doğrudan vermekte rahat olacağınız bir miktarı bağışlayın."
         ]
       },
       "what-is-nostr": {

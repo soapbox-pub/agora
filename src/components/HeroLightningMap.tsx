@@ -5,8 +5,9 @@ import { cn } from '@/lib/utils';
 
 /**
  * Decorative world map with glowing brand-orange Lightning arcs and pulsing
- * city nodes. Theme-aware: light mode uses a paper-bright canvas with softer
- * inked land, while dark mode keeps the original near-black neon treatment.
+ * city nodes. Always rendered in the near-black "dark" treatment on both
+ * app themes — the light-mode palette washed out the land and arcs, so the
+ * home hero (and this map) is pinned to the dark look regardless of theme.
  *
  * Composition (back to front):
  *   1. Equirectangular world map drawn from {@link LAND_RINGS} — barely
@@ -90,10 +91,11 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
     <div
       className={cn(
         'absolute inset-0 overflow-hidden pointer-events-none',
-        '[--hero-glow-fade:38_30%_96%] [--hero-land-from:24_70%_48%] [--hero-land-to:28_62%_42%]',
-        '[--hero-arc-a:24_95%_44%] [--hero-arc-b:30_92%_48%] [--hero-node-a:30_96%_50%] [--hero-node-b:24_92%_48%] [--hero-node-dot:28_96%_45%]',
-        'dark:[--hero-glow-fade:220_30%_8%] dark:[--hero-land-from:24_80%_50%] dark:[--hero-land-to:24_70%_45%]',
-        'dark:[--hero-arc-a:24_100%_60%] dark:[--hero-arc-b:30_100%_65%] dark:[--hero-node-a:30_100%_70%] dark:[--hero-node-b:24_100%_55%] dark:[--hero-node-dot:36_100%_70%]',
+        // Pinned to the near-black "dark" palette on both themes — the
+        // hero always renders dark (see CampaignsPage `Hero`), so the map
+        // never uses the washed-out light values.
+        '[--hero-glow-fade:220_30%_8%] [--hero-land-from:24_80%_50%] [--hero-land-to:24_70%_45%]',
+        '[--hero-arc-a:24_100%_60%] [--hero-arc-b:30_100%_65%] [--hero-node-a:30_100%_70%] [--hero-node-b:24_100%_55%] [--hero-node-dot:36_100%_70%]',
         className,
       )}
       aria-hidden="true"
@@ -169,7 +171,7 @@ function HeroLightningMapImpl({ className }: { className?: string }) {
         <g
           fill={`url(#${arcId('land')})`}
           stroke="none"
-          className="opacity-[0.14] dark:opacity-[0.18]"
+          className="opacity-[0.18]"
         >
           {landPaths}
         </g>

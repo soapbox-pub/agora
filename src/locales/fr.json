@@ -775,6 +775,10 @@
       "chapter3": {
         "label": "À propos de Nostr",
         "description": "Le protocole ouvert sur lequel Agora est bâti, et comment fonctionne votre compte."
+      },
+      "chapter4": {
+        "label": "Vérification et confiance",
+        "description": "Ce que signifie le badge vérifié, qui l'attribue et comment évaluer une campagne par vous-même."
       }
     },
     "guides": {
@@ -890,7 +894,7 @@
     }
   },
   "partners": {
-    "partnersTitle": "En partenariat avec :",
+    "partnersTitle": "Construisez en collaboration avec :",
     "pressTitle": "Vu dans :"
   },
   "forms": {
@@ -1428,7 +1432,16 @@
     "verifiedByCount_zero": "Vérifié par {{count}} personnes",
     "verifiedByCount_two": "Vérifié par {{count}} personnes",
     "verifiedByCount_few": "Vérifié par {{count}} personnes",
-    "verifiedByCount_many": "Vérifié par {{count}} personnes"
+    "verifiedByCount_many": "Vérifié par {{count}} personnes",
+    "unverifiedBanner": "Cette campagne n'a pas été vérifiée par une source de confiance.",
+    "unverifiedBannerReadMore": "En savoir plus"
+  },
+  "campaignHidden": {
+    "title": "Cette campagne a été masquée",
+    "body": "Cette campagne a été masquée par les modérateurs d'Agora, généralement parce qu'elle ressemble à du spam, à une arnaque ou à une usurpation d'identité. Vous pouvez toutefois choisir de la consulter.",
+    "learnMore": "En savoir plus",
+    "back": "Retour",
+    "proceed": "Continuer quand même"
   },
   "calendarEvents": {
     "create": {
@@ -1511,7 +1524,7 @@
     "home": {
       "seoTitle": "Collectes de fonds",
       "seoDescription": "Donnez sans frontières. Des dons directs, de personne à personne, propulsés par le Bitcoin et Nostr.",
-      "heroTagline": "Donnez sans<1></1><0>frontières.</0>",
+      "heroTagline": "Collectez<1></1>sans <0>frontières</0>",
       "heroBody": "Soutenez des personnes et des causes partout dans le monde avec du Bitcoin. Chaque don va directement dans le portefeuille du bénéficiaire, sans frontières, sans intermédiaires, sans rétrofacturations, et sans plateforme qui détient les fonds.",
       "startCampaign": "Démarrer une campagne",
       "howItWorks": "Comment ça marche",
@@ -2838,7 +2851,10 @@
         "label": "À propos d'Agora"
       },
       "payments": {
-        "label": "Dons Bitcoin sur Agora"
+        "label": "Dons"
+      },
+      "verification": {
+        "label": "Vérification et confiance"
       },
       "about-nostr": {
         "label": "À propos de Nostr"
@@ -2875,6 +2891,13 @@
           "Les dons **privés** utilisent des **paiements silencieux** (BIP-352). Ils sont aussi réglés on-chain, mais la transaction ne peut pas être reliée au code de donation du bénéficiaire — ils restent donc hors des listes et totaux publics de donateurs. Le donateur a besoin d'un portefeuille qui prend en charge les paiements silencieux — nous recommandons [Ditto Wallet](https://ditto.pub) ou [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Quand une campagne accepte **les deux**, {{appName}} affiche un seul QR code qui encode les deux points de terminaison. Les portefeuilles de paiements silencieux le lisent comme privé ; les autres portefeuilles se rabattent sur l'adresse publique. Les donateurs n'ont pas à choisir — leur portefeuille sélectionne automatiquement le bon chemin.",
           "Dans tous les cas, le paiement va directement au bénéficiaire. {{appName}} ne touche jamais les fonds."
+        ]
+      },
+      "agora-funds": {
+        "question": "Que sont les Fonds Agora ?",
+        "answer": [
+          "Les **Fonds Agora** sont des campagnes gérées par {{appName}} qui vous permettent de donner à un ensemble de plusieurs campagnes liées à une même cause. Au lieu de choisir une seule campagne, vous donnez une fois au fonds et votre don soutient toutes les campagnes de cette cause.",
+          "Les Fonds Agora acceptent les **paiements par carte via Stripe** en plus de Bitcoin — offrant aux donateurs qui ne veulent pas payer en Bitcoin un moyen de tout de même soutenir les causes qui leur tiennent à cœur. Les dons par carte ne sont disponibles que sur les **fonds sponsorisés par Agora** ; les campagnes ordinaires reçoivent toujours du Bitcoin directement, on-chain, sans aucun processeur de paiement entre les deux."
         ]
       },
       "connect-wallet": {
@@ -2956,6 +2979,50 @@
         "answer": [
           "Bitcoin est de loin la crypto-monnaie la plus largement adoptée. Cela signifie qu'elle est la plus facile à acheter et à envoyer pour les donateurs, et la plus facile à recevoir, détenir et dépenser pour les bénéficiaires.",
           "Les pièces axées sur la confidentialité comme Monero offrent des compromis de confidentialité différents de Bitcoin, mais elles ne sont pas prises en charge par la plupart des applications grand public et sont plus difficiles à reconvertir en monnaie locale. Demander à l'une ou l'autre des parties d'un don d'acquérir d'abord une crypto-monnaie de niche est une barrière que {{appName}} n'imposera pas. Pour les dons Bitcoin eux-mêmes, les paiements silencieux couvrent le cas d'usage de la non-traçabilité sans quitter l'écosystème Bitcoin."
+        ]
+      },
+      "what-is-verification": {
+        "question": "Que signifie le badge « Vérifié » sur une campagne ?",
+        "answer": [
+          "Une campagne vérifiée est une campagne pour laquelle un **vérificateur de confiance** s'est publiquement porté garant. Ce vérificateur déclare qu'il connaît personnellement l'organisateur, ou qu'il a vérifié de manière sérieuse que les affirmations de la campagne sont vraies.",
+          "Le badge indique exactement **qui** s'est porté garant, et chaque vérificateur renvoie vers son profil. La vérification est un signal, pas un sceau d'approbation de la part de {{appName}}. Nous ne faisons pas d'enquête de fond. Elle existe pour que vous puissiez décider si *vous* faites confiance aux personnes qui soutiennent une campagne.",
+          "Lorsqu'aucune source de confiance n'a vérifié une campagne, sa page affiche à la place un avis de prudence. Cet avis n'est pas une accusation. Il signifie simplement que personne sur la liste de confiance ne s'est encore porté garant pour elle."
+        ]
+      },
+      "who-verifies": {
+        "question": "Qui est considéré comme une « source de confiance » ?",
+        "answer": [
+          "Les vérificateurs de confiance sont les membres de deux packs de suivi sélectionnés : **World Liberty Congress Verified** et **Team Soapbox** (l'équipe qui développe {{appName}}, en collaboration avec le [World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Techniquement, n'importe qui sur Nostr peut publier une étiquette de vérification pour n'importe quelle campagne, et elle apparaîtra sur le badge. Mais seul un soutien d'un membre de ces deux packs lève l'avis de prudence et peut promouvoir une campagne dans la section Verified Campaigns de la page d'accueil. Un organisateur qui vérifie sa propre campagne ne compte pas."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Une campagne n'est pas vérifiée. Est-ce une arnaque ?",
+        "answer": [
+          "**Pas nécessairement.** La vérification est délibérément difficile à obtenir, donc la plupart des campagnes légitimes commencent sans être vérifiées, en particulier les nouvelles et celles de personnes que les vérificateurs de confiance n'ont pas encore rencontrées.",
+          "Considérez le badge comme une confiance supplémentaire, pas comme la seule chose qui compte. Lisez la campagne, regardez le profil et l'historique de l'organisateur, et rappelez-vous comment fonctionne {{appName}} : les dons vont **directement** à l'adresse Bitcoin de l'organisateur sur la chaîne. {{appName}} ne détient jamais les fonds et ne peut pas annuler, rembourser ou geler un paiement, alors donnez comme si vous remettiez de l'argent liquide à quelqu'un."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Pourquoi certaines campagnes sont-elles masquées, et puis-je quand même les voir ?",
+        "answer": [
+          "Les modérateurs peuvent masquer une campagne qui ressemble à du spam, à une arnaque ou à une usurpation de l'identité de quelqu'un d'autre. Les campagnes masquées sont tenues à l'écart des fils et de la recherche de {{appName}} afin que la plupart des gens ne tombent pas dessus par accident.",
+          "**Ce n'est pas de la censure, et rien n'est supprimé.** Une campagne existe sur le réseau ouvert Nostr quoi que {{appName}} affiche. Le masquage ne change que ce que {{appName}} met en avant par défaut. Si vous ouvrez une campagne masquée directement, par exemple depuis un lien partagé, vous verrez un avis expliquant pourquoi ainsi qu'un bouton pour **continuer quand même**. Le choix de la consulter, et de faire un don, vous appartient toujours.",
+          "Le but est simplement de donner du contexte aux donateurs avant qu'ils ne donnent : une mise en garde indiquant qu'un modérateur de confiance a signalé quelque chose, pas une décision prise à votre place."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Je suis organisateur. Comment faire vérifier ma campagne ?",
+        "answer": [
+          "Vous ne pouvez pas vous vérifier vous-même ; un vérificateur de confiance doit se porter garant pour vous. Le moyen le plus fiable est de bâtir un historique authentique : un profil complet, une campagne claire et une véritable relation avec les personnes de la communauté.",
+          "Si votre travail est lié au World Liberty Congress ou à l'équipe {{appName}}, prenez contact via vos relations existantes là-bas. Un vérificateur qui vous connaît peut ajouter son soutien, et il apparaîtra automatiquement sur votre campagne."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "La vérification garantit-elle que mon don est sûr ?",
+        "answer": [
+          "Non. La vérification vous indique qu'une personne de confiance se porte garante de la campagne. Elle ne garantit **pas** les résultats, n'assure pas votre argent et ne rend pas {{appName}} responsable de l'utilisation des fonds.",
+          "Comme les dons sont non dépositaires et sur la chaîne, chaque paiement est définitif dès l'instant où vous l'envoyez. Un vérificateur peut aussi **retirer** son soutien plus tard si quelque chose change, ce qui supprimerait le badge. Donnez toujours un montant que vous êtes à l'aise de remettre directement à une autre personne."
         ]
       },
       "what-is-nostr": {

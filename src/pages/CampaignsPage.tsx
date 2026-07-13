@@ -95,10 +95,10 @@ export function CampaignsPage() {
                 </p>
               </div>
               <Button asChild variant="outline" className="hidden sm:inline-flex">
-                <StartCampaignLink>
-                  <PlusCircle className="size-4 mr-2" />
-                  {t('campaigns.home.startCampaign')}
-                </StartCampaignLink>
+                <Link to="/campaigns">
+                  <ArrowRight className="size-4 mr-2 rtl:rotate-180" />
+                  {t('campaigns.home.browseAll')}
+                </Link>
               </Button>
             </div>
 
@@ -132,18 +132,6 @@ export function CampaignsPage() {
                 <ArrowRight className="ml-2 size-4 rtl:rotate-180" />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full">
-              <Link to="/verify">
-                <BadgeCheck className="mr-2 size-4" />
-                {t('campaigns.home.verifyCampaigns')}
-              </Link>
-            </Button>
-            <Button asChild size="lg" className="rounded-full">
-              <StartCampaignLink>
-                <PlusCircle className="mr-2 size-4" />
-                {t('campaigns.home.startCampaign')}
-              </StartCampaignLink>
-            </Button>
           </div>
         </section>
       </div>
@@ -168,17 +156,20 @@ function Hero() {
   return (
     /* Hero.
 
-       Brand-driven, type-led, and theme-aware. Three layers:
-          1. A paper-bright light canvas with a near-black dark-mode
-             override. No campaign photo, no random hue cycling: the hero
-             looks the same on every visit, so quality doesn't depend on
-             which campaign is on top.
+       Brand-driven and type-led. Always rendered in the near-black
+       "dark" treatment regardless of the app theme: the light-mode map
+       read poorly (washed-out land, low-contrast arcs), so the hero is
+       pinned to the dark look on both themes. Three layers:
+          1. A near-black canvas — fixed, not theme-aware. No campaign
+             photo, no random hue cycling: the hero looks the same on
+             every visit, so quality doesn't depend on which campaign is
+             on top.
           2. HeroLightningMap — decorative SVG world map with curated
              brand-orange arcs and pulsing city nodes. Pure SVG, negligible
              render cost, animations honor reduced-motion.
-          3. Headline column on the left, with colors tuned per theme so
+          3. Headline column on the left, tuned for the dark canvas so
              type stays readable without any text-shadow at all. */
-    <section className="relative overflow-hidden border-b border-border bg-[hsl(38_30%_96%)] text-foreground dark:bg-[hsl(220_25%_6%)] dark:text-white">
+    <section className="relative overflow-hidden border-b border-white/10 bg-[hsl(220_25%_6%)] text-white">
       <HeroLightningMap />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-24 min-h-[440px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-center">
@@ -233,7 +224,7 @@ function Hero() {
               ]}
             />
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground dark:text-white/80 max-w-xl">
+          <p className="text-base sm:text-lg text-white/80 max-w-xl">
             {t('campaigns.home.heroBody')}
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
@@ -252,7 +243,7 @@ function Hero() {
               variant="outline"
               size="lg"
               asChild
-              className="rounded-full h-12 px-6 text-base bg-background/55 backdrop-blur-sm hover:bg-background/75 dark:border-white/30 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:hover:text-white dark:hover:border-white/50 [&_svg]:size-[18px]"
+              className="rounded-full h-12 px-6 text-base border-white/30 bg-white/5 text-white backdrop-blur-sm hover:bg-white/10 hover:text-white hover:border-white/50 [&_svg]:size-[18px]"
             >
               <Link to="/about">
                 {t('campaigns.home.howItWorks')}
@@ -282,13 +273,40 @@ function Hero() {
  *
  * Returning a literal Tailwind string (rather than building it) keeps
  * the JIT happy — `col-span-2` etc. are seen by the scanner.
+ *
+ * Desktop straggler trimming: on `lg` the grid is 4 columns, the first
+ * two cards span 2 each (filling row 1), and the tail (index ≥ 2) flows
+ * four-per-row. Any trailing cards that don't complete a row of four
+ * would leave an ugly ragged gap, so they're hidden at `lg` only via
+ * `lg:hidden` — they stay visible on mobile (1-col) and `sm` (2-col)
+ * where a partial trailing row leaves no gap. `heroTailStragglers`
+ * computes how many that is.
  */
 function heroItemClass(index: number, total: number): string {
   // With ≤2 campaigns the layout is just the natural grid; no spans
   // needed. With 3+, only the first two get the span.
   if (total < 3) return '';
-  if (index < 2) return 'sm:col-span-2 lg:col-span-2';
-  return '';
+
+  const stragglers = heroTailStragglers(total);
+  // The last `stragglers` cards form the incomplete desktop tail row.
+  const isStraggler = stragglers > 0 && index >= total - stragglers;
+
+  if (index < 2) {
+    return cn('sm:col-span-2 lg:col-span-2', isStraggler && 'lg:hidden');
+  }
+  return isStraggler ? 'lg:hidden' : '';
+}
+
+/**
+ * Number of trailing tail cards that don't complete a desktop row of
+ * four. The tail is everything after the two column-spanning hero
+ * cards (index ≥ 2), so `total - 2` cards flow four-per-row on `lg`;
+ * the remainder is the straggler count. Returns 0 when there's no tail
+ * (`total < 3`) or the tail divides evenly.
+ */
+function heroTailStragglers(total: number): number {
+  if (total < 3) return 0;
+  return (total - 2) % 4;
 }
 
 function heroGridContainerClass(total: number): string {

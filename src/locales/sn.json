@@ -876,7 +876,16 @@
     "verifiedByCount_zero": "Yasimbiswa nevanhu {{count}}",
     "verifiedByCount_two": "Yasimbiswa nevanhu {{count}}",
     "verifiedByCount_few": "Yasimbiswa nevanhu {{count}}",
-    "verifiedByCount_many": "Yasimbiswa nevanhu {{count}}"
+    "verifiedByCount_many": "Yasimbiswa nevanhu {{count}}",
+    "unverifiedBanner": "Iyi mushandirapamwe haisati yasimbiswa nenzvimbo inovimbwa nayo.",
+    "unverifiedBannerReadMore": "Dzidza zvimwe"
+  },
+  "campaignHidden": {
+    "title": "Iyi mushandirapamwe yakavanzwa",
+    "body": "Iyi mushandirapamwe yakavanzwa nevachengeti veAgora, kazhinji nekuti inoita seyakatuma tsvina, chinyengeri, kana kunyengedza kunge munhu asiri iye. Uchiri kugona kusarudza kuiona.",
+    "learnMore": "Dzidza zvimwe",
+    "back": "Dzokera",
+    "proceed": "Enderera zvakadaro"
   },
   "calendarEvents": {
     "create": {
@@ -959,7 +968,7 @@
     "home": {
       "seoTitle": "Mishandirapamwe yekuunganidza mari",
       "seoDescription": "Ipa Pasina Miganhu. Kupa kwakananga, munhu-kumunhu, kunotsigirwa neBitcoin neNostr.",
-      "heroTagline": "Ipa pasina<1></1><0>miganhu.</0>",
+      "heroTagline": "Unganidza mari<1></1>pasina <0>miganhu</0>",
       "heroBody": "Tsigira vanhu nezvinangwa chero kupi munyika neBitcoin. Chipo chimwe nechimwe chinobva chananga kuchikwama chemugamuchiri, pasina miganhu, pasina vamiririri, pasina kudzoreredzwa kwemari, uye pasina puratifomu inobata mari.",
       "startCampaign": "Tanga mushandirapamwe",
       "howItWorks": "Mashandire awo",
@@ -2714,6 +2723,10 @@
       "chapter3": {
         "label": "Pamusoro peNostr",
         "description": "Pirotokori yakavhurika iyo Agora yakavakirwa, uye maitiro akaundi yako anoshanda."
+      },
+      "chapter4": {
+        "label": "Kusimbiswa nekuvimba",
+        "description": "Zvinoreva bheji rakasimbiswa, ndiani anoripa, uye maunogona kutonga mushandirapamwe wega."
       }
     },
     "guides": {
@@ -2788,7 +2801,7 @@
     }
   },
   "partners": {
-    "partnersTitle": "Tichishanda pamwe ne:",
+    "partnersTitle": "Vaka uchishanda pamwe ne:",
     "pressTitle": "Sezvakaonekwa mu:"
   },
   "faq": {
@@ -2797,7 +2810,10 @@
         "label": "Nezve Agora"
       },
       "payments": {
-        "label": "Zvipo zveBitcoin paAgora"
+        "label": "Zvipo"
+      },
+      "verification": {
+        "label": "Kusimbiswa neKuvimba"
       },
       "about-nostr": {
         "label": "Nezve Nostr"
@@ -2834,6 +2850,13 @@
           "Zvipo **zvakavanzika** zvinoshandisa **mubhadharo wakanyarara** (BIP-352). Zvinopedzwa pa-chain zvakare, asi chibvumirano hachikwanise kubatanidzwa kudzokera kuchidimbu chechipo chemugamuchiri — saka hazvionekwe muzvinyorwa zvevapi zvepachena uye zvionekwa zvepachena. Mupi anoda walleti inotsigira mibhadharo yakanyarara — tinokurudzira [Ditto Wallet](https://ditto.pub) kana [Dana](https://github.com/cygnet3/dana/releases/download/v0.7.4/app-live-release.apk).",
           "Apo kambeni inogamuchira **zvese**, {{appName}} inoratidza imwe kodhi yeQR ine zvinyorwa zvese zviri zviviri. MaWalleti emibhadharo yakanyarara anozviverenga sezvakavanzika; mamwe maWalleti anodzokera kukero yepachena. Vapi havatare kusarudza — walleti yavo inotora nzira yakakodzera ichizvichaira.",
           "Pari pose, mubhadharo unoenda zvakananga kumugamuchiri. {{appName}} haina kana nguva imwe inobata mari iyi."
+        ]
+      },
+      "agora-funds": {
+        "question": "Agora Funds chii?",
+        "answer": [
+          "**Agora Funds** makambeni anochengetwa na{{appName}} anokutendera kupa kudura remakambeni akawanda akabatanidzwa nechinangwa chimwe chete. Panzvimbo pekusarudza kambeni imwe chete, unopa kamwe kudura uye chipo chako chinotsigira kambeni yega yega mucchinangwa icho.",
+          "Agora Funds anogamuchira **mibhadharo yekadhi kuburikidza neStripe** pamusoro peBitcoin — vachipa vapi vasingade kubhadhara neBitcoin nzira yekutsigira zvinangwa zvavanoda. Zvipo zvekadhi zvinowanikwa chete pa**madura anotsigirwa neAgora**; makambeni akajairika achiri kugashira Bitcoin zvakananga, pa-chain, pasina anoshanda nemibhadharo pakati."
         ]
       },
       "connect-wallet": {
@@ -2915,6 +2938,50 @@
         "answer": [
           "Bitcoin ndiyo cryptocurrency inozivikanwa zvakanyanya. Izvi zvinoreva kuti iri nyore kuvapi kutenga uye kutumira, uye iri nyore kuvagamuchiri kugashira, kuchengeta, uye kushandisa.",
           "Macoin akatarisana nekuvanzika kwakaita seMonero anopa kupokana kwakavanzika kwakasiyana neBitcoin, asi haatsigirwe nemamwe app emumusha uye akaoma kushandurira kumari yenyika. Kukumbira kumwe kwemativi maviri echipo kuti chitange chawana cryptocurrency isingazivikanwe imhura iyo {{appName}} haisi kuzoisa panzira. Kuzvipo zveBitcoin pachezvazvo, mibhadharo yakanyarara inovharidzira nyaya yekusabatanidzika pasina kubuda muhupfumi hweBitcoin."
+        ]
+      },
+      "what-is-verification": {
+        "question": "Chii chinorehwa nebheji re\"Yakasimbiswa\" pamushandirapamwe?",
+        "answer": [
+          "Mushandirapamwe wakasimbiswa ndiwo uyo **musimbisi anovimbwa naye** akaupupurira pachena. Musimbisi iyeye anoti anoziva murongi pachake, kana kuti akaongorora zvine musoro kuti zvirevo zvemushandirapamwe ndezvechokwadi.",
+          "Bheji rinoratidza chaizvo kuti **ndiani** akapupurira, uye musimbisi mumwe nemumwe anobatanidza kupurofira rake. Kusimbiswa ndechiratidzo, kwete chisimbiso chekutenderwa kubva kuna {{appName}}. Hatiiti ongororo dzemashure. Kuripo kuti ugone kusarudza kuti *iwe* unovimba nevanhu vakamira kumashure kwemushandirapamwe here.",
+          "Kana pasina nzvimbo inovimbwa nayo yakasimbisa mushandirapamwe, peji rake rinoratidza chiziviso chekungwarira panzvimbo pacho. Chiziviso ichocho hachisi kupomera mhosva. Chinongoreva kuti hapana ari pamharidzo yevanovimbwa navo akaupupurira parizvino."
+        ]
+      },
+      "who-verifies": {
+        "question": "Ndiani anoverengwa se\"nzvimbo inovimbwa nayo\"?",
+        "answer": [
+          "Vasimbisi vanovimbwa navo inhengo dzemapaki maviri akasarudzwa ekutevera: **World Liberty Congress Verified** ne**Team Soapbox** (chikwata chinovaka {{appName}}, mukubatana ne[World Liberty Congress](https://worldlibertycongress.org/)).",
+          "Chero munhu ari paNostr anogona zvekutekinoroji kuburitsa cheni yekusimbiswa yechero mushandirapamwe, uye ichaonekwa pabheji. Asi kupupurira kunobva kunhengo yemapaki maviri iwayo ndiko chete kunobvisa chiziviso chekungwarira uye kunogona kukwidziridza mushandirapamwe muchikamu cheVerified Campaigns pahome peji. Murongi anosimbisa mushandirapamwe wake haaverengwe."
+        ]
+      },
+      "unverified-meaning": {
+        "question": "Mushandirapamwe hauna kusimbiswa. Chinyengeri here?",
+        "answer": [
+          "**Kwete zvachose.** Kusimbiswa kwakaitwa kuti kunetse kuwana nemaune, saka mishandirapamwe yakawanda iri pamutemo inotanga isina kusimbiswa, kunyanya mitsva uye iyo inobva kuvanhu vasati vasangana nevasimbisi vanovimbwa navo.",
+          "Torai bheji sechivimbo chekuwedzera, kwete chinhu chete chinokosha. Verenga mushandirapamwe, tarisa purofira nenhoroondo yemurongi, uye rangarira kuti {{appName}} inoshanda sei: zvipo zvinoenda **zvakananga** kukero yeBitcoin yemurongi pacheni. {{appName}} haimbochengeti mari uye haigone kudzosera, kudzosa mari, kana kuvhara kubhadhara, saka ipa senzira yaunopa mumwe munhu mari yebepa."
+        ]
+      },
+      "why-campaigns-hidden": {
+        "question": "Sei mimwe mishandirapamwe yakavanzwa, uye ndichiri kugona kuiona here?",
+        "answer": [
+          "Vachengeti vanogona kuvanza mushandirapamwe unoita setsvina, chinyengeri, kana kunyengedza kunge mumwe munhu. Mishandirapamwe yakavanzwa inochengetwa kunze kwemafeeds netsvakiridzo yeAgora saka vanhu vazhinji havagumburwi mairi netsaona.",
+          "**Uku hakusi kudzvinyirira kutaura, uye hapana chinodzimwa.** Mushandirapamwe unorarama pane network yakavhurika yeNostr pasinei nezvinoratidzwa ne{{appName}}. Kuvanza kunongochinja izvo zvinoratidzwa ne{{appName}} nechisikigo. Kana ukavhura mushandirapamwe wakavanzwa zvakananga, sekubva pane rinki yakagoverwa, uchaona chiziviso chinotsanangura chikonzero uye bhatani rekuti **enderera zvakadaro**. Sarudzo yekuuona, uye yekupa, inogara iri yako.",
+          "Chinangwa ndechekungopa vapi mamiriro ezvinhu vasati vapa: yambiro yekuti muchengeti anovimbwa naye akaratidza chimwe chinhu, kwete sarudzo yakaitirwa iwe."
+        ]
+      },
+      "how-get-verified": {
+        "question": "Ndiri murongi. Ndingaita sei kuti mushandirapamwe wangu usimbiswe?",
+        "answer": [
+          "Haugone kuzvisimbisa iwe pachako; musimbisi anovimbwa naye ndiye anofanira kukupupurira. Nzira yakanyanya kuvimbika ndeyekuvaka rekodhi yechokwadi yebasa: purofira yakakwana, mushandirapamwe wakajeka, uye hukama hwechokwadi nevanhu munzanga.",
+          "Kana basa rako rakabatana neWorld Liberty Congress kana chikwata che{{appName}}, batana kuburikidza nevaunotoziva ipapo. Musimbisi anokuziva anogona kuwedzera kupupurira kwake, uye ichaonekwa pamushandirapamwe wako otomatiki."
+        ]
+      },
+      "verification-guarantee": {
+        "question": "Kusimbiswa kunovimbisa here kuti chipo changu chakachengeteka?",
+        "answer": [
+          "Kwete. Kusimbiswa kunokuudza kuti munhu anovimbwa naye anopupurira mushandirapamwe. **Hakuvimbisi** migumisiro, hakuinhurisi mari yako, uye hakuiti kuti {{appName}} ive nemhosva yekuti mari inoshandiswa sei.",
+          "Nekuti zvipo hazvichengetwe nemumwe uye zviri pacheni, kubhadhara kwega kwega kunopera panguva yaunotumira. Musimbisi anogonawo **kudzosa** kupupurira kwake gare gare kana pane chinochinja, izvo zvinobvisa bheji. Nguva dzose ipa mari yaunosununguka kupa zvakananga kune mumwe munhu."
         ]
       },
       "what-is-nostr": {
