@@ -1271,6 +1271,21 @@ export function ComposeBox({
         )}
 
         <div className={cn("flex-1 min-w-0", forceExpanded && "flex flex-col min-h-0")}>
+          {/* Char budget — only near the limit, above the field so it never
+              overlaps typed text. Hidden until ≤100 characters remain. */}
+          {mode === 'post' && remaining <= 100 && (
+            <div className="flex items-center justify-end gap-1.5 pb-1">
+              <CharRing count={charCount} max={MAX_CHARS} />
+              <span
+                className={cn(
+                  'text-xs tabular-nums',
+                  remaining < 0 ? 'text-destructive font-semibold' : 'text-amber-500',
+                )}
+              >
+                {remaining}
+              </span>
+            </div>
+          )}
           {/* Scrollable content area (textarea, poll, CW, quoted event) */}
           <div className={cn(forceExpanded && "flex-1 min-h-0 overflow-y-auto")}>
           {/* Shared shell keeps a stable min-height across edit ↔ preview so
@@ -1812,23 +1827,6 @@ export function ComposeBox({
                   }}
                 />
 
-                {/* Voice recording */}
-                {voiceRecorder.isSupported && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={handleStartRecording}
-                        disabled={!user}
-                        className="p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-40"
-                      >
-                        <Mic className="size-[18px]" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>{t('compose.voice.voiceMessage')}</TooltipContent>
-                  </Tooltip>
-                )}
-
                  {/* Emoji / GIF picker toggle — inline panel renders below the toolbar */}
                  <Tooltip>
                    <TooltipTrigger asChild>
@@ -1848,7 +1846,7 @@ export function ComposeBox({
                    {!pickerOpen && <TooltipContent>{t('compose.toolbar.emojiGif')}</TooltipContent>}
                  </Tooltip>
 
-                {/* Overflow: Poll + CW */}
+                {/* Overflow: Voice + Poll + CW */}
                 <Popover open={trayOpen} onOpenChange={setTrayOpen}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -1869,8 +1867,18 @@ export function ComposeBox({
                     </TooltipTrigger>
                     {!trayOpen && <TooltipContent>{t('compose.toolbar.more')}</TooltipContent>}
                   </Tooltip>
-                  <PopoverContent side="top" align="start" sideOffset={6} className="w-44 p-1.5 rounded-xl border-border shadow-lg">
+                  <PopoverContent side="top" align="start" sideOffset={6} className="w-48 p-1.5 rounded-xl border-border shadow-lg">
                     <div className="flex flex-col gap-0.5">
+                      {voiceRecorder.isSupported && (
+                        <button
+                          type="button"
+                          onClick={() => { handleStartRecording(); setTrayOpen(false); }}
+                          disabled={!user}
+                          className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-secondary/60 disabled:opacity-40"
+                        >
+                          <Mic className="size-4" /><span className="font-medium">{t('compose.voice.voiceMessage')}</span>
+                        </button>
+                      )}
                       {/* Polls are top-level events (kind 1068), so they only make sense as a
                           standalone post or rooted on an external-content URL (e.g. iso3166: country
                           page). Hide for actual event replies (NostrEvent replyTo). */}
@@ -1899,20 +1907,8 @@ export function ComposeBox({
               {/* Spacer */}
               <div className="flex-1" />
 
-              {/* Right: char count + preview + post/poll button */}
+              {/* Right: preview + post/poll button */}
               <div className="flex items-center gap-3">
-                {mode === 'post' && charCount > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <CharRing count={charCount} max={MAX_CHARS} />
-                    <span className={cn(
-                      'text-xs tabular-nums',
-                      remaining < 0 ? 'text-destructive font-semibold' : remaining < 500 ? 'text-amber-500' : 'text-muted-foreground',
-                    )}>
-                      {remaining}
-                    </span>
-                  </div>
-                )}
-
                 {content.trim().length > 0 && controlledPreviewMode === undefined && (
                   <Button
                     type="button"
