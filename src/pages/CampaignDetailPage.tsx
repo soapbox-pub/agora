@@ -1165,6 +1165,17 @@ function DonateColumn({
   // reports a JSON total it's folded into the raised figure by
   // useCampaignDonations; the button itself is just the hand-off link.
   const payUrl = useMemo(() => sanitizeUrl(campaign.payUrl), [campaign.payUrl]);
+  const payWithCardAction: ReactNode = payUrl ? (
+    <Button
+      size="lg"
+      variant="outline"
+      className="w-full border-green-600/40 bg-green-600 text-white hover:bg-green-700 hover:text-white dark:border-green-500/40"
+      onClick={() => void openUrl(payUrl)}
+    >
+      <CreditCard className="size-5 mr-2" />
+      {t('campaignsDetail.payWithCard')}
+    </Button>
+  ) : null;
 
   return (
     // On mobile we drop the surface chrome (no rounded background) so
@@ -1238,9 +1249,9 @@ function DonateColumn({
           // Donors can either pay from their in-app Agora wallet (HD
           // send dialog prefilled with the campaign address) or scan the
           // QR from any external wallet. Both routes terminate at the
-          // same `w`-tag address on-chain. The in-app pay button is
-          // injected into the donate panel so it sits directly above
-          // "Open external wallet" — only one primary CTA stacked.
+          // same `w`-tag address on-chain. When in-app pay is active, the
+          // optional card hand-off sits next in the same evenly-spaced CTA
+          // stack, before the external-wallet fallback.
           <div className="space-y-3">
             <CampaignWalletDonatePanel
               wallets={campaign.wallets}
@@ -1256,18 +1267,9 @@ function DonateColumn({
                   </Button>
                 ) : null
               }
+              secondaryAction={canPayInApp ? payWithCardAction : null}
             />
-            {payUrl && (
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-green-600/40 bg-green-600 text-white hover:bg-green-700 hover:text-white dark:border-green-500/40"
-                onClick={() => void openUrl(payUrl)}
-              >
-                <CreditCard className="size-5 mr-2" />
-                {t('campaignsDetail.payWithCard')}
-              </Button>
-            )}
+            {!canPayInApp && payWithCardAction}
             <Button variant="outline" size="lg" className="w-full" onClick={onShare}>
               <Share2 className="size-4 mr-2" />
               {t('campaignsDetail.share')}

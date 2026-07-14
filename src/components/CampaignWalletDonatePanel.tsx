@@ -12,7 +12,7 @@ interface CampaignWalletDonatePanelProps {
   /** Parsed wallet endpoints declared by the campaign's `w` tags. At least one must be present. */
   wallets: CampaignWallets;
   /**
-   * Optional primary action rendered immediately above the
+   * Optional primary action rendered in the button stack above the
    * "Open external wallet" button — typically a "Pay with Agora"
    * button injected by the campaign detail page when the logged-in donor
    * has an HD wallet available.
@@ -24,6 +24,8 @@ interface CampaignWalletDonatePanelProps {
    * and SP-only campaigns.
    */
   primaryAction?: ReactNode;
+  /** Optional action rendered between the primary action and external-wallet fallback. */
+  secondaryAction?: ReactNode;
 }
 
 /**
@@ -67,6 +69,7 @@ function buildQrPayload(wallets: CampaignWallets): string {
 export function CampaignWalletDonatePanel({
   wallets,
   primaryAction,
+  secondaryAction,
 }: CampaignWalletDonatePanelProps) {
   const { t } = useTranslation();
   const qrPayload = buildQrPayload(wallets);
@@ -111,34 +114,36 @@ export function CampaignWalletDonatePanel({
       {/* Copyable value — single row mirroring the QR payload. */}
       <WalletCopyRow value={copyValue} label={copyLabel} />
 
-      {/* Optional in-app pay action rendered immediately above the
-          external-wallet button. When present it becomes the primary
-          CTA; the external button below downgrades to `outline` so
-          there's only ever one orange button stacked here. */}
-      {primaryAction}
+      <div className="space-y-3">
+        {/* Optional in-app pay action leads this CTA stack. When present,
+            the external button below downgrades to `outline` so there's
+            only ever one orange button stacked here. */}
+        {primaryAction}
+        {secondaryAction}
 
-      {/* "Open Bitcoin wallet" — relies on the `bitcoin:` URI handler. SP
-          codes inside `bitcoin:?sp=` are still understood by BIP-352-
-          aware wallets. Older wallets that don't know about SP will
-          ignore the parameter and either refuse the link or show an
-          error — at which point the donor falls back to copy/paste
-          anyway.
+        {/* "Open Bitcoin wallet" — relies on the `bitcoin:` URI handler. SP
+            codes inside `bitcoin:?sp=` are still understood by BIP-352-
+            aware wallets. Older wallets that don't know about SP will
+            ignore the parameter and either refuse the link or show an
+            error — at which point the donor falls back to copy/paste
+            anyway.
 
-          Always shown, including to the campaign owner viewing their
-          own campaign — the button just opens the address in a wallet
-          app, which is a harmless no-op for a beneficiary and still
-          useful (e.g. verifying the address, or sharing the link). */}
-      <Button
-        asChild
-        size="lg"
-        variant={primaryAction ? 'outline' : 'default'}
-        className={primaryAction ? 'w-full' : 'w-full text-white'}
-      >
-        <a href={qrPayload}>
-          <ExternalLink className="size-4 mr-1.5" />
-          {t('campaignsDetail.openInWallet')}
-        </a>
-      </Button>
+            Always shown, including to the campaign owner viewing their
+            own campaign — the button just opens the address in a wallet
+            app, which is a harmless no-op for a beneficiary and still
+            useful (e.g. verifying the address, or sharing the link). */}
+        <Button
+          asChild
+          size="lg"
+          variant={primaryAction ? 'outline' : 'default'}
+          className={primaryAction ? 'w-full' : 'w-full text-white'}
+        >
+          <a href={qrPayload}>
+            <ExternalLink className="size-4 mr-1.5" />
+            {t('campaignsDetail.openInWallet')}
+          </a>
+        </Button>
+      </div>
     </div>
   );
 }
