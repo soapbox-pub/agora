@@ -386,9 +386,10 @@ export function ComposeBox({
 
   // Auto-resize textarea height as content grows/shrinks.
   // Also re-run when previewMode toggles off so the remounted textarea
-  // is sized to fit its content immediately. Capture the shell height so
-  // flipping into preview mode keeps the same footprint for pure text
-  // (NoteContent metrics differ from the textarea's scrollHeight).
+  // is sized to fit its content immediately. While editing we only record
+  // the shell's natural height for the next preview flip — minHeight is
+  // applied solely in preview mode so the field can still shrink as text
+  // is deleted.
   useEffect(() => {
     if (previewMode) return;
     const el = textareaRef.current;
@@ -1288,15 +1289,16 @@ export function ComposeBox({
           )}
           {/* Scrollable content area (textarea, poll, CW, quoted event) */}
           <div className={cn(forceExpanded && "flex-1 min-h-0 overflow-y-auto")}>
-          {/* Shared shell keeps a stable min-height across edit ↔ preview so
+          {/* Shared shell keeps a stable min-height only while previewing so
               pure-text posts don't jump when NoteContent metrics differ from
-              the textarea's scrollHeight. Preview may still grow taller when
-              embeds render larger than the typed text. */}
+              the textarea's scrollHeight. In edit mode the shell follows the
+              textarea so removable text shrinks the field again. Preview may
+              still grow taller when embeds render larger than the typed text. */}
           <div
             ref={editorShellRef}
             className="relative"
             style={
-              isExpanded && editorShellMinHeight
+              previewMode && editorShellMinHeight
                 ? { minHeight: editorShellMinHeight }
                 : undefined
             }
