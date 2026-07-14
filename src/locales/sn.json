@@ -850,7 +850,7 @@
     "ofGoal": "ye{{amount}} chinangwa",
     "donationCount_one": "{{count}} chipo",
     "donationCount_other": "{{count}} zvipo",
-    "openInWallet": "Vhura chikwama cheBitcoin",
+    "openInWallet": "Vhura chikwama chekunze",
     "payWithAgoraWallet": "Bhadhara neAgora",
     "payWithCard": "Bhadhara nekadhi",
     "paymentCount_one": "{{count}} mubhadharo usingadzivisike",

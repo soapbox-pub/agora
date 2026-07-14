@@ -1409,7 +1409,7 @@
     "donationCount_other": "{{count}} donations",
     "paymentCount_one": "{{count}} unstoppable payment",
     "paymentCount_other": "{{count}} unstoppable payments",
-    "openInWallet": "Open Bitcoin wallet",
+    "openInWallet": "Open external wallet",
     "payWithAgoraWallet": "Pay with Agora",
     "payWithCard": "Pay with card"
   },

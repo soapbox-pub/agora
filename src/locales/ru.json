@@ -1365,7 +1365,7 @@
     "ofGoal": "из цели {{amount}}",
     "donationCount_one": "{{count}} пожертвование",
     "donationCount_other": "{{count}} пожертвований",
-    "openInWallet": "Открыть кошелёк Bitcoin",
+    "openInWallet": "Открыть внешний кошелёк",
     "payWithAgoraWallet": "Оплатить через Agora",
     "payWithCard": "Оплатить картой",
     "paymentCount_one": "{{count}} непреодолимый платёж",

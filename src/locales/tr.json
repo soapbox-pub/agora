@@ -1365,7 +1365,7 @@
     "ofGoal": "/ {{amount}} hedef",
     "donationCount_one": "{{count}} bağış",
     "donationCount_other": "{{count}} bağış",
-    "openInWallet": "Bitcoin cüzdanını aç",
+    "openInWallet": "Harici cüzdanı aç",
     "payWithAgoraWallet": "Agora ile öde",
     "payWithCard": "Kartla öde",
     "paymentCount_one": "{{count}} durdurulamaz ödeme",

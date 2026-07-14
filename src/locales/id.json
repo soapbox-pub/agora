@@ -1365,7 +1365,7 @@
     "ofGoal": "dari target {{amount}}",
     "donationCount_one": "{{count}} donasi",
     "donationCount_other": "{{count}} donasi",
-    "openInWallet": "Buka dompet Bitcoin",
+    "openInWallet": "Buka dompet eksternal",
     "payWithAgoraWallet": "Bayar dengan Agora",
     "payWithCard": "Bayar dengan kartu",
     "paymentCount_one": "{{count}} pembayaran yang tak terhenti",

@@ -850,7 +850,7 @@
     "ofGoal": "من هدف {{amount}}",
     "donationCount_one": "{{count}} تبرع",
     "donationCount_other": "{{count}} تبرعات",
-    "openInWallet": "فتح محفظة Bitcoin",
+    "openInWallet": "فتح محفظة خارجية",
     "payWithAgoraWallet": "الدفع عبر Agora",
     "payWithCard": "الدفع بالبطاقة",
     "paymentCount_one": "{{count}} دفعة لا تُوقَف",

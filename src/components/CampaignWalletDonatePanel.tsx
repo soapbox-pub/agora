@@ -121,7 +121,7 @@ export function CampaignWalletDonatePanel({
         {primaryAction}
         {secondaryAction}
 
-        {/* "Open Bitcoin wallet" — relies on the `bitcoin:` URI handler. SP
+        {/* "Open external wallet" — relies on the `bitcoin:` URI handler. SP
             codes inside `bitcoin:?sp=` are still understood by BIP-352-
             aware wallets. Older wallets that don't know about SP will
             ignore the parameter and either refuse the link or show an

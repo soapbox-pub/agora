@@ -1365,7 +1365,7 @@
     "ofGoal": "{{amount}} के लक्ष्य में से",
     "donationCount_one": "{{count}} डोनेशन",
     "donationCount_other": "{{count}} डोनेशन",
-    "openInWallet": "Bitcoin वॉलेट खोलें",
+    "openInWallet": "बाहरी वॉलेट खोलें",
     "payWithAgoraWallet": "Agora से भुगतान करें",
     "payWithCard": "कार्ड से भुगतान करें",
     "paymentCount_one": "{{count}} अविरोध भुगतान",

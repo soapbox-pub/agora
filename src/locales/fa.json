@@ -850,7 +850,7 @@
     "ofGoal": "از هدف {{amount}}",
     "donationCount_one": "{{count}} کمک",
     "donationCount_other": "{{count}} کمک",
-    "openInWallet": "باز کردن کیف پول Bitcoin",
+    "openInWallet": "باز کردن کیف پول خارجی",
     "payWithAgoraWallet": "پرداخت با Agora",
     "payWithCard": "پرداخت با کارت",
     "paymentCount_one": "{{count}} پرداخت توقف‌ناپذیر",

@@ -1406,7 +1406,7 @@
     "ofGoal": "sur un objectif de {{amount}}",
     "donationCount_one": "{{count}} don",
     "donationCount_other": "{{count}} dons",
-    "openInWallet": "Ouvrir le portefeuille Bitcoin",
+    "openInWallet": "Ouvrir le portefeuille externe",
     "payWithAgoraWallet": "Payer avec Agora",
     "payWithCard": "Payer par carte",
     "paymentCount_one": "{{count}} paiement imparable",

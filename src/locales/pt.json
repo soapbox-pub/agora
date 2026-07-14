@@ -1406,7 +1406,7 @@
     "ofGoal": "da meta de {{amount}}",
     "donationCount_one": "{{count}} doação",
     "donationCount_other": "{{count}} doações",
-    "openInWallet": "Abrir carteira Bitcoin",
+    "openInWallet": "Abrir carteira externa",
     "payWithAgoraWallet": "Pagar com Agora",
     "payWithCard": "Pagar com cartão",
     "paymentCount_one": "{{count}} pagamento imparável",

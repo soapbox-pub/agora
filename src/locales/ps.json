@@ -850,7 +850,7 @@
     "ofGoal": "د {{amount}} هدف څخه",
     "donationCount_one": "{{count}} مرسته",
     "donationCount_other": "{{count}} مرستې",
-    "openInWallet": "د Bitcoin بټوه پرانیزئ",
+    "openInWallet": "بهرنۍ بټوه پرانیزئ",
     "payWithAgoraWallet": "د Agora له لارې تادیه وکړئ",
     "payWithCard": "د کارت له لارې تادیه وکړئ",
     "paymentCount_one": "{{count}} نه درېدونکی تادیه",
