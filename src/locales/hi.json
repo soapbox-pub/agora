@@ -1333,15 +1333,15 @@
       "publicAddress": "पब्लिक एड्रेस",
       "viewOnMempool": "mempool.space पर देखें",
       "openOnMempool": "mempool.space पर ट्रांज़ैक्शन खोलें",
-      "received": "प्राप्त",
-      "sent": "भेजा गया",
       "unconfirmed": "अपुष्ट",
       "block": "ब्लॉक {{height}}",
       "btcUnit": "BTC",
       "empty": "इस एड्रेस के लिए अभी कोई ऑन-चेन गतिविधि नहीं है।",
       "error": "ऑन-चेन गतिविधि लोड नहीं हो सकी। कुछ देर बाद फिर कोशिश करें।",
       "loadMore": "और लोड करें",
-      "loadingMore": "लोड हो रहा है…"
+      "loadingMore": "लोड हो रहा है…",
+      "donated": "दान किया",
+      "withdrawn": "निकाला गया"
     },
     "tombstone": {
       "seoTitle": "आर्काइव किया गया कैंपेन | {{appName}}",
@@ -2122,7 +2122,8 @@
       "feeRateTooLow": "कम से कम 1 sat/vB का fee rate डालें।"
     },
     "toast": {
-      "failedTitle": "Transaction विफल"
+      "failedTitle": "Transaction विफल",
+      "followUpFailedTitle": "भुगतान भेज दिया गया, लेकिन सार्वजनिक रसीद पब्लिश नहीं हो सकी"
     },
     "broadcastError": {
       "feeTooLowTitle": "नेटवर्क fee बहुत कम है",
@@ -3351,5 +3352,11 @@
     "lastScanned": "block {{height}} तक scan हुआ",
     "paused": "अपने आप scan होना बंद है",
     "manualLink": "scan विकल्प"
+  },
+  "campaignMatch": {
+    "action": "मैच",
+    "errors": {
+      "wrongSettlementAddress": "सेटलमेंट भुगतान कैंपेन के स्नैपशॉट किए गए एड्रेस पर नहीं भेजा गया था।"
+    }
   }
 }

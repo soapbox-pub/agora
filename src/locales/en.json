@@ -1375,15 +1375,15 @@
       "publicAddress": "Public address",
       "viewOnMempool": "View on mempool.space",
       "openOnMempool": "Open transaction on mempool.space",
-      "received": "Received",
-      "sent": "Sent",
       "unconfirmed": "Unconfirmed",
       "block": "Block {{height}}",
       "btcUnit": "BTC",
       "empty": "No on-chain activity yet for this address.",
       "error": "Couldn't load on-chain activity. Try again in a moment.",
       "loadMore": "Load more",
-      "loadingMore": "Loading…"
+      "loadingMore": "Loading…",
+      "donated": "Donated",
+      "withdrawn": "Withdrawn"
     },
     "tombstone": {
       "seoTitle": "Archived campaign | {{appName}}",
@@ -2305,7 +2305,8 @@
       "description": "Expected a Bitcoin address, a silent payment address (sp1…), or a bitcoin: URI."
     },
     "toast": {
-      "failedTitle": "Transaction failed"
+      "failedTitle": "Transaction failed",
+      "followUpFailedTitle": "Payment sent, but the public receipt failed"
     },
     "broadcastError": {
       "feeTooLowTitle": "Network fee too low",
@@ -3392,6 +3393,12 @@
         "title": "Avoid centralized tumblers",
         "body": "Custodial mixers can steal your coins, log who sent what, or turn out to be law-enforcement honeypots. Use a silent-payments hop or a non-custodial coinjoin instead."
       }
+    }
+  },
+  "campaignMatch": {
+    "action": "Match",
+    "errors": {
+      "wrongSettlementAddress": "The settlement payment was not sent to the snapshotted campaign address."
     }
   }
 }

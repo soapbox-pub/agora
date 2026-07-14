@@ -818,15 +818,15 @@
       "publicAddress": "عامه پته",
       "viewOnMempool": "په mempool.space کې وګورئ",
       "openOnMempool": "راکړه ورکړه په mempool.space کې خلاصه کړئ",
-      "received": "ترلاسه شوي",
-      "sent": "لیږل شوي",
       "unconfirmed": "نا تایید شوي",
       "block": "بلاک {{height}}",
       "btcUnit": "BTC",
       "empty": "د دې پتې لپاره تر اوسه پر-چین کومه فعالیت نشته.",
       "error": "پر-چین فعالیت بار نشو. یوه شیبه وروسته بیا هڅه وکړئ.",
       "loadMore": "نور بار کړئ",
-      "loadingMore": "بارېږي…"
+      "loadingMore": "بارېږي…",
+      "donated": "بسپنه ورکړل شوې",
+      "withdrawn": "ایستل شوي"
     },
     "tombstone": {
       "seoTitle": "آرشیف شوی کمپاین | {{appName}}",
@@ -1675,7 +1675,8 @@
       "description": "د بټکوین پته، د چوپې ورکړې پته (sp1…)، یا د bitcoin: URI تمه کېده."
     },
     "toast": {
-      "failedTitle": "معامله ناکامه شوه"
+      "failedTitle": "معامله ناکامه شوه",
+      "followUpFailedTitle": "تادیه ولېږل شوه، خو د عامه رسید خپرول ناکام شول"
     },
     "broadcastError": {
       "feeTooLowTitle": "د شبکې فیس ډېر ټیټ دی",
@@ -3392,5 +3393,11 @@
       "successDesc": "{{sats}} ساتوشي ستاسو والټ ته راټول شول."
     },
     "footnote": "دا ستاسو اوسني والټ ته یوازې یوطرفه راټولونه ده. یوازې اغیزمن خاموش پرداختونه لمس کیږي؛ بل هیڅ شی نه بدلیږي."
+  },
+  "campaignMatch": {
+    "action": "مچ",
+    "errors": {
+      "wrongSettlementAddress": "د تسویې تادیه د کمپاین هغه پتې ته ونه لېږل شوه چې د ژمنې پر وخت ثبت شوې وه."
+    }
   }
 }

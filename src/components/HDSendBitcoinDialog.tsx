@@ -116,13 +116,18 @@ interface HDSendBitcoinDialogProps {
    * and is also re-applied when the user clears a previously-selected
    * chip so they don't have to retype.
    */
-  initialRecipient?: string;
+   initialRecipient?: string;
+  /** Optional USD amount used to prefill the amount field. */
+  initialAmountUsd?: number;
+  /** Called after broadcast succeeds. Follow-up failures do not undo the payment. */
+  onBroadcast?: (result: HDSendBitcoinResult) => void | Promise<void>;
 }
 
-interface SendResult {
+export interface HDSendBitcoinResult {
   txid: string;
   amountSats: number;
   fee: number;
+  recipient: ResolvedRecipient;
   /**
    * Silent-payment UTXOs (`(txid, vout)`) consumed by the broadcast tx.
    * Pruned from local SP storage in `onSuccess` — otherwise the wallet
@@ -141,7 +146,15 @@ interface SendResult {
  * the HD wallet's UTXO set across many addresses, signs with per-input HD-derived
  * keys, and emits change to a fresh internal address.
  */
-export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, initialRecipient }: HDSendBitcoinDialogProps) {
+export function HDSendBitcoinDialog({
+  isOpen,
+  onClose,
+  walletScope,
+  btcPrice,
+  initialRecipient,
+  initialAmountUsd,
+  onBroadcast,
+}: HDSendBitcoinDialogProps) {
   const { t } = useTranslation();
   const availability = useHdWalletAccess();
   const {
@@ -184,7 +197,9 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
   const [customFeeRate, setCustomFeeRate] = useState('');
   const [error, setError] = useState('');
   const [feePopoverOpen, setFeePopoverOpen] = useState(false);
-  const [success, setSuccess] = useState<SendResult | null>(null);
+  const [success, setSuccess] = useState<HDSendBitcoinResult | null>(null);
+  const [followUpPending, setFollowUpPending] = useState(false);
+  const [followUpError, setFollowUpError] = useState('');
   /**
    * Classified failure from the most recent broadcast attempt. Renders as an
    * inline {@link BroadcastErrorAlert} above the Send button with a recovery
@@ -424,16 +439,39 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
   useEffect(() => {
     if (isOpen && !wasOpenRef.current) {
       setOpenCount((c) => c + 1);
+      if (initialAmountUsd !== undefined) {
+        // Cents precision only — callers may pass floating conversion results.
+        setUsdAmount(Math.round(initialAmountUsd * 100) / 100);
+      }
     }
     wasOpenRef.current = isOpen;
-  }, [isOpen]);
+  }, [initialAmountUsd, isOpen]);
 
   const requiresArm = isLarge || isRawAddress;
 
   // ── Send mutation ────────────────────────────────────────────
   const [progress, setProgress] = useState<'idle' | 'building' | 'signing' | 'broadcasting'>('idle');
 
-  const sendMutation = useMutation<SendResult, Error, void>({
+  const runFollowUp = useCallback(async (result: HDSendBitcoinResult) => {
+    if (!onBroadcast) return;
+    setFollowUpPending(true);
+    setFollowUpError('');
+    try {
+      await onBroadcast(result);
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : String(error);
+      setFollowUpError(description);
+      toast({
+        title: t('walletSend.toast.followUpFailedTitle'),
+        description,
+        variant: 'destructive',
+      });
+    } finally {
+      setFollowUpPending(false);
+    }
+  }, [onBroadcast, t, toast]);
+
+  const sendMutation = useMutation<HDSendBitcoinResult, Error, void>({
     mutationFn: async () => {
       if (availability.status !== 'available') {
         throw new Error(t('walletSend.errors.unavailable'));
@@ -501,7 +539,7 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
       setProgress('broadcasting');
       const txid = await broadcastBlockbookTx(blockbookBaseUrl, txHex);
 
-      return { txid, amountSats: sentAmountSats, fee, consumedSpUtxos };
+      return { txid, amountSats: sentAmountSats, fee, consumedSpUtxos, recipient };
     },
     onSuccess: (result) => {
       notificationSuccess();
@@ -521,6 +559,7 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
       // BIP-86 + SP sends with the spent SP outpoints already archived.
       queryClient.invalidateQueries({ queryKey: ['hdwallet-scan'] });
       void refetchWallet();
+      void runFollowUp(result);
     },
     onError: (err) => {
       const classified = classifyBroadcastError(err);
@@ -674,7 +713,7 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
 
   // ── Reset on close ───────────────────────────────────────────
   const handleClose = useCallback(() => {
-    if (sendMutation.isPending) return;
+    if (sendMutation.isPending || followUpPending) return;
     onClose();
     // defer to allow exit animation
     setTimeout(() => {
@@ -686,6 +725,8 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
       setCustomFeeRate('');
       setConfirmArmed(false);
       setSuccess(null);
+      setFollowUpPending(false);
+      setFollowUpError('');
       setBroadcastError(null);
       setReuseWarning(null);
       setReuseChecked(false);
@@ -693,7 +734,7 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
       setReuseAcknowledged(false);
       feeSpeedUserChanged.current = false;
     }, 200);
-  }, [onClose, sendMutation.isPending]);
+  }, [followUpPending, onClose, sendMutation.isPending]);
 
   // ── Render helpers ───────────────────────────────────────────
   const sendButtonLabel = (() => {
@@ -745,6 +786,9 @@ export function HDSendBitcoinDialog({ isOpen, onClose, walletScope, btcPrice, in
             txid={success.txid}
             amountSats={success.amountSats}
             btcPrice={btcPrice}
+            followUpPending={followUpPending}
+            followUpError={followUpError}
+            onRetryFollowUp={() => void runFollowUp(success)}
             onClose={handleClose}
           />
         ) : (
@@ -1011,10 +1055,21 @@ interface SuccessScreenProps {
   txid: string;
   amountSats: number;
   btcPrice: number | undefined;
+  followUpPending: boolean;
+  followUpError: string;
+  onRetryFollowUp: () => void;
   onClose: () => void;
 }
 
-function SuccessScreen({ txid, amountSats, btcPrice, onClose }: SuccessScreenProps) {
+function SuccessScreen({
+  txid,
+  amountSats,
+  btcPrice,
+  followUpPending,
+  followUpError,
+  onRetryFollowUp,
+  onClose,
+}: SuccessScreenProps) {
   const { t } = useTranslation();
   const usdDisplay = btcPrice ? satsToUSD(amountSats, btcPrice) : '';
 
@@ -1049,13 +1104,35 @@ function SuccessScreen({ txid, amountSats, btcPrice, onClose }: SuccessScreenPro
       </div>
 
       <div className="grid gap-2">
-        <Button type="button" variant="outline" asChild className="w-full">
-          <Link to={`/i/bitcoin:tx:${txid}`} onClick={onClose}>
+        {followUpError && (
+          <Alert variant="destructive" className="text-left">
+            <AlertTriangle className="size-4" />
+            <AlertDescription>{followUpError}</AlertDescription>
+          </Alert>
+        )}
+        {followUpError && (
+          <Button type="button" variant="outline" onClick={onRetryFollowUp} disabled={followUpPending}>
+            {followUpPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+            {t('walletSend.broadcastError.tryAgain')}
+          </Button>
+        )}
+        {followUpPending ? (
+          <Button type="button" variant="outline" className="w-full" disabled>
             <ExternalLink className="size-4 mr-2" />
             {t('walletSend.success.viewTransaction')}
-          </Link>
+          </Button>
+        ) : (
+          <Button type="button" variant="outline" asChild className="w-full">
+            <Link to={`/i/bitcoin:tx:${txid}`} onClick={onClose}>
+              <ExternalLink className="size-4 mr-2" />
+              {t('walletSend.success.viewTransaction')}
+            </Link>
+          </Button>
+        )}
+        <Button type="button" onClick={onClose} className="w-full" disabled={followUpPending}>
+          {followUpPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {t('walletSend.success.done')}
         </Button>
-        <Button type="button" onClick={onClose} className="w-full">{t('walletSend.success.done')}</Button>
       </div>
     </div>
   );

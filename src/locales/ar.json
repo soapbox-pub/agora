@@ -818,15 +818,15 @@
       "publicAddress": "العنوان العام",
       "viewOnMempool": "عرض على mempool.space",
       "openOnMempool": "فتح المعاملة على mempool.space",
-      "received": "مستلَم",
-      "sent": "مُرسَل",
       "unconfirmed": "غير مؤكدة",
       "block": "الكتلة {{height}}",
       "btcUnit": "BTC",
       "empty": "لا يوجد نشاط على السلسلة لهذا العنوان حتى الآن.",
       "error": "تعذّر تحميل النشاط على السلسلة. حاول مجددًا بعد لحظة.",
       "loadMore": "تحميل المزيد",
-      "loadingMore": "جارٍ التحميل…"
+      "loadingMore": "جارٍ التحميل…",
+      "donated": "مُتبرَّع به",
+      "withdrawn": "مسحوب"
     },
     "tombstone": {
       "seoTitle": "حملة مؤرشفة | {{appName}}",
@@ -1671,7 +1671,8 @@
       "feeRateTooLow": "أدخل معدل رسوم لا يقل عن 1 sat/vB."
     },
     "toast": {
-      "failedTitle": "فشلت المعاملة"
+      "failedTitle": "فشلت المعاملة",
+      "followUpFailedTitle": "تم إرسال الدفعة، لكن نشر الإيصال العام فشل"
     },
     "broadcastError": {
       "feeTooLowTitle": "رسوم الشبكة منخفضة جداً",
@@ -3392,5 +3393,11 @@
       "successDesc": "تم جمع {{sats}} ساتوشي إلى محفظتك."
     },
     "footnote": "هذه عملية جمع باتجاه واحد إلى محفظتك الحالية. لا تتأثّر إلا المدفوعات الصامتة المعنية؛ ولا يتغيّر أي شيء آخر."
+  },
+  "campaignMatch": {
+    "action": "طابق",
+    "errors": {
+      "wrongSettlementAddress": "لم تُرسل دفعة التسوية إلى عنوان الحملة المحفوظ في اللقطة."
+    }
   }
 }

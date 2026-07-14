@@ -1374,15 +1374,15 @@
       "publicAddress": "Endereço público",
       "viewOnMempool": "Ver no mempool.space",
       "openOnMempool": "Abrir transação no mempool.space",
-      "received": "Recebido",
-      "sent": "Enviado",
       "unconfirmed": "Não confirmado",
       "block": "Bloco {{height}}",
       "btcUnit": "BTC",
       "empty": "Ainda não há atividade on-chain para este endereço.",
       "error": "Não foi possível carregar a atividade on-chain. Tente novamente em instantes.",
       "loadMore": "Carregar mais",
-      "loadingMore": "Carregando…"
+      "loadingMore": "Carregando…",
+      "donated": "Doado",
+      "withdrawn": "Retirado"
     },
     "tombstone": {
       "seoTitle": "Campanha arquivada | {{appName}}",
@@ -2227,7 +2227,8 @@
       "noneYet": "Você ainda não tem nenhum Bitcoin."
     },
     "toast": {
-      "failedTitle": "Transação falhou"
+      "failedTitle": "Transação falhou",
+      "followUpFailedTitle": "Pagamento enviado, mas o recibo público falhou"
     },
     "broadcastError": {
       "feeTooLowTitle": "Taxa de rede muito baixa",
@@ -3392,5 +3393,11 @@
       "successDesc": "{{sats}} sats varridos para sua carteira."
     },
     "footnote": "Esta é uma varredura de via única para sua carteira atual. Apenas os pagamentos silenciosos afetados são tocados; nada mais muda."
+  },
+  "campaignMatch": {
+    "action": "Igualar",
+    "errors": {
+      "wrongSettlementAddress": "O pagamento da liquidação não foi enviado ao endereço da campanha registrado no snapshot."
+    }
   }
 }

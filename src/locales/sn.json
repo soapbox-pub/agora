@@ -818,15 +818,15 @@
       "publicAddress": "Kero yeruzhinji",
       "viewOnMempool": "Ona pamempool.space",
       "openOnMempool": "Vhura transaction pamempool.space",
-      "received": "Zvagamuchirwa",
-      "sent": "Zvatumirwa",
       "unconfirmed": "Hazvisati zvasimbiswa",
       "block": "Block {{height}}",
       "btcUnit": "BTC",
       "empty": "Hapana zvichakaitika pachain pakero iyi.",
       "error": "Hatina kukwanisa kurodha zvakaitika pachain. Edza zvakare munguva pfupi.",
       "loadMore": "Rodha zvimwe",
-      "loadingMore": "Kurodha…"
+      "loadingMore": "Kurodha…",
+      "donated": "Zvakapihwa",
+      "withdrawn": "Zvakabviswa"
     },
     "tombstone": {
       "seoTitle": "Campaign yakachengetedzwa | {{appName}}",
@@ -1671,7 +1671,8 @@
       "feeRateTooLow": "Isa mutengo wemuripo usingadarike 1 sat/vB."
     },
     "toast": {
-      "failedTitle": "Chinoitwa chakundikana"
+      "failedTitle": "Chinoitwa chakundikana",
+      "followUpFailedTitle": "Mubhadharo watumirwa, asi risiti yeruzhinji yakundikana kuburitswa"
     },
     "broadcastError": {
       "feeTooLowTitle": "Muripo wenetwork wakaderera kwazvo",
@@ -3351,5 +3352,11 @@
       "successDesc": "{{sats}} sats dzatumirwa muchikwama chako."
     },
     "footnote": "Uku kutumira kwenzira imwe chete muchikwama chako chazvino. Mibhadharo yakanyararira yakakanganiswa chete ndiyo inobatwa; hapana chimwe chinochinja."
+  },
+  "campaignMatch": {
+    "action": "Match",
+    "errors": {
+      "wrongSettlementAddress": "Mubhadharo hauna kutumirwa kukero yemushandirapamwe yakachengetwa."
+    }
   }
 }

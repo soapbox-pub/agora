@@ -19,7 +19,10 @@ import {
 } from 'lucide-react';
 
 import { AuthorByline } from '@/components/AuthorByline';
-import { CampaignLedger } from '@/components/CampaignLedger';
+import {
+  CampaignLedgerHeader,
+  CampaignLedgerTransaction,
+} from '@/components/CampaignLedger';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
 import { UnverifiedCampaignBanner } from '@/components/UnverifiedCampaignBanner';
 import { HiddenCampaignGate } from '@/components/HiddenCampaignGate';
@@ -33,7 +36,6 @@ import { NoBitcoinDialog } from '@/components/NoBitcoinDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,9 +53,11 @@ import { PinnedCommentHeader } from '@/components/PinnedCommentHeader';
 import { PendingBadge } from '@/components/PendingBadge';
 import { ReplyComposeModal } from '@/components/ReplyComposeModal';
 import { NoteMoreMenu } from '@/components/NoteMoreMenu';
+import { NoteCard } from '@/components/NoteCard';
 import { Progress } from '@/components/ui/progress';
 import { ThreadedReplyList, type ReplyNode } from '@/components/ThreadedReplyList';
 import { useAppContext } from '@/hooks/useAppContext';
+import { useAddressLedger } from '@/hooks/useAddressLedger';
 import { useAuthor } from '@/hooks/useAuthor';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaign } from '@/hooks/useCampaign';
@@ -68,6 +72,7 @@ import { useHdWalletAccess } from '@/hooks/useHdWalletAccess';
 import { usePinnedEventComments } from '@/hooks/usePinnedEventComments';
 import { useShareOrigin } from '@/hooks/useShareOrigin';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
+import { extractOnchainZapTxid } from '@/hooks/useOnchainZaps';
 import { useAppHostDirectory } from '@/hooks/useAppHostDirectory';
 import { useToast } from '@/hooks/useToast';
 import { useEventTranslation } from '@/hooks/useEventTranslation';
@@ -78,7 +83,7 @@ import {
   parseCampaign,
   type ParsedCampaign,
 } from '@/lib/campaign';
-import { satsToUSDWhole } from '@/lib/bitcoin';
+import { satsToUSDWhole, type AddressTransaction } from '@/lib/bitcoin';
 import { AGORA_HOST } from '@/lib/appUrls';
 import { formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
@@ -94,6 +99,11 @@ interface CampaignDetailPageProps {
   /** Optional relay hints from the naddr. */
   relays?: string[];
 }
+
+type CampaignActivityItem =
+  | { type: 'comment'; node: ReplyNode; timestamp: number }
+  | { type: 'transaction'; tx: AddressTransaction; receipt?: NostrEvent; timestamp: number }
+  | { type: 'receipt'; receipt: NostrEvent; timestamp: number };
 
 function formatSatsFull(sats: number, btcPrice: number | undefined): string {
   if (btcPrice) return satsToUSDWhole(sats, btcPrice);
@@ -111,18 +121,15 @@ function collectReplyEvents(nodes: ReplyNode[], out = new Map<string, NostrEvent
 }
 
 /**
- * Aggregate kind 8333 donation receipts by `(txid, donor)` so each donation
- * surfaces as a single event. Legacy donations (one receipt per beneficiary
- * sharing the same txid + donor) collapse into one card whose `amount` tag
- * carries the summed donation total. Malformed receipts (missing txid or a
- * positive integer amount) are dropped.
+ * Aggregate kind 8333 donation receipts by `(txid, donor)` for the archived
+ * campaign view, preserving legacy multi-beneficiary receipt totals.
  */
 function aggregateDonationReceipts(receipts: NostrEvent[]): NostrEvent[] {
   type Aggregate = { canonical: NostrEvent; totalSats: number };
   const byDonation = new Map<string, Aggregate>();
 
   for (const receipt of receipts) {
-    const txid = receipt.tags.find(([n]) => n === 'i')?.[1]?.replace(/^bitcoin:tx:/, '');
+    const txid = extractOnchainZapTxid(receipt);
     const amountTag = receipt.tags.find(([n]) => n === 'amount')?.[1];
     const amount = amountTag ? Number(amountTag) : NaN;
     if (!txid || !Number.isFinite(amount) || amount <= 0) continue;
@@ -206,13 +213,17 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
     togglePin,
   } = usePinnedEventComments(campaign.aTag, campaign.pubkey);
 
-  // Aggregate kind 8333 donation receipts by `(txid, donor)` so each
-  // donation surfaces as a single event in the donor list and the inline
-  // reply tree. Legacy donations (one receipt per beneficiary sharing the
-  // same txid + donor) collapse into one card showing the donation total.
+  // Verified receipts carry the amount actually paid to this campaign. Keep
+  // one display event per txid so retries cannot duplicate a ledger entry.
   const donationReceipts = useMemo(
-    (): NostrEvent[] => aggregateDonationReceipts(stats?.receipts ?? []),
-    [stats?.receipts],
+    (): NostrEvent[] => (stats?.verified ?? []).map(({ event, amountSats }) => ({
+      ...event,
+      tags: [
+        ...event.tags.filter(([name]) => name !== 'amount'),
+        ['amount', String(amountSats)],
+      ],
+    })),
+    [stats?.verified],
   );
 
   const replyTree = useMemo((): ReplyNode[] => {
@@ -235,12 +246,49 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
     };
 
     const commentNodes = topLevelComments.map((c) => buildCommentNode(c));
-    const donationNodes: ReplyNode[] = donationReceipts.map((ev) => ({ event: ev, children: [] }));
-
-    return [...commentNodes, ...donationNodes].sort(
+    return commentNodes.sort(
       (a, b) => b.event.created_at - a.event.created_at,
     );
-  }, [commentsData, donationReceipts]);
+  }, [commentsData]);
+
+  const onchainAddress = campaign.wallets.onchain?.value;
+  const ledgerQuery = useAddressLedger(onchainAddress, !!onchainAddress);
+  const ledgerTransactions = useMemo(
+    () => ledgerQuery.data?.pages.flat() ?? [],
+    [ledgerQuery.data?.pages],
+  );
+  const activityItems = useMemo((): CampaignActivityItem[] => {
+    const receiptsByTxid = new Map<string, NostrEvent>();
+    for (const receipt of donationReceipts) {
+      const txid = extractOnchainZapTxid(receipt);
+      if (txid) receiptsByTxid.set(txid, receipt);
+    }
+
+    const items: CampaignActivityItem[] = replyTree.map((node) => ({
+      type: 'comment',
+      node,
+      timestamp: node.event.created_at,
+    }));
+
+    for (const tx of ledgerTransactions) {
+      const receipt = receiptsByTxid.get(tx.txid);
+      if (receipt) receiptsByTxid.delete(tx.txid);
+      items.push({
+        type: 'transaction',
+        tx,
+        receipt,
+        // Esplora has no timestamp for mempool transactions. Keep those at
+        // the top, matching the ordering of its address-history endpoint.
+        timestamp: tx.blockTime ?? receipt?.created_at ?? Number.MAX_SAFE_INTEGER,
+      });
+    }
+
+    for (const receipt of receiptsByTxid.values()) {
+      items.push({ type: 'receipt', receipt, timestamp: receipt.created_at });
+    }
+
+    return items.sort((a, b) => b.timestamp - a.timestamp);
+  }, [donationReceipts, ledgerTransactions, replyTree]);
 
   const feedEventsById = useMemo(() => collectReplyEvents(replyTree), [replyTree]);
 
@@ -473,57 +521,118 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
             {/* Engagement counters live in the hero PostActionBar only. */}
             <div id="campaign-activity" className="scroll-mt-20">
-              <CampaignActivityTabs
-                campaign={campaign}
-                commentsTab={
-                  <CommentsSection className="mt-0">
-                    <DetailCommentComposer
-                      event={campaign.event}
-                      onSuccess={() => queryClient.invalidateQueries({ queryKey: ['nostr', 'comments'] })}
-                    />
+              {onchainAddress ? (
+                <div className="mt-4">
+                  <CampaignLedgerHeader address={onchainAddress} />
+                </div>
+              ) : null}
 
-                    {commentsLoading && statsLoading && replyTree.length === 0 ? (
-                      <div>
-                        {Array.from({ length: 3 }).map((_, i) => (
-                          <DetailReplySkeleton key={i} />
-                        ))}
-                      </div>
-                    ) : replyTree.length > 0 ? (
-                      <div>
-                        <ThreadedReplyList
-                          roots={replyTree}
-                          hideCommentContext
-                          leafCardClassName="py-4"
-                          renderAuthorBadge={(event) =>
-                            event.pubkey === campaign.pubkey ? <CampaignerBadge /> : null
-                          }
-                          renderItemHeader={(event) => (
-                            <CampaignPinHeader
-                              canManagePins={canManagePins}
-                              isPinned={isPinned(event.id)}
-                              pinPending={togglePin.isPending}
-                              onTogglePin={() => handleTogglePin(event)}
-                            />
-                          )}
-                        />
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setReplyOpen(true)}
-                        className="block w-full px-6 py-10 text-center hover:bg-foreground/5 transition-colors"
-                      >
-                        <p className="text-base font-medium text-foreground">
-                          {t('campaignsDetail.noCommentsTitle')}
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {t('campaignsDetail.noCommentsHint')}
-                        </p>
-                      </button>
-                    )}
-                  </CommentsSection>
-                }
-              />
+              <CommentsSection className={onchainAddress ? 'mt-0' : undefined}>
+                <DetailCommentComposer
+                  event={campaign.event}
+                  onSuccess={() => queryClient.invalidateQueries({ queryKey: ['nostr', 'comments'] })}
+                />
+
+                {(commentsLoading || statsLoading || ledgerQuery.isLoading) && activityItems.length === 0 ? (
+                  <div>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <DetailReplySkeleton key={i} />
+                    ))}
+                  </div>
+                ) : activityItems.length > 0 ? (
+                  <div>
+                    {activityItems.map((item) => {
+                      if (item.type === 'comment') {
+                        return (
+                          <ThreadedReplyList
+                            key={item.node.event.id}
+                            roots={[item.node]}
+                            hideCommentContext
+                            leafCardClassName="py-4"
+                            renderAuthorBadge={(event) =>
+                              event.pubkey === campaign.pubkey ? <CampaignerBadge /> : null
+                            }
+                            renderItemHeader={(event) => (
+                              <CampaignPinHeader
+                                canManagePins={canManagePins}
+                                isPinned={isPinned(event.id)}
+                                pinPending={togglePin.isPending}
+                                onTogglePin={() => handleTogglePin(event)}
+                              />
+                            )}
+                          />
+                        );
+                      }
+
+                      if (item.type === 'receipt') {
+                        return (
+                          <ThreadedReplyList
+                            key={item.receipt.id}
+                            roots={[{ event: item.receipt, children: [] }]}
+                            hideCommentContext
+                            leafCardClassName="py-4"
+                          />
+                        );
+                      }
+
+                      if (item.receipt) {
+                        return (
+                          <NoteCard
+                            key={item.tx.txid}
+                            event={item.receipt}
+                            className="py-4"
+                            hideCommentContext
+                            donationTransaction={item.tx}
+                          />
+                        );
+                      }
+
+                      return (
+                        <div key={item.tx.txid} className="border-b border-primary/20 bg-background/40">
+                          <CampaignLedgerTransaction
+                            tx={item.tx}
+                            btcPrice={btcPrice}
+                            campaign={displayCampaign}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setReplyOpen(true)}
+                    className="block w-full px-6 py-10 text-center hover:bg-foreground/5 transition-colors"
+                  >
+                    <p className="text-base font-medium text-foreground">
+                      {t('campaignsDetail.noCommentsTitle')}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t('campaignsDetail.noCommentsHint')}
+                    </p>
+                  </button>
+                )}
+
+                {ledgerQuery.isError ? (
+                  <div className="border-t border-primary/20 px-5 py-4 text-center text-sm text-muted-foreground">
+                    {t('campaignsDetail.ledger.error')}
+                  </div>
+                ) : null}
+                {ledgerQuery.hasNextPage ? (
+                  <div className="flex justify-center border-t border-primary/20 px-4 py-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => void ledgerQuery.fetchNextPage()}
+                      disabled={ledgerQuery.isFetchingNextPage}
+                    >
+                      {ledgerQuery.isFetchingNextPage
+                        ? t('campaignsDetail.ledger.loadingMore')
+                        : t('campaignsDetail.ledger.loadMore')}
+                    </Button>
+                  </div>
+                ) : null}
+              </CommentsSection>
             </div>
           </div>
 
@@ -622,119 +731,6 @@ function CampaignPinHeader({
       pinPending={pinPending}
       onTogglePin={onTogglePin}
     />
-  );
-}
-
-/**
- * Tabbed wrapper around the campaign's social + on-chain activity. The
- * "Comments & donations" tab is always present; "Ledger" only renders when
- * the campaign declares a public on-chain endpoint (`bc1q…` / `bc1p…`).
- *
- * Silent-payment-only campaigns intentionally have no ledger — the receive
- * address is unlinkable by design — so the component degrades to a single
- * un-tabbed surface in that case to avoid showing a lone disabled tab.
- *
- * Visual treatment: the tab strip reads as a *section header*, not a
- * control widget. The active tab label is the same size and weight as the
- * `<h2>` headings used elsewhere on the page; the inactive tabs sit beside
- * it as muted siblings. A 1px baseline border runs the full width of the
- * panel, and the active tab "lifts" off that baseline with a thicker
- * primary-tinted under-rule that visually flows into the content surface
- * below. The list overrides the default shadcn pill style entirely.
- */
-function CampaignActivityTabs({
-  campaign,
-  commentsTab,
-}: {
-  campaign: ParsedCampaign;
-  commentsTab: ReactNode;
-}) {
-  const { t } = useTranslation();
-  const onchainAddress = campaign.wallets.onchain?.value;
-
-  // No on-chain endpoint → no Ledger tab. Render the comments surface
-  // directly so we don't show a single lonely tab control. The caller
-  // already omits the inline title, so add a heading here that mirrors
-  // the section headers used elsewhere on the page.
-  if (!onchainAddress) {
-    return (
-      <div className="mt-4">
-        <h2 className="mb-3 px-1 text-lg font-semibold tracking-tight">
-          {t('campaignsDetail.tabComments')}
-        </h2>
-        {commentsTab}
-      </div>
-    );
-  }
-
-  return (
-    <Tabs defaultValue="comments" className="mt-4">
-      {/* Underline-style tab strip that reads as a section header.
-          Overrides every default class on shadcn's TabsList (which is a
-          muted pill control) — `h-auto`, no `bg-*`, no padding, no
-          rounding. The baseline `border-b border-primary/20` runs the
-          full width of the panel below, and each trigger draws a
-          thicker primary under-rule when active so the active tab
-          "owns" the panel surface below it. `gap-8` gives each label
-          room to breathe so they read as separate section headers
-          rather than a packed control. */}
-      <TabsList className="h-auto w-full justify-start gap-8 rounded-none border-b border-primary/20 bg-transparent p-0">
-        <CampaignActivityTabTrigger value="comments">
-          {t('campaignsDetail.tabComments')}
-        </CampaignActivityTabTrigger>
-        <CampaignActivityTabTrigger value="ledger">
-          {t('campaignsDetail.tabLedger')}
-        </CampaignActivityTabTrigger>
-      </TabsList>
-
-      {/* TabsContent's own `mt-4` puts a comfortable 16px gap between the
-          tab strip's baseline and the rounded panel below — without it,
-          the panel's rounded top corners visually overlap the under-rule. */}
-      <TabsContent value="comments" className="mt-4">
-        {commentsTab}
-      </TabsContent>
-
-      <TabsContent value="ledger" className="mt-4">
-        <CampaignLedger address={onchainAddress} />
-      </TabsContent>
-    </Tabs>
-  );
-}
-
-/**
- * Section-header-styled tab trigger. Overrides shadcn's default pill /
- * shadow active state (`data-[state=active]:bg-background data-[state=active]:shadow-sm`)
- * with an underline + colour shift, so the strip reads as a header instead
- * of a control. Sizing matches the page's other `<h2>` headings (`text-lg
- * font-semibold tracking-tight`) so the active tab label feels like the
- * canonical section title.
- */
-function CampaignActivityTabTrigger({
-  value,
-  children,
-}: {
-  value: string;
-  children: ReactNode;
-}) {
-  return (
-    <TabsTrigger
-      value={value}
-      className="
-        relative h-auto rounded-none border-0 bg-transparent px-1 py-2
-        text-lg font-semibold tracking-tight text-muted-foreground
-        shadow-none transition-colors
-        hover:text-foreground/90
-        focus-visible:ring-0 focus-visible:ring-offset-0
-        data-[state=active]:bg-transparent data-[state=active]:text-foreground
-        data-[state=active]:shadow-none
-        after:absolute after:-bottom-px after:left-0 after:right-0 after:h-0.5
-        after:rounded-full after:bg-transparent
-        data-[state=active]:after:bg-primary
-        motion-safe:after:transition-colors
-      "
-    >
-      {children}
-    </TabsTrigger>
   );
 }
 

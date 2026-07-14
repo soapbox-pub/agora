@@ -818,15 +818,15 @@
       "publicAddress": "公开地址",
       "viewOnMempool": "在 mempool.space 查看",
       "openOnMempool": "在 mempool.space 打开交易",
-      "received": "收到",
-      "sent": "发送",
       "unconfirmed": "未确认",
       "block": "区块 {{height}}",
       "btcUnit": "BTC",
       "empty": "此地址暂无链上活动。",
       "error": "无法加载链上活动。请稍后再试。",
       "loadMore": "加载更多",
-      "loadingMore": "加载中……"
+      "loadingMore": "加载中……",
+      "donated": "已捐赠",
+      "withdrawn": "已提取"
     },
     "tombstone": {
       "seoTitle": "已归档的活动 | {{appName}}",
@@ -1675,7 +1675,8 @@
       "description": "需要的是比特币地址、静默支付地址（sp1…）或 bitcoin: URI。"
     },
     "toast": {
-      "failedTitle": "交易失败"
+      "failedTitle": "交易失败",
+      "followUpFailedTitle": "付款已发送，但公开收据发布失败"
     },
     "broadcastError": {
       "feeTooLowTitle": "网络费用过低",
@@ -3351,5 +3352,11 @@
       "successDesc": "已将 {{sats}} sats 归集到你的钱包。"
     },
     "footnote": "这是一次单向归集到你当前钱包的操作。只会处理受影响的静默支付；其他一切保持不变。"
+  },
+  "campaignMatch": {
+    "action": "匹配",
+    "errors": {
+      "wrongSettlementAddress": "结算付款未发送到已记录的活动地址。"
+    }
   }
 }

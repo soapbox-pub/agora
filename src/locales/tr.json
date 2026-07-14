@@ -1333,15 +1333,15 @@
       "publicAddress": "Genel adres",
       "viewOnMempool": "mempool.space'de görüntüle",
       "openOnMempool": "İşlemi mempool.space'de aç",
-      "received": "Alınan",
-      "sent": "Gönderilen",
       "unconfirmed": "Onaylanmadı",
       "block": "Blok {{height}}",
       "btcUnit": "BTC",
       "empty": "Bu adres için henüz zincir üstü etkinlik yok.",
       "error": "Zincir üstü etkinlik yüklenemedi. Birazdan tekrar deneyin.",
       "loadMore": "Daha fazla yükle",
-      "loadingMore": "Yükleniyor…"
+      "loadingMore": "Yükleniyor…",
+      "donated": "Bağışlanan",
+      "withdrawn": "Çekilen"
     },
     "tombstone": {
       "seoTitle": "Arşivlenmiş kampanya | {{appName}}",
@@ -2122,7 +2122,8 @@
       "feeRateTooLow": "En az 1 sat/vB ücret oranı girin."
     },
     "toast": {
-      "failedTitle": "İşlem başarısız"
+      "failedTitle": "İşlem başarısız",
+      "followUpFailedTitle": "Ödeme gönderildi ancak herkese açık makbuz yayımlanamadı"
     },
     "broadcastError": {
       "feeTooLowTitle": "Ağ ücreti çok düşük",
@@ -3351,5 +3352,11 @@
     "lastScanned": "Blok {{height}}'a kadar tarandı",
     "paused": "Otomatik tarama kapalı",
     "manualLink": "Tarama seçenekleri"
+  },
+  "campaignMatch": {
+    "action": "Eşle",
+    "errors": {
+      "wrongSettlementAddress": "Ödeme, kaydedilmiş kampanya adresine gönderilmedi."
+    }
   }
 }

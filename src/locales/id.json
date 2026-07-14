@@ -1333,15 +1333,15 @@
       "publicAddress": "Alamat publik",
       "viewOnMempool": "Lihat di mempool.space",
       "openOnMempool": "Buka transaksi di mempool.space",
-      "received": "Diterima",
-      "sent": "Terkirim",
       "unconfirmed": "Belum dikonfirmasi",
       "block": "Blok {{height}}",
       "btcUnit": "BTC",
       "empty": "Belum ada aktivitas on-chain untuk alamat ini.",
       "error": "Tidak dapat memuat aktivitas on-chain. Coba lagi sebentar.",
       "loadMore": "Muat lebih banyak",
-      "loadingMore": "Memuat…"
+      "loadingMore": "Memuat…",
+      "donated": "Didonasikan",
+      "withdrawn": "Ditarik"
     },
     "tombstone": {
       "seoTitle": "Kampanye terarsip | {{appName}}",
@@ -2126,7 +2126,8 @@
       "description": "Diharapkan alamat Bitcoin, alamat silent payment (sp1…), atau URI bitcoin:."
     },
     "toast": {
-      "failedTitle": "Transaksi gagal"
+      "failedTitle": "Transaksi gagal",
+      "followUpFailedTitle": "Pembayaran terkirim, tetapi tanda terima publik gagal dipublikasikan"
     },
     "broadcastError": {
       "feeTooLowTitle": "Biaya jaringan terlalu rendah",
@@ -3351,5 +3352,11 @@
     "lastScanned": "Dipindai hingga blok {{height}}",
     "paused": "Pemindaian otomatis nonaktif",
     "manualLink": "Opsi pindaian"
+  },
+  "campaignMatch": {
+    "action": "Samakan",
+    "errors": {
+      "wrongSettlementAddress": "Pembayaran penyelesaian tidak dikirim ke alamat kampanye yang telah direkam."
+    }
   }
 }

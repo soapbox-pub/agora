@@ -1333,15 +1333,15 @@
       "publicAddress": "Anwani ya umma",
       "viewOnMempool": "Tazama kwenye mempool.space",
       "openOnMempool": "Fungua muamala kwenye mempool.space",
-      "received": "Imepokelewa",
-      "sent": "Imetumwa",
       "unconfirmed": "Haijathibitishwa",
       "block": "Bloku {{height}}",
       "btcUnit": "BTC",
       "empty": "Bado hakuna shughuli ya mnyororoni kwa anwani hii.",
       "error": "Haikuweza kupakia shughuli ya mnyororoni. Jaribu tena baada ya muda mfupi.",
       "loadMore": "Pakia zaidi",
-      "loadingMore": "Inapakia…"
+      "loadingMore": "Inapakia…",
+      "donated": "Imechangwa",
+      "withdrawn": "Imetolewa"
     },
     "tombstone": {
       "seoTitle": "Kampeni iliyohifadhiwa | {{appName}}",
@@ -2083,7 +2083,8 @@
       "description": "Ilitarajiwa anwani ya Bitcoin, anwani ya malipo ya kimya (sp1…), au URI ya bitcoin:."
     },
     "toast": {
-      "failedTitle": "Muamala umeshindikana"
+      "failedTitle": "Muamala umeshindikana",
+      "followUpFailedTitle": "Malipo yametumwa, lakini risiti ya umma haikuchapishwa"
     },
     "broadcastError": {
       "feeTooLowTitle": "Ada ya mtandao ni ndogo sana",
@@ -3351,5 +3352,11 @@
     "lastScanned": "Imechanganuliwa hadi block {{height}}",
     "paused": "Uchanganuzi wa kiotomatiki umezimwa",
     "manualLink": "Chaguzi za uchanganuzi"
+  },
+  "campaignMatch": {
+    "action": "Linganisha",
+    "errors": {
+      "wrongSettlementAddress": "Malipo hayakutumwa kwa anwani ya kampeni iliyohifadhiwa."
+    }
   }
 }

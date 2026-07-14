@@ -1374,15 +1374,15 @@
       "publicAddress": "Adresse publique",
       "viewOnMempool": "Voir sur mempool.space",
       "openOnMempool": "Ouvrir la transaction sur mempool.space",
-      "received": "Reçu",
-      "sent": "Envoyé",
       "unconfirmed": "Non confirmé",
       "block": "Bloc {{height}}",
       "btcUnit": "BTC",
       "empty": "Aucune activité on-chain pour cette adresse pour l'instant.",
       "error": "Impossible de charger l'activité on-chain. Réessayez dans un instant.",
       "loadMore": "Charger plus",
-      "loadingMore": "Chargement…"
+      "loadingMore": "Chargement…",
+      "donated": "Donné",
+      "withdrawn": "Retiré"
     },
     "tombstone": {
       "seoTitle": "Campagne archivée | {{appName}}",
@@ -2231,7 +2231,8 @@
       "description": "Une adresse Bitcoin, une adresse de paiement silencieux (sp1…), ou un URI bitcoin: était attendu."
     },
     "toast": {
-      "failedTitle": "Échec de la transaction"
+      "failedTitle": "Échec de la transaction",
+      "followUpFailedTitle": "Paiement envoyé, mais échec du reçu public"
     },
     "broadcastError": {
       "feeTooLowTitle": "Frais de réseau trop bas",
@@ -3392,5 +3393,11 @@
       "successDesc": "{{sats}} sats balayés vers votre portefeuille."
     },
     "footnote": "Il s'agit d'un balayage à sens unique vers votre portefeuille actuel. Seuls les paiements silencieux concernés sont touchés ; rien d'autre ne change."
+  },
+  "campaignMatch": {
+    "action": "Égaler",
+    "errors": {
+      "wrongSettlementAddress": "Le paiement de règlement n'a pas été envoyé à l'adresse de campagne enregistrée dans l'instantané."
+    }
   }
 }

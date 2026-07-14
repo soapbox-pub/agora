@@ -1,17 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { ArrowDownLeft, ArrowUpRight, Clock, ExternalLink } from 'lucide-react';
 
+import { CampaignLedgerMatchAction } from '@/components/CampaignDonationMatchAction';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAddressLedger } from '@/hooks/useAddressLedger';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { type AddressTransaction, formatBTC, satsToUSD } from '@/lib/bitcoin';
+import type { ParsedCampaign } from '@/lib/campaign';
 import { openUrl } from '@/lib/downloadFile';
 import { timeAgo } from '@/lib/timeAgo';
 
 interface CampaignLedgerProps {
   /** The campaign's on-chain (`bc1…`) Bitcoin address. */
   address: string;
+  /** Optional campaign context for rendering Match on inflow rows. */
+  campaign?: ParsedCampaign;
 }
 
 /**
@@ -24,7 +28,7 @@ interface CampaignLedgerProps {
  * silent-payment-only campaigns have no scannable address and should not
  * surface this tab at all.
  */
-export function CampaignLedger({ address }: CampaignLedgerProps) {
+export function CampaignLedger({ address, campaign }: CampaignLedgerProps) {
   const { t } = useTranslation();
   const { data: btcPrice } = useBtcPrice();
   const query = useAddressLedger(address, true);
@@ -34,7 +38,7 @@ export function CampaignLedger({ address }: CampaignLedgerProps) {
 
   return (
     <div className="rounded-2xl bg-muted/60 overflow-hidden border-l border-r border-primary/20">
-      <LedgerHeader address={address} />
+      <CampaignLedgerHeader address={address} />
 
       {query.isLoading ? (
         <div className="divide-y divide-primary/20">
@@ -54,7 +58,9 @@ export function CampaignLedger({ address }: CampaignLedgerProps) {
         <>
           <ul className="divide-y divide-primary/20">
             {txs.map((tx) => (
-              <LedgerRow key={tx.txid} tx={tx} btcPrice={btcPrice} />
+              <li key={tx.txid}>
+                <CampaignLedgerTransaction tx={tx} btcPrice={btcPrice} campaign={campaign} />
+              </li>
             ))}
           </ul>
 
@@ -78,11 +84,11 @@ export function CampaignLedger({ address }: CampaignLedgerProps) {
   );
 }
 
-function LedgerHeader({ address }: { address: string }) {
+export function CampaignLedgerHeader({ address }: { address: string }) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-primary/20 bg-background/40">
+    <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 bg-background/40">
       <div className="min-w-0">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {t('campaignsDetail.ledger.publicAddress')}
@@ -105,12 +111,14 @@ function LedgerHeader({ address }: { address: string }) {
   );
 }
 
-function LedgerRow({
+export function CampaignLedgerTransaction({
   tx,
   btcPrice,
+  campaign,
 }: {
   tx: AddressTransaction;
   btcPrice: number | undefined;
+  campaign?: ParsedCampaign;
 }) {
   const { t } = useTranslation();
   const isInflow = tx.netSats >= 0;
@@ -124,11 +132,11 @@ function LedgerRow({
     : t('campaignsDetail.ledger.unconfirmed');
 
   return (
-    <li>
+    <div className="w-full px-4 sm:px-5 py-3 flex items-center gap-3 hover:bg-background/40 motion-safe:transition-colors">
       <button
         type="button"
         onClick={() => void openUrl(`https://mempool.space/tx/${tx.txid}`)}
-        className="w-full px-4 sm:px-5 py-3 flex items-center gap-3 text-left hover:bg-background/40 motion-safe:transition-colors"
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
         title={t('campaignsDetail.ledger.openOnMempool')}
       >
         <span
@@ -142,8 +150,8 @@ function LedgerRow({
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-foreground">
               {isInflow
-                ? t('campaignsDetail.ledger.received')
-                : t('campaignsDetail.ledger.sent')}
+                ? t('campaignsDetail.ledger.donated')
+                : t('campaignsDetail.ledger.withdrawn')}
             </span>
             <span className="text-xs font-mono text-muted-foreground truncate">
               {tx.txid.slice(0, 8)}…{tx.txid.slice(-6)}
@@ -160,25 +168,48 @@ function LedgerRow({
             ) : null}
           </div>
         </div>
+      </button>
 
-        <div className="text-right shrink-0">
+      <div className="shrink-0 flex flex-col items-end">
+        <div className="flex items-center gap-3">
+          {isInflow && campaign ? (
+            <CampaignLedgerMatchAction campaign={campaign} amountSats={absSats} />
+          ) : null}
           {btcPrice ? (
-            <div className={`text-sm font-semibold tabular-nums ${tone}`}>
+            <div
+              className={`latin-display font-display font-normal tracking-wide leading-none tabular-nums text-2xl inline-block ${tone}`}
+              style={{
+                WebkitTextStroke: '0.022em currentColor',
+                transform: 'skewX(-6deg) scaleX(1.1)',
+                transformOrigin: '100% 100%',
+              }}
+            >
               {isInflow ? '+' : '−'}
               {satsToUSD(absSats, btcPrice)}
             </div>
           ) : null}
-          <div
-            className={`tabular-nums ${
-              btcPrice ? 'text-xs text-muted-foreground' : `text-sm font-semibold ${tone}`
-            }`}
-          >
+          {!btcPrice ? (
+            <div
+              className={`latin-display font-display font-normal tracking-wide leading-none text-2xl inline-block tabular-nums ${tone}`}
+              style={{
+                WebkitTextStroke: '0.022em currentColor',
+                transform: 'skewX(-6deg) scaleX(1.1)',
+                transformOrigin: '100% 100%',
+              }}
+            >
+              {isInflow ? '+' : '−'}
+              {formatBTC(absSats)} {t('campaignsDetail.ledger.btcUnit')}
+            </div>
+          ) : null}
+        </div>
+        {btcPrice ? (
+          <div className="text-xs text-muted-foreground tabular-nums leading-none mt-0.5">
             {isInflow ? '+' : '−'}
             {formatBTC(absSats)} {t('campaignsDetail.ledger.btcUnit')}
           </div>
-        </div>
-      </button>
-    </li>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

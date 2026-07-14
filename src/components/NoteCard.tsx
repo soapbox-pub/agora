@@ -7,6 +7,7 @@ import {
   GitBranch,
   GitPullRequest,
   HandHeart,
+  ExternalLink,
   Mail,
   Megaphone,
   MessageCircle,
@@ -14,6 +15,7 @@ import {
   MoreHorizontal,
   Package,
   Play,
+  Quote,
   Radio,
   Share2,
   SmilePlus,
@@ -34,6 +36,7 @@ import {
   PodcastTrailerContent,
 } from "@/components/AudioKindContent";
 import { CampaignInlinePreview, GroupInlinePreview, PledgeInlinePreview } from "@/components/AgoraInlinePreview";
+import { CampaignDonationMatchAction } from "@/components/CampaignDonationMatchAction";
 import { BadgeAwardCard } from "@/components/BadgeAwardCard";
 import { BadgeContent } from "@/components/BadgeContent";
 import { CalendarEventContent } from "@/components/CalendarEventContent";
@@ -93,7 +96,9 @@ import { useEventTranslation } from "@/hooks/useEventTranslation";
 import { canZap } from "@/lib/canZap";
 import { extractZapSender, extractZapMessage } from "@/hooks/useEventInteractions";
 import { getZapAmountSats } from "@/lib/zapHelpers";
-import { satsToUSD } from "@/lib/bitcoin";
+import { formatBTC, satsToUSD, type AddressTransaction } from "@/lib/bitcoin";
+import { openUrl } from "@/lib/downloadFile";
+import { extractOnchainZapTxid } from "@/hooks/useOnchainZaps";
 import { useBtcPrice } from "@/hooks/useBtcPrice";
 import { getContentWarning } from "@/lib/contentWarning";
 import { genUserName } from "@/lib/genUserName";
@@ -264,6 +269,14 @@ interface NoteCardProps {
   authorBadge?: ReactNode;
   /** Event used for actions/navigation when the displayed card is synthetic. */
   actionEvent?: NostrEvent;
+  /** Optional action rendered in the shared action row. */
+  extraAction?: ReactNode;
+  /** Verified/claimed on-chain amount shown by a synthetic kind 8333 card. */
+  donationAmountSats?: number;
+  /** On-chain metadata merged into a kind 8333 card on campaign pages. */
+  donationTransaction?: AddressTransaction;
+  /** Transaction ID retained while rendering a kind 8333 as a synthetic comment. */
+  donationTxid?: string;
 }
 
 /** Gets a tag value by name. */
@@ -393,6 +406,10 @@ export const NoteCard = memo(function NoteCard({
   hideCommentContext,
   authorBadge,
   actionEvent,
+  extraAction,
+  donationAmountSats,
+  donationTransaction,
+  donationTxid,
 }: NoteCardProps) {
   const { t } = useTranslation();
   const actionTarget = actionEvent ?? event;
@@ -656,8 +673,11 @@ export const NoteCard = memo(function NoteCard({
   // moderation context internally and is a no-op outside community surfaces.
   const contentBlock = (
     <CommunityContentWarning event={event}>
-      {/* Reply context (kind 1) or comment context (kind 1111) — shown above content */}
-      {isComment && !hideCommentContext && <CommentContext event={event} prefix={commentContextPrefix} />}
+      {/* Reply / comment context. Donation Match now sits in the amount column
+          (above +$ on both activity feed and campaign pages). */}
+      {isComment && !hideCommentContext && donationAmountSats === undefined && (
+        <CommentContext event={event} prefix={commentContextPrefix} />
+      )}
       {isReply && (
         <ReplyContext
           pubkeys={replyToPubkeys}
@@ -667,9 +687,109 @@ export const NoteCard = memo(function NoteCard({
         />
       )}
 
+      {donationAmountSats !== undefined && donationAmountSats > 0 ? (
+        <div
+          className={cn(
+            'group/donation mb-0 py-1',
+            isComment && !hideCommentContext ? 'mt-2' : 'mt-3',
+          )}
+        >
+          {isComment && !hideCommentContext ? (
+            <CommentContext
+              event={event}
+              prefix={commentContextPrefix}
+              className="flex items-center gap-x-1 text-sm text-muted-foreground mt-0 mb-1 min-w-0 overflow-hidden"
+            />
+          ) : null}
+
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-2.5 text-2xl leading-none text-emerald-600 dark:text-emerald-400">
+              <HandHeart
+                className="size-6 shrink-0 motion-safe:transition-transform motion-safe:group-hover/donation:-rotate-6 motion-safe:group-hover/donation:scale-110"
+                aria-hidden
+              />
+              <span
+                className="latin-display font-display font-normal tracking-wide leading-none uppercase inline-block"
+                style={{
+                  WebkitTextStroke: '0.022em currentColor',
+                  transform: 'skewX(-6deg) scaleX(1.1)',
+                  transformOrigin: '0 100%',
+                }}
+              >
+                {t('campaignsDetail.ledger.donated')}
+              </span>
+            </div>
+
+            <div className="shrink-0 flex items-center gap-3">
+              {extraAction}
+              <div
+                className="latin-display text-right font-display font-normal tracking-wide leading-none tabular-nums text-2xl inline-block text-emerald-600 dark:text-emerald-400"
+                style={{
+                  WebkitTextStroke: '0.022em currentColor',
+                  transform: 'skewX(-6deg) scaleX(1.1)',
+                  transformOrigin: '100% 100%',
+                }}
+              >
+                +{btcPrice
+                  ? satsToUSD(donationAmountSats, btcPrice)
+                  : `${formatBTC(donationAmountSats)} ${t('campaignsDetail.ledger.btcUnit')}`}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-0.5 flex items-center justify-between gap-4 text-xs text-muted-foreground">
+            {donationTxid ? (
+              <button
+                type="button"
+                className="flex min-w-0 items-center gap-1.5 text-left hover:text-foreground motion-safe:transition-colors"
+                onClick={(clickEvent) => {
+                  clickEvent.stopPropagation();
+                  void openUrl(`https://mempool.space/tx/${donationTxid}`);
+                }}
+                title={t('campaignsDetail.ledger.openOnMempool')}
+              >
+                <span className="truncate font-mono">
+                  {donationTxid.slice(0, 8)}…{donationTxid.slice(-6)}
+                </span>
+                {donationTransaction?.confirmed && donationTransaction.blockHeight ? (
+                  <>
+                    <span aria-hidden>·</span>
+                    <span className="shrink-0">
+                      {t('campaignsDetail.ledger.block', { height: donationTransaction.blockHeight })}
+                    </span>
+                  </>
+                ) : donationTransaction ? (
+                  <>
+                    <span aria-hidden>·</span>
+                    <span className="shrink-0">{t('campaignsDetail.ledger.unconfirmed')}</span>
+                  </>
+                ) : null}
+                <ExternalLink className="size-3 shrink-0" aria-hidden />
+              </button>
+            ) : <span />}
+            {btcPrice ? (
+              <div className="shrink-0 text-right tabular-nums leading-none">
+                +{formatBTC(donationAmountSats)} {t('campaignsDetail.ledger.btcUnit')}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       {/* Content — kind-based dispatch, guarded by NIP-36 content-warning */}
       <ContentWarningGuard event={event}>
-        {isPhoto ? (
+        {donationAmountSats !== undefined ? (
+          contentEvent.content.trim() ? (
+            <div className="relative mt-2 mb-0 pl-7 text-lg font-medium leading-relaxed text-foreground sm:text-xl">
+              <Quote className="absolute left-0 top-0.5 size-5 text-primary/40" aria-hidden />
+              <TruncatedNoteContent
+                event={contentEvent}
+                className="mt-0"
+                contentClassName="text-lg font-medium leading-relaxed sm:text-xl"
+              />
+            </div>
+          ) : null
+        ) : isPhoto ? (
           <PhotoContent event={event} />
         ) : isVideo ? (
           <VideoContent event={event} />
@@ -1059,7 +1179,11 @@ export const NoteCard = memo(function NoteCard({
     const usdLabel = btcPrice ? satsToUSD(zapAmountSats, btcPrice) : undefined;
     const satsLabel = t('noteCard.zap.sat', { count: zapAmountSats, formattedCount: formatNumber(zapAmountSats) });
     const amountText = usdLabel ?? satsLabel;
-    const donationPrefix = zapAmountSats > 0 ? t('noteCard.zap.donatedAmountTo', { amount: amountText }) : t('noteCard.zap.donatedTo');
+    const donationPrefix = event.kind === 8333
+      ? t('noteCard.zap.donatedTo')
+      : zapAmountSats > 0
+        ? t('noteCard.zap.donatedAmountTo', { amount: amountText })
+        : t('noteCard.zap.donatedTo');
     const zapCommentEvent = buildZapCommentEvent(
       event,
       zapRequestTags,
@@ -1079,6 +1203,11 @@ export const NoteCard = memo(function NoteCard({
         highlight={highlight}
         hideKindHeader
         commentContextPrefix={donationPrefix}
+        hideCommentContext={hideCommentContext}
+        extraAction={event.kind === 8333 ? <CampaignDonationMatchAction event={event} /> : undefined}
+        donationAmountSats={event.kind === 8333 ? zapAmountSats : undefined}
+        donationTransaction={donationTransaction}
+        donationTxid={event.kind === 8333 ? extractOnchainZapTxid(event) ?? undefined : undefined}
       />
     );
   }
@@ -1284,8 +1413,12 @@ const MAX_HEIGHT = 400; // px — posts taller than this get truncated
  *  Media attachments render inline within NoteContent at their original content position. */
 function TruncatedNoteContent({
   event,
+  className,
+  contentClassName,
 }: {
   event: NostrEvent;
+  className?: string;
+  contentClassName?: string;
 }) {
   const { t } = useTranslation();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -1319,7 +1452,7 @@ function TruncatedNoteContent({
   }, [measure]);
 
   return (
-    <div className="mt-2 break-words overflow-hidden">
+    <div className={cn("mt-2 break-words overflow-hidden", className)}>
       <div
         ref={contentRef}
         style={
@@ -1329,7 +1462,7 @@ function TruncatedNoteContent({
         }
         className="relative"
       >
-        <NoteContent event={event} className="text-[15px] leading-relaxed" />
+        <NoteContent event={event} className={cn("text-[15px] leading-relaxed", contentClassName)} />
         {!expanded && overflows && (
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent pointer-events-none" />
         )}

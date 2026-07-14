@@ -818,15 +818,15 @@
       "publicAddress": "公開地址",
       "viewOnMempool": "在 mempool.space 檢視",
       "openOnMempool": "在 mempool.space 開啟交易",
-      "received": "收到",
-      "sent": "送出",
       "unconfirmed": "未確認",
       "block": "區塊 {{height}}",
       "btcUnit": "BTC",
       "empty": "此地址尚無鏈上活動。",
       "error": "無法載入鏈上活動。請稍後再試。",
       "loadMore": "載入更多",
-      "loadingMore": "載入中…"
+      "loadingMore": "載入中…",
+      "donated": "已捐贈",
+      "withdrawn": "已提領"
     },
     "tombstone": {
       "seoTitle": "已封存的活動 | {{appName}}",
@@ -1611,7 +1611,8 @@
       "description": "預期為比特幣地址、靜默支付地址（sp1…）或 bitcoin: URI。"
     },
     "toast": {
-      "failedTitle": "交易失敗"
+      "failedTitle": "交易失敗",
+      "followUpFailedTitle": "付款已傳送，但公開收據發佈失敗"
     },
     "broadcastError": {
       "feeTooLowTitle": "網路費用過低",
@@ -3351,5 +3352,11 @@
     "lastScanned": "已掃描至區塊 {{height}}",
     "paused": "自動掃描已關閉",
     "manualLink": "掃描選項"
+  },
+  "campaignMatch": {
+    "action": "匹配",
+    "errors": {
+      "wrongSettlementAddress": "結算付款未傳送至已記錄的活動地址。"
+    }
   }
 }

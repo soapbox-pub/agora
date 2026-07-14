@@ -818,15 +818,15 @@
       "publicAddress": "نشانی عمومی",
       "viewOnMempool": "مشاهده در mempool.space",
       "openOnMempool": "بازکردن تراکنش در mempool.space",
-      "received": "دریافت‌شده",
-      "sent": "ارسال‌شده",
       "unconfirmed": "تأییدنشده",
       "block": "بلاک {{height}}",
       "btcUnit": "BTC",
       "empty": "هنوز فعالیتی روی زنجیره برای این نشانی ثبت نشده است.",
       "error": "بارگذاری فعالیت روی زنجیره ممکن نشد. لحظه‌ای دیگر دوباره تلاش کن.",
       "loadMore": "بارگذاری بیشتر",
-      "loadingMore": "در حال بارگذاری…"
+      "loadingMore": "در حال بارگذاری…",
+      "donated": "اهداشده",
+      "withdrawn": "برداشت‌شده"
     },
     "tombstone": {
       "seoTitle": "کمپین بایگانی‌شده | {{appName}}",
@@ -1671,7 +1671,8 @@
       "feeRateTooLow": "یک نرخ کارمزد دست‌کم ۱ sat/vB وارد کنید."
     },
     "toast": {
-      "failedTitle": "تراکنش ناموفق بود"
+      "failedTitle": "تراکنش ناموفق بود",
+      "followUpFailedTitle": "پرداخت ارسال شد، اما انتشار رسید عمومی ناموفق بود"
     },
     "broadcastError": {
       "feeTooLowTitle": "کارمزد شبکه بسیار پایین است",
@@ -3392,5 +3393,11 @@
       "successDesc": "{{sats}} ساتوشی به کیف پول شما بازگردانده شد."
     },
     "footnote": "این یک بازگردانی یک‌طرفه به کیف پول کنونی شماست. تنها پرداخت‌های بی‌صدای متأثر تغییر می‌کنند؛ هیچ چیز دیگری دگرگون نمی‌شود."
+  },
+  "campaignMatch": {
+    "action": "هم‌تراز",
+    "errors": {
+      "wrongSettlementAddress": "پرداخت تسویه به نشانی ثبت‌شدهٔ کمپین در زمان تعهد ارسال نشد."
+    }
   }
 }
