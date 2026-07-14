@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import type { NostrEvent } from '@nostrify/nostrify';
 import {
   Archive,
@@ -46,7 +46,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { DetailCommentComposer } from '@/components/DetailCommentComposer';
 import { DetailReplySkeleton, DetailStory } from '@/components/DetailStory';
-import { InteractionsModal, type InteractionTab } from '@/components/InteractionsModal';
 import { PostActionBar } from '@/components/PostActionBar';
 import { PinnedCommentHeader } from '@/components/PinnedCommentHeader';
 import { PendingBadge } from '@/components/PendingBadge';
@@ -65,7 +64,6 @@ import { useCampaignTombstone } from '@/hooks/useCampaignTombstone';
 import { useComments } from '@/hooks/useComments';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useDeleteEvent } from '@/hooks/useDeleteEvent';
-import { useEventStats } from '@/hooks/useTrending';
 import { useHdWalletAccess } from '@/hooks/useHdWalletAccess';
 import { usePinnedEventComments } from '@/hooks/usePinnedEventComments';
 import { useShareOrigin } from '@/hooks/useShareOrigin';
@@ -83,7 +81,6 @@ import {
 import { satsToUSDWhole } from '@/lib/bitcoin';
 import { AGORA_HOST } from '@/lib/appUrls';
 import { formatUsdGoal } from '@/lib/formatCampaignAmount';
-import { formatNumber } from '@/lib/formatNumber';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { openUrl } from '@/lib/downloadFile';
 import { cn } from '@/lib/utils';
@@ -190,31 +187,12 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
 
   const [replyOpen, setReplyOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  const [interactionsOpen, setInteractionsOpen] = useState(false);
-  const [interactionsTab, setInteractionsTab] = useState<InteractionTab>('reposts');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [coverLightboxOpen, setCoverLightboxOpen] = useState(false);
   const { translatedEvent, translateAction } = useEventTranslation(campaign.event);
   const displayCampaign = useMemo(() => parseCampaign(translatedEvent) ?? campaign, [translatedEvent, campaign]);
 
   const deleteMutation = useDeleteEvent();
-
-  const { data: engagementStats } = useEventStats(campaign.event.id, campaign.event);
-
-  const openInteractions = (tab: InteractionTab) => {
-    setInteractionsTab(tab);
-    setInteractionsOpen(true);
-  };
-
-  // Whether the engagement counters row above the comments list should
-  // render — at least one of repost / quote / reaction has a non-zero
-  // count. Zaps are intentionally excluded for campaigns (donations are
-  // on-chain kind 8333 receipts; a zap count would suggest the wrong CTA).
-  const hasStats =
-    !!engagementStats?.replies ||
-    !!engagementStats?.reposts ||
-    !!engagementStats?.quotes ||
-    !!engagementStats?.reactions;
 
   const { data: commentsData, isLoading: commentsLoading } = useComments(
     campaign.event,
@@ -491,55 +469,8 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
               <CampaignStory storyEvent={storyEvent} />
             )}
 
-            {/* Engagement counters above the comments. The action bar
-                itself lives in the hero overlay; these counters stay
-                inline so users can tap a count to see who reposted /
-                quoted / liked the campaign via InteractionsModal. */}
+            {/* Engagement counters live in the hero PostActionBar only. */}
             <div id="campaign-activity" className="scroll-mt-20">
-              {hasStats && (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground px-1">
-                  {engagementStats?.reposts ? (
-                    <button
-                      onClick={() => openInteractions('reposts')}
-                      className="hover:underline transition-colors"
-                    >
-                      <Trans
-                        i18nKey="campaignsDetail.repost"
-                        count={engagementStats.reposts}
-                        values={{ formattedCount: formatNumber(engagementStats.reposts) }}
-                        components={{ 0: <span className="font-bold text-foreground" /> }}
-                      />
-                    </button>
-                  ) : null}
-                  {engagementStats?.quotes ? (
-                    <button
-                      onClick={() => openInteractions('quotes')}
-                      className="hover:underline transition-colors"
-                    >
-                      <Trans
-                        i18nKey="campaignsDetail.quote"
-                        count={engagementStats.quotes}
-                        values={{ formattedCount: formatNumber(engagementStats.quotes) }}
-                        components={{ 0: <span className="font-bold text-foreground" /> }}
-                      />
-                    </button>
-                  ) : null}
-                  {engagementStats?.reactions ? (
-                    <button
-                      onClick={() => openInteractions('reactions')}
-                      className="hover:underline transition-colors"
-                    >
-                      <Trans
-                        i18nKey="campaignsDetail.like"
-                        count={engagementStats.reactions}
-                        values={{ formattedCount: formatNumber(engagementStats.reactions) }}
-                        components={{ 0: <span className="font-bold text-foreground" /> }}
-                      />
-                    </button>
-                  ) : null}
-                </div>
-              )}
-
               <CampaignActivityTabs
                 campaign={campaign}
                 commentsTab={
@@ -620,12 +551,6 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
         event={campaign.event}
         open={moreMenuOpen}
         onOpenChange={setMoreMenuOpen}
-      />
-      <InteractionsModal
-        eventId={campaign.event.id}
-        open={interactionsOpen}
-        onOpenChange={setInteractionsOpen}
-        initialTab={interactionsTab}
       />
 
       {cover && coverLightboxOpen && (
