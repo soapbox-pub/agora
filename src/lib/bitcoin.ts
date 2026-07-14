@@ -107,6 +107,13 @@ export interface AddressData {
   totalReceived: number;
   /** Total satoshis ever sent (confirmed). */
   totalSent: number;
+  /**
+   * Number of confirmed transaction outputs ever paid to this address
+   * (`chain_stats.funded_txo_count`). Aligns with {@link totalReceived}
+   * (which is `funded_txo_sum`) — each inbound UTXO is one count unit.
+   * Useful as a public "payments received" counter for campaign addresses.
+   */
+  fundedTxoCount: number;
   /** Confirmed transaction count. */
   txCount: number;
   /** Pending (mempool) transaction count. */
@@ -143,6 +150,7 @@ export async function fetchAddressData(
     totalBalance: confirmedBalance + pendingBalance,
     totalReceived: data.chain_stats.funded_txo_sum,
     totalSent: data.chain_stats.spent_txo_sum,
+    fundedTxoCount: data.chain_stats.funded_txo_count ?? 0,
     txCount: data.chain_stats.tx_count,
     pendingTxCount: data.mempool_stats.tx_count,
   };

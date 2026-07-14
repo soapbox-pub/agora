@@ -188,6 +188,7 @@ function tokenToScannedAddress(
     totalBalance: confirmed,
     totalReceived,
     totalSent,
+    fundedTxoCount: token.transfers,
     txCount: token.transfers,
     pendingTxCount: 0,
   };

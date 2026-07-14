@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} 筆捐贈",
     "openInWallet": "開啟 Bitcoin 錢包",
     "payWithAgoraWallet": "使用 Agora 支付",
-    "payWithCard": "使用銀行卡支付"
+    "payWithCard": "使用銀行卡支付",
+    "paymentCount_one": "{{count}} 筆不可阻擋的付款",
+    "paymentCount_other": "{{count}} 筆不可阻擋的付款"
   },
   "noBitcoin": {
     "trigger": "沒有比特幣？",

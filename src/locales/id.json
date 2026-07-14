@@ -1367,7 +1367,9 @@
     "donationCount_other": "{{count}} donasi",
     "openInWallet": "Buka dompet Bitcoin",
     "payWithAgoraWallet": "Bayar dengan Agora",
-    "payWithCard": "Bayar dengan kartu"
+    "payWithCard": "Bayar dengan kartu",
+    "paymentCount_one": "{{count}} pembayaran yang tak terhenti",
+    "paymentCount_other": "{{count}} pembayaran yang tak terhenti"
   },
   "noBitcoin": {
     "trigger": "Tidak punya Bitcoin?",

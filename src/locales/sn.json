@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} zvipo",
     "openInWallet": "Vhura chikwama cheBitcoin",
     "payWithAgoraWallet": "Bhadhara neAgora",
-    "payWithCard": "Bhadhara nekadhi"
+    "payWithCard": "Bhadhara nekadhi",
+    "paymentCount_one": "{{count}} mubhadharo usingadzivisike",
+    "paymentCount_other": "{{count}} mibhadharo isingadzivisike"
   },
   "noBitcoin": {
     "trigger": "Hauna Bitcoin here?",

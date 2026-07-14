@@ -1367,7 +1367,9 @@
     "donationCount_other": "{{count}} bağış",
     "openInWallet": "Bitcoin cüzdanını aç",
     "payWithAgoraWallet": "Agora ile öde",
-    "payWithCard": "Kartla öde"
+    "payWithCard": "Kartla öde",
+    "paymentCount_one": "{{count}} durdurulamaz ödeme",
+    "paymentCount_other": "{{count}} durdurulamaz ödeme"
   },
   "noBitcoin": {
     "trigger": "Bitcoin'iniz yok mu?",

@@ -1408,7 +1408,9 @@
     "donationCount_other": "{{count}} doações",
     "openInWallet": "Abrir carteira Bitcoin",
     "payWithAgoraWallet": "Pagar com Agora",
-    "payWithCard": "Pagar com cartão"
+    "payWithCard": "Pagar com cartão",
+    "paymentCount_one": "{{count}} pagamento imparável",
+    "paymentCount_other": "{{count}} pagamentos imparáveis"
   },
   "noBitcoin": {
     "trigger": "Não tem Bitcoin?",

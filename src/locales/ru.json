@@ -1367,7 +1367,9 @@
     "donationCount_other": "{{count}} пожертвований",
     "openInWallet": "Открыть кошелёк Bitcoin",
     "payWithAgoraWallet": "Оплатить через Agora",
-    "payWithCard": "Оплатить картой"
+    "payWithCard": "Оплатить картой",
+    "paymentCount_one": "{{count}} непреодолимый платёж",
+    "paymentCount_other": "{{count}} непреодолимых платежей"
   },
   "noBitcoin": {
     "trigger": "Нет биткоина?",

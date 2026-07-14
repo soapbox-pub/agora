@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} donaciones",
     "openInWallet": "Abrir cartera de Bitcoin",
     "payWithAgoraWallet": "Pagar con Agora",
-    "payWithCard": "Pagar con tarjeta"
+    "payWithCard": "Pagar con tarjeta",
+    "paymentCount_one": "{{count}} pago imparable",
+    "paymentCount_other": "{{count}} pagos imparables"
   },
   "noBitcoin": {
     "trigger": "¿No tienes Bitcoin?",

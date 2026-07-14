@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} مرستې",
     "openInWallet": "د Bitcoin بټوه پرانیزئ",
     "payWithAgoraWallet": "د Agora له لارې تادیه وکړئ",
-    "payWithCard": "د کارت له لارې تادیه وکړئ"
+    "payWithCard": "د کارت له لارې تادیه وکړئ",
+    "paymentCount_one": "{{count}} نه درېدونکی تادیه",
+    "paymentCount_other": "{{count}} نه درېدونکې تادیې"
   },
   "noBitcoin": {
     "trigger": "Bitcoin نه لرئ؟",

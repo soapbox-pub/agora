@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} 笔捐赠",
     "openInWallet": "打开 Bitcoin 钱包",
     "payWithAgoraWallet": "使用 Agora 支付",
-    "payWithCard": "使用银行卡支付"
+    "payWithCard": "使用银行卡支付",
+    "paymentCount_one": "{{count}} 笔不可阻挡的付款",
+    "paymentCount_other": "{{count}} 笔不可阻挡的付款"
   },
   "noBitcoin": {
     "trigger": "没有比特币？",

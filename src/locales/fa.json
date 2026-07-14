@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} کمک",
     "openInWallet": "باز کردن کیف پول Bitcoin",
     "payWithAgoraWallet": "پرداخت با Agora",
-    "payWithCard": "پرداخت با کارت"
+    "payWithCard": "پرداخت با کارت",
+    "paymentCount_one": "{{count}} پرداخت توقف‌ناپذیر",
+    "paymentCount_other": "{{count}} پرداخت توقف‌ناپذیر"
   },
   "noBitcoin": {
     "trigger": "بیت‌کوین ندارید؟",

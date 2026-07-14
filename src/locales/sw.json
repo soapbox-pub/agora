@@ -1367,7 +1367,9 @@
     "donationCount_other": "michango {{count}}",
     "openInWallet": "Fungua pochi ya Bitcoin",
     "payWithAgoraWallet": "Lipa kwa Agora",
-    "payWithCard": "Lipa kwa kadi"
+    "payWithCard": "Lipa kwa kadi",
+    "paymentCount_one": "malipo {{count}} yasiyozuilika",
+    "paymentCount_other": "malipo {{count}} yasiyozuilika"
   },
   "noBitcoin": {
     "trigger": "Huna Bitcoin?",

@@ -852,7 +852,9 @@
     "donationCount_other": "{{count}} ការបរិច្ចាគ",
     "openInWallet": "បើកកាបូប Bitcoin",
     "payWithAgoraWallet": "បង់ដោយ Agora",
-    "payWithCard": "បង់ដោយកាត"
+    "payWithCard": "បង់ដោយកាត",
+    "paymentCount_one": "ការទូទាត់ដែលមិនអាចបញ្ឈប់បាន {{count}}",
+    "paymentCount_other": "ការទូទាត់ដែលមិនអាចបញ្ឈប់បាន {{count}}"
   },
   "noBitcoin": {
     "trigger": "មិនមាន Bitcoin មែនទេ?",

@@ -257,6 +257,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
   const countryLabel = getCampaignCountryLabel(campaign);
   const raisedSats = stats?.totalSats ?? 0;
   const pendingSats = stats?.pendingSats ?? 0;
+  const inflowCount = stats?.inflowCount ?? 0;
 
   const isCreator = user?.pubkey === campaign.pubkey;
   const naddr = useMemo(() => encodeCampaignNaddr(campaign), [campaign]);
@@ -375,6 +376,7 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
       campaign={campaign}
       raisedSats={raisedSats}
       pendingSats={pendingSats}
+      inflowCount={inflowCount}
       statsLoading={statsLoading}
       btcPrice={btcPrice}
       onShare={handleShare}
@@ -1114,6 +1116,12 @@ interface DonateColumnProps {
    * total when non-zero.
    */
   pendingSats: number;
+  /**
+   * Confirmed on-chain inflows to the campaign address (Esplora
+   * `funded_txo_count`). Aligns with the chain portion of raised — each
+   * output ever paid to the address, with or without a kind 8333 receipt.
+   */
+  inflowCount: number;
   statsLoading: boolean;
   btcPrice: number | undefined;
   onShare: () => void;
@@ -1123,6 +1131,7 @@ function DonateColumn({
   campaign,
   raisedSats,
   pendingSats,
+  inflowCount,
   statsLoading,
   btcPrice,
   onShare,
@@ -1194,6 +1203,16 @@ function DonateColumn({
               {campaign.goalUsd ? (
                 <div className="text-xs text-muted-foreground">
                   {t('campaignsDetail.ofGoal', { amount: formatUsdGoal(campaign.goalUsd) })}
+                  {inflowCount > 0 && (
+                    <>
+                      {' · '}
+                      {t('campaignsDetail.paymentCount', { count: inflowCount })}
+                    </>
+                  )}
+                </div>
+              ) : inflowCount > 0 ? (
+                <div className="text-xs text-muted-foreground">
+                  {t('campaignsDetail.paymentCount', { count: inflowCount })}
                 </div>
               ) : null}
               {pendingSats !== 0 && (

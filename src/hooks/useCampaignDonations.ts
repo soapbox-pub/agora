@@ -38,6 +38,15 @@ interface CampaignDonationStats {
    * outgoing spends.
    */
   pendingSats: number;
+  /**
+   * Confirmed on-chain inflows to the campaign address
+   * (`chain_stats.funded_txo_count`). Aligns with the Esplora-sourced
+   * portion of {@link totalSats} — every payment that lands in
+   * `funded_txo_sum` contributes one unit, whether or not a kind 8333
+   * receipt was published. Does not include fiat card payments (the
+   * `pay` endpoint only exposes a total amount).
+   */
+  inflowCount: number;
   /** Number of unique on-chain transactions counted (from verified receipts). */
   txCount: number;
   /** Number of unique donor pubkeys (from verified receipts). */
@@ -228,6 +237,7 @@ export function useCampaignDonations(
 
   const onchainSats = hasOnchain ? (addressQuery.data?.totalReceived ?? 0) : 0;
   const pendingSats = hasOnchain ? (addressQuery.data?.pendingBalance ?? 0) : 0;
+  const inflowCount = hasOnchain ? (addressQuery.data?.fundedTxoCount ?? 0) : 0;
 
   // Fiat raised (USD cents from the `pay` endpoint) → USD → sats at the
   // live BTC price. Without a price we can't convert, so it contributes 0
@@ -266,6 +276,7 @@ export function useCampaignDonations(
       totalSats,
       fiatSats,
       pendingSats,
+      inflowCount,
       txCount: txids.size,
       donorCount: donors.size,
       receipts: sortedReceipts,

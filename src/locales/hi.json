@@ -1367,7 +1367,9 @@
     "donationCount_other": "{{count}} डोनेशन",
     "openInWallet": "Bitcoin वॉलेट खोलें",
     "payWithAgoraWallet": "Agora से भुगतान करें",
-    "payWithCard": "कार्ड से भुगतान करें"
+    "payWithCard": "कार्ड से भुगतान करें",
+    "paymentCount_one": "{{count}} अविरोध भुगतान",
+    "paymentCount_other": "{{count}} अविरोध भुगतान"
   },
   "noBitcoin": {
     "trigger": "Bitcoin नहीं है?",
