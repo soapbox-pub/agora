@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { HeroAtmosphere } from '@/components/HeroAtmosphere';
@@ -27,8 +28,12 @@ interface GuideHeroProps {
  * Same structural recipe as the Organize / Actions homepage heroes
  * ({@link HeroBanner} + {@link HeroAtmosphere} + scrims + overlay copy),
  * but tuned smaller because these are sub-pages, not primary destinations.
- * Also embeds a "Back to About" link in the top-left as the page's
- * primary navigation out — so a separate sticky bar isn't needed.
+ * Also embeds a back link in the top-left as the page's primary navigation
+ * out — so a separate sticky bar isn't needed.
+ *
+ * The back chip intentionally omits `backdrop-blur` / `drop-shadow`: those
+ * over continuously animating banner/atmosphere layers can leave a GPU
+ * ghost of the label on some desktop Chrome builds.
  */
 export function GuideHero({
   title,
@@ -36,6 +41,7 @@ export function GuideHero({
   images,
   palette = HOPE_PALETTE,
 }: GuideHeroProps) {
+  const { t } = useTranslation();
   // Cycle through the palette on a slow cadence so the photo never
   // feels static even when a single banner image is on screen.
   const [hueIndex, setHueIndex] = useState(0);
@@ -66,15 +72,15 @@ export function GuideHero({
       />
 
       <div className="relative max-w-3xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-h-[240px] sm:min-h-[280px] lg:min-h-[320px] flex flex-col">
-        {/* Back-to-About action sits on its own row at the top so it
-            doubles as both the navigation out and the breadcrumb. */}
+        {/* Back action sits on its own row at the top so it doubles as both
+            the navigation out and the breadcrumb. */}
         <div>
           <Link
             to="/about"
-            className="inline-flex items-center gap-1.5 rounded-full bg-black/30 hover:bg-black/45 backdrop-blur-sm border border-white/20 px-3 py-1.5 text-xs sm:text-sm font-medium text-white drop-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-black/30 hover:bg-black/45 border border-white/20 px-3 py-1.5 text-xs sm:text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 transition-colors"
           >
-            <ArrowLeft className="size-3.5" />
-            Back to About
+            <ArrowLeft className="size-3.5 rtl:rotate-180" aria-hidden="true" />
+            {t('common.back')}
           </Link>
         </div>
 
