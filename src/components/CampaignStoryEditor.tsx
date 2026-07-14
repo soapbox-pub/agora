@@ -28,9 +28,9 @@ interface CampaignStoryEditorProps {
  * Wraps the shared {@link AutoGrowTextarea} with the same authoring
  * affordances the note composer offers:
  *  - `@` autocomplete over people **and** campaigns (inserts `nostr:` URIs),
- *  - an Edit / Preview toggle pinned to the field's top-right corner that
- *    renders the markdown story exactly as it will appear on the campaign
- *    page (via {@link ArticleContent}, including side-by-side campaign rows).
+ *  - an Edit / Preview toggle above the field that renders the markdown
+ *    story exactly as it will appear on the campaign page (via
+ *    {@link ArticleContent}, including side-by-side campaign rows).
  *
  * The story is kind 33863 markdown, so the preview builds a synthetic
  * campaign event carrying only the content — banner/title/summary are shown
@@ -86,11 +86,10 @@ export function CampaignStoryEditor({
   const enterPreview = useCallback(() => setPreviewMode(true), []);
 
   return (
-    <div className={cn('relative', className)}>
-      {/* Edit / Preview toggle — pinned to the field's top-right corner,
-          shown whenever there's content worth previewing. */}
+    <div className={cn(className)}>
+      {/* Edit / Preview toggle — above the field so it never occludes input. */}
       {hasContent && (
-        <div className="absolute right-2 top-2 z-20">
+        <div className="mb-2 flex justify-end">
           <div className="inline-flex items-center gap-0.5 rounded-lg border border-border/60 bg-muted/70 p-1 shadow-sm backdrop-blur-sm">
             <button
               type="button"
@@ -132,9 +131,6 @@ export function CampaignStoryEditor({
             value={value}
             onValueChange={onValueChange}
             placeholder={placeholder}
-            // Reserve space on the right for the floating toggle so the
-            // first line of text doesn't run under it.
-            className={hasContent ? 'pr-32' : undefined}
           />
           <MentionAutocomplete
             textareaRef={textareaRef}

@@ -1236,11 +1236,6 @@ export function ComposeBox({
   // Early return after all hooks to avoid violating Rules of Hooks
   if (!user && compact) return null;
 
-  // Floating Edit/Preview control overlaps the top-right of the textarea.
-  // Track visibility so the editor can reserve horizontal space under it.
-  const showInlinePreviewToggle =
-    content.trim().length > 0 && controlledPreviewMode === undefined;
-
   return (
     <div className={cn(
       "relative px-4 pt-3 bg-background/85 flex flex-col",
@@ -1249,15 +1244,11 @@ export function ComposeBox({
       !forceExpanded && !hideBorder && "border-b border-border",
       className,
     )}>
-      {/* Preview / Edit toggle — pinned to the top-right corner of the
-          editor. Shown for the uncontrolled composer (the modal drives its
-          own toggle) whenever there's content worth previewing. Sits on top
-          of the editor via absolute positioning so it stays out of the
-          text-entry flow while remaining a persistent affordance. The
-          textarea adds matching right padding when this is visible so the
-          first line of text does not run under the control. */}
-      {showInlinePreviewToggle && (
-        <div className="absolute right-3 top-3 z-20">
+      {/* Preview / Edit toggle — above the content field so it never
+          occludes text entry. Shown for the uncontrolled composer (the
+          modal drives its own toggle) whenever there's content to preview. */}
+      {content.trim().length > 0 && controlledPreviewMode === undefined && (
+        <div className="flex justify-end mb-2">
           <div className="inline-flex items-center gap-0.5 p-1 bg-muted/70 backdrop-blur-sm rounded-lg shadow-sm border border-border/60">
             <button
               type="button"
@@ -1276,8 +1267,8 @@ export function ComposeBox({
               onClick={() => setInternalPreviewMode(true)}
               className={cn(
                 "px-3 py-1 text-xs font-medium rounded-md transition-all",
-                previewMode 
-                  ? "bg-background text-foreground shadow-sm" 
+                previewMode
+                  ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -1327,8 +1318,6 @@ export function ComposeBox({
               className={cn(
                 'w-full bg-transparent text-foreground placeholder:text-muted-foreground resize-none outline-none text-lg pt-2.5 pb-2 opacity-85 break-words overflow-hidden transition-[min-height] duration-200 ease-in-out',
                 isExpanded ? 'min-h-[100px]' : 'min-h-[44px]',
-                // Keep typed text clear of the floating Edit/Preview toggle.
-                showInlinePreviewToggle && 'pr-32',
               )}
               rows={1}
               disabled={!user}
