@@ -134,7 +134,7 @@ export function CampaignStoryEditor({
             placeholder={placeholder}
             // Reserve space on the right for the floating toggle so the
             // first line of text doesn't run under it.
-            className={hasContent ? 'pr-28' : undefined}
+            className={hasContent ? 'pr-32' : undefined}
           />
           <MentionAutocomplete
             textareaRef={textareaRef}
