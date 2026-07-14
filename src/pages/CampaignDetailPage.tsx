@@ -399,7 +399,6 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
       pendingSats={pendingSats}
       statsLoading={statsLoading}
       btcPrice={btcPrice}
-      donations={donationReceipts}
       onShare={handleShare}
     />
   );
@@ -1192,8 +1191,6 @@ interface DonateColumnProps {
   pendingSats: number;
   statsLoading: boolean;
   btcPrice: number | undefined;
-  /** Aggregated kind 8333 donation events, newest first. */
-  donations: NostrEvent[];
   onShare: () => void;
 }
 
@@ -1203,7 +1200,6 @@ function DonateColumn({
   pendingSats,
   statsLoading,
   btcPrice,
-  donations,
   onShare,
 }: DonateColumnProps) {
   const { t } = useTranslation();
@@ -1273,16 +1269,6 @@ function DonateColumn({
               {campaign.goalUsd ? (
                 <div className="text-xs text-muted-foreground">
                   {t('campaignsDetail.ofGoal', { amount: formatUsdGoal(campaign.goalUsd) })}
-                  {donations.length > 0 && (
-                    <>
-                      {' · '}
-                      {t('campaignsDetail.donationCount', { count: donations.length })}
-                    </>
-                  )}
-                </div>
-              ) : donations.length > 0 ? (
-                <div className="text-xs text-muted-foreground">
-                  {t('campaignsDetail.donationCount', { count: donations.length })}
                 </div>
               ) : null}
               {pendingSats !== 0 && (
