@@ -1,10 +1,13 @@
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import type { NostrEvent, NostrFilter } from '@nostrify/nostrify';
 
+import { useMuteList } from '@/hooks/useMuteList';
 import { useNostrStorage } from '@/hooks/useNostrStorage';
 import { CAMPAIGN_KIND, parseCampaign, type ParsedCampaign } from '@/lib/campaign';
 import { createCountryIdentifier } from '@/lib/countryIdentifiers';
+import { isEventMuted } from '@/lib/muteHelpers';
 
 interface ParseCampaignEventsOptions {
   /**
@@ -120,6 +123,7 @@ interface UseCampaignsOptions {
 export function useCampaigns(options: UseCampaignsOptions = {}) {
   const { nostr } = useNostr();
   const { store } = useNostrStorage();
+  const { muteItems } = useMuteList();
   const {
     countryCode,
     categories,
@@ -136,7 +140,7 @@ export function useCampaigns(options: UseCampaignsOptions = {}) {
   // Stable cache key for the categories option, order-independent.
   const categoriesKey = categories ? [...categories].sort().join(',') : undefined;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: [
       'campaigns',
       { countryCode, categoriesKey, limit, since, authors, coordinatesKey },
@@ -199,4 +203,15 @@ export function useCampaigns(options: UseCampaignsOptions = {}) {
     },
     staleTime: 30_000,
   });
+
+  // Honor Settings → Content mute list (pubkey / hashtag / word / thread),
+  // matching notes and activity feeds. Mute list changes recompute client-side
+  // without refething campaigns — queryKey stays relay-identity only.
+  const data = useMemo(() => {
+    if (!query.data) return query.data;
+    if (muteItems.length === 0) return query.data;
+    return query.data.filter((c) => !isEventMuted(c.event, muteItems));
+  }, [query.data, muteItems]);
+
+  return { ...query, data };
 }

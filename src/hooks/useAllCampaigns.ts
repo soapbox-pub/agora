@@ -5,7 +5,9 @@ import type { NostrEvent } from '@nostrify/nostrify';
 
 import { CAMPAIGN_KIND, type ParsedCampaign } from '@/lib/campaign';
 import { parseCampaignEvents } from '@/hooks/useCampaigns';
+import { useMuteList } from '@/hooks/useMuteList';
 import type { Nip50Sort } from '@/hooks/useNip50Search';
+import { isEventMuted } from '@/lib/muteHelpers';
 
 /** Sort modes for the All Campaigns page. */
 export type CampaignSort = 'top' | 'none';
@@ -83,6 +85,7 @@ export function useAllCampaigns({
   enabled = true,
 }: UseAllCampaignsOptions) {
   const { nostr } = useNostr();
+  const { muteItems } = useMuteList();
   const trimmedSearch = search.trim().toLowerCase();
   const country = countryCode?.toUpperCase();
 
@@ -134,13 +137,18 @@ export function useAllCampaigns({
 
   const scores = scoresQuery.data;
 
-  // Step 3: apply search filter then sort.
+  // Step 3: drop muted authors/hashtags/words/threads, apply search, then sort.
+  // Mute filtering matches notes/activity (`isEventMuted`) so Settings → Content
+  // mute list actually hides those authors' campaigns from /campaigns.
   const filteredSorted = useMemo<ParsedCampaign[]>(() => {
     if (!campaigns) return [];
 
     let pool = campaigns;
+    if (muteItems.length > 0) {
+      pool = pool.filter((c) => !isEventMuted(c.event, muteItems));
+    }
     if (trimmedSearch) {
-      pool = campaigns.filter((c) => matchesQuery(c, trimmedSearch));
+      pool = pool.filter((c) => matchesQuery(c, trimmedSearch));
     }
 
     if (sort === 'none') {
@@ -160,7 +168,7 @@ export function useAllCampaigns({
       if (donorDiff !== 0) return donorDiff;
       return b.createdAt - a.createdAt;
     });
-  }, [campaigns, scores, sort, trimmedSearch]);
+  }, [campaigns, scores, sort, trimmedSearch, muteItems]);
 
   return {
     data: filteredSorted,
