@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "الدفع عبر Agora",
     "payWithCard": "الدفع بالبطاقة",
     "paymentCount_one": "{{count}} دفعة لا تُوقَف",
-    "paymentCount_other": "{{count}} دفعات لا تُوقَف"
+    "paymentCount_other": "{{count}} دفعات لا تُوقَف",
+    "openInWalletToast": {
+      "title": "جارٍ البحث عن تطبيق محفظة…",
+      "body": "إذا لم يفتح شيء، انسخ رابط الدفع أعلاه والصقه في محفظتك."
+    }
   },
   "noBitcoin": {
     "trigger": "ليس لديك بيتكوين؟",

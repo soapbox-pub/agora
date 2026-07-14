@@ -1369,7 +1369,11 @@
     "payWithAgoraWallet": "Bayar dengan Agora",
     "payWithCard": "Bayar dengan kartu",
     "paymentCount_one": "{{count}} pembayaran yang tak terhenti",
-    "paymentCount_other": "{{count}} pembayaran yang tak terhenti"
+    "paymentCount_other": "{{count}} pembayaran yang tak terhenti",
+    "openInWalletToast": {
+      "title": "Mencari aplikasi dompet…",
+      "body": "Jika tidak ada yang terbuka, salin tautan pembayaran di atas dan tempel di dompet Anda."
+    }
   },
   "noBitcoin": {
     "trigger": "Tidak punya Bitcoin?",

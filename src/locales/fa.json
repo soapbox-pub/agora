@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "پرداخت با Agora",
     "payWithCard": "پرداخت با کارت",
     "paymentCount_one": "{{count}} پرداخت توقف‌ناپذیر",
-    "paymentCount_other": "{{count}} پرداخت توقف‌ناپذیر"
+    "paymentCount_other": "{{count}} پرداخت توقف‌ناپذیر",
+    "openInWalletToast": {
+      "title": "در حال یافتن اپ کیف‌پول…",
+      "body": "اگر چیزی باز نشد، پیوند پرداخت بالا را کپی کنید و در کیف‌پولتان بچسبانید."
+    }
   },
   "noBitcoin": {
     "trigger": "بیت‌کوین ندارید؟",

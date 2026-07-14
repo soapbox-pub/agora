@@ -1369,7 +1369,11 @@
     "payWithAgoraWallet": "Agora से भुगतान करें",
     "payWithCard": "कार्ड से भुगतान करें",
     "paymentCount_one": "{{count}} अविरोध भुगतान",
-    "paymentCount_other": "{{count}} अविरोध भुगतान"
+    "paymentCount_other": "{{count}} अविरोध भुगतान",
+    "openInWalletToast": {
+      "title": "वॉलेट ऐप खोजा जा रहा है…",
+      "body": "यदि कुछ नहीं खुलता, तो ऊपर दिए भुगतान लिंक को कॉपी करके अपने वॉलेट में पेस्ट करें।"
+    }
   },
   "noBitcoin": {
     "trigger": "Bitcoin नहीं है?",

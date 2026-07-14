@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "使用 Agora 支付",
     "payWithCard": "使用银行卡支付",
     "paymentCount_one": "{{count}} 笔不可阻挡的付款",
-    "paymentCount_other": "{{count}} 笔不可阻挡的付款"
+    "paymentCount_other": "{{count}} 笔不可阻挡的付款",
+    "openInWalletToast": {
+      "title": "正在查找钱包应用…",
+      "body": "如果没有打开任何应用，请复制上方的付款链接并粘贴到你的钱包中。"
+    }
   },
   "noBitcoin": {
     "trigger": "没有比特币？",

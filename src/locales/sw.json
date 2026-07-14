@@ -1369,7 +1369,11 @@
     "payWithAgoraWallet": "Lipa kwa Agora",
     "payWithCard": "Lipa kwa kadi",
     "paymentCount_one": "malipo {{count}} yasiyozuilika",
-    "paymentCount_other": "malipo {{count}} yasiyozuilika"
+    "paymentCount_other": "malipo {{count}} yasiyozuilika",
+    "openInWalletToast": {
+      "title": "Inatafuta programu ya pochi…",
+      "body": "Ikiwa hakuna kinachofunguka, nakili kiungo cha malipo hapo juu na kibandike kwenye pochi yako."
+    }
   },
   "noBitcoin": {
     "trigger": "Huna Bitcoin?",

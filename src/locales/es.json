@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "Pagar con Agora",
     "payWithCard": "Pagar con tarjeta",
     "paymentCount_one": "{{count}} pago imparable",
-    "paymentCount_other": "{{count}} pagos imparables"
+    "paymentCount_other": "{{count}} pagos imparables",
+    "openInWalletToast": {
+      "title": "Buscando una app de monedero…",
+      "body": "Si no se abre nada, copia el enlace de pago de arriba y pégalo en tu monedero."
+    }
   },
   "noBitcoin": {
     "trigger": "¿No tienes Bitcoin?",

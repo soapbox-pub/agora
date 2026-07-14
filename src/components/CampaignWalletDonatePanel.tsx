@@ -72,6 +72,7 @@ export function CampaignWalletDonatePanel({
   secondaryAction,
 }: CampaignWalletDonatePanelProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const qrPayload = buildQrPayload(wallets);
 
   // Donors always copy the same BIP-21 URI that the QR encodes — modern
@@ -128,6 +129,10 @@ export function CampaignWalletDonatePanel({
             error — at which point the donor falls back to copy/paste
             anyway.
 
+            Browsers can't report whether a wallet opened, so we toast a
+            short hint that points donors at the copy/QR path if nothing
+            appears.
+
             Always shown, including to the campaign owner viewing their
             own campaign — the button just opens the address in a wallet
             app, which is a harmless no-op for a beneficiary and still
@@ -138,7 +143,15 @@ export function CampaignWalletDonatePanel({
           variant={primaryAction ? 'outline' : 'default'}
           className={primaryAction ? 'w-full' : 'w-full text-white'}
         >
-          <a href={qrPayload}>
+          <a
+            href={qrPayload}
+            onClick={() => {
+              toast({
+                title: t('campaignsDetail.openInWalletToast.title'),
+                description: t('campaignsDetail.openInWalletToast.body'),
+              });
+            }}
+          >
             <ExternalLink className="size-4 mr-1.5" />
             {t('campaignsDetail.openInWallet')}
           </a>

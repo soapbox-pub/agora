@@ -1410,7 +1410,11 @@
     "payWithAgoraWallet": "Payer avec Agora",
     "payWithCard": "Payer par carte",
     "paymentCount_one": "{{count}} paiement imparable",
-    "paymentCount_other": "{{count}} paiements imparables"
+    "paymentCount_other": "{{count}} paiements imparables",
+    "openInWalletToast": {
+      "title": "Recherche d’une application de portefeuille…",
+      "body": "Si rien ne s’ouvre, copiez le lien de paiement ci-dessus et collez-le dans votre portefeuille."
+    }
   },
   "noBitcoin": {
     "trigger": "Pas de Bitcoin ?",

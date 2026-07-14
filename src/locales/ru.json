@@ -1369,7 +1369,11 @@
     "payWithAgoraWallet": "Оплатить через Agora",
     "payWithCard": "Оплатить картой",
     "paymentCount_one": "{{count}} непреодолимый платёж",
-    "paymentCount_other": "{{count}} непреодолимых платежей"
+    "paymentCount_other": "{{count}} непреодолимых платежей",
+    "openInWalletToast": {
+      "title": "Ищем приложение-кошелёк…",
+      "body": "Если ничего не открылось, скопируйте ссылку для оплаты выше и вставьте её в свой кошелёк."
+    }
   },
   "noBitcoin": {
     "trigger": "Нет биткоина?",

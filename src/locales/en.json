@@ -1411,7 +1411,11 @@
     "paymentCount_other": "{{count}} unstoppable payments",
     "openInWallet": "Open external wallet",
     "payWithAgoraWallet": "Pay with Agora",
-    "payWithCard": "Pay with card"
+    "payWithCard": "Pay with card",
+    "openInWalletToast": {
+      "title": "Looking for a wallet app…",
+      "body": "If nothing opens, copy the payment link above and paste it in your wallet."
+    }
   },
   "noBitcoin": {
     "trigger": "Don't have Bitcoin?",

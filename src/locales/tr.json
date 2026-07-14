@@ -1369,7 +1369,11 @@
     "payWithAgoraWallet": "Agora ile öde",
     "payWithCard": "Kartla öde",
     "paymentCount_one": "{{count}} durdurulamaz ödeme",
-    "paymentCount_other": "{{count}} durdurulamaz ödeme"
+    "paymentCount_other": "{{count}} durdurulamaz ödeme",
+    "openInWalletToast": {
+      "title": "Cüzdan uygulaması aranıyor…",
+      "body": "Hiçbir şey açılmazsa, yukarıdaki ödeme bağlantısını kopyalayıp cüzdanınıza yapıştırın."
+    }
   },
   "noBitcoin": {
     "trigger": "Bitcoin'iniz yok mu?",

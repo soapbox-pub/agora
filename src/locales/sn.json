@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "Bhadhara neAgora",
     "payWithCard": "Bhadhara nekadhi",
     "paymentCount_one": "{{count}} mubhadharo usingadzivisike",
-    "paymentCount_other": "{{count}} mibhadharo isingadzivisike"
+    "paymentCount_other": "{{count}} mibhadharo isingadzivisike",
+    "openInWalletToast": {
+      "title": "Kutsvaga app yechikwama…",
+      "body": "Kana pasina chavhura, kopa link yekubhadhara iri pamusoro uye unamire muchikwama chako."
+    }
   },
   "noBitcoin": {
     "trigger": "Hauna Bitcoin here?",

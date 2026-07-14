@@ -854,7 +854,11 @@
     "payWithAgoraWallet": "د Agora له لارې تادیه وکړئ",
     "payWithCard": "د کارت له لارې تادیه وکړئ",
     "paymentCount_one": "{{count}} نه درېدونکی تادیه",
-    "paymentCount_other": "{{count}} نه درېدونکې تادیې"
+    "paymentCount_other": "{{count}} نه درېدونکې تادیې",
+    "openInWalletToast": {
+      "title": "د بټوې اپلیکیشن لټول کیږي…",
+      "body": "که هیڅ څه وانه‌شول، پورته د تادیې لینک کاپي کړئ او په خپلې بټوې کې یې پیسټ کړئ."
+    }
   },
   "noBitcoin": {
     "trigger": "Bitcoin نه لرئ؟",
