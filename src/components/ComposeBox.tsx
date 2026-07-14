@@ -1185,21 +1185,6 @@ export function ComposeBox({
         )}
 
         <div className={cn("flex-1 min-w-0", forceExpanded && "flex flex-col min-h-0")}>
-          {/* Char budget — only near the limit, above the field so it never
-              overlaps typed text. Hidden until ≤100 characters remain. */}
-          {mode === 'post' && remaining <= 100 && (
-            <div className="flex items-center justify-end gap-1.5 pb-1">
-              <CharRing count={charCount} max={MAX_CHARS} />
-              <span
-                className={cn(
-                  'text-xs tabular-nums',
-                  remaining < 0 ? 'text-destructive font-semibold' : 'text-amber-500',
-                )}
-              >
-                {remaining}
-              </span>
-            </div>
-          )}
           {/* Scrollable content area (textarea, poll, CW, quoted event) */}
           <div className={cn(forceExpanded && "flex-1 min-h-0 overflow-y-auto")}>
           {/* Shared shell keeps a stable min-height only while previewing so
@@ -1407,6 +1392,23 @@ export function ComposeBox({
 
         </div>{/* end flex-1 content column */}
       </div>{/* end avatar + content row */}
+
+        {/* Char budget — sits where the old "Post to" destination row was
+            (above the toolbar, right-aligned). Only shows once ≤100
+            characters remain so it doesn't clutter the compose area. */}
+        {isExpanded && mode === 'post' && remaining <= 100 && (
+          <div className="mt-2 flex items-center justify-end gap-1.5">
+            <CharRing count={charCount} max={MAX_CHARS} />
+            <span
+              className={cn(
+                'text-xs tabular-nums',
+                remaining < 0 ? 'text-destructive font-semibold' : 'text-amber-500',
+              )}
+            >
+              {remaining}
+            </span>
+          </div>
+        )}
 
         {/* Toolbar + post button — full width, not indented by avatar */}
         {isExpanded && (
