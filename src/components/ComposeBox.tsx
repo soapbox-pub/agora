@@ -344,6 +344,8 @@ export function ComposeBox({
   /** Maps uploaded file URLs to their NIP-94 tags (grouped per upload). */
   const [uploadedFileGroups, setUploadedFileGroups] = useState<Map<string, string[][]>>(new Map());
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorShellRef = useRef<HTMLDivElement>(null);
+  const [editorShellMinHeight, setEditorShellMinHeight] = useState<number | undefined>();
   const { insertAtCursor, insertEmoji: insertEmojiAtCursor } = useInsertText(textareaRef, content, setContent);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -366,6 +368,7 @@ export function ComposeBox({
     setRemovedEmbeds(new Set());
     setUploadedFileGroups(new Map());
     setDestination(defaultPostCountry);
+    setEditorShellMinHeight(undefined);
     // Clear the auto-saved draft
     try { localStorage.removeItem(draftKey); } catch { /* ignore */ }
   }, [initialMode, draftKey, defaultExpanded, defaultPostCountry]);
@@ -383,14 +386,21 @@ export function ComposeBox({
 
   // Auto-resize textarea height as content grows/shrinks.
   // Also re-run when previewMode toggles off so the remounted textarea
-  // is sized to fit its content immediately.
+  // is sized to fit its content immediately. Capture the shell height so
+  // flipping into preview mode keeps the same footprint for pure text
+  // (NoteContent metrics differ from the textarea's scrollHeight).
   useEffect(() => {
+    if (previewMode) return;
     const el = textareaRef.current;
     if (!el) return;
     // Reset to auto so shrinking is detected correctly
     el.style.height = 'auto';
     el.style.height = `${el.scrollHeight}px`;
-  }, [content, previewMode]);
+    const shell = editorShellRef.current;
+    if (shell) {
+      setEditorShellMinHeight(shell.offsetHeight);
+    }
+  }, [content, previewMode, expanded, forceExpanded, compact]);
 
   // Auto-save draft content to localStorage (debounced to avoid thrashing)
   useEffect(() => {
@@ -1263,9 +1273,21 @@ export function ComposeBox({
         <div className={cn("flex-1 min-w-0", forceExpanded && "flex flex-col min-h-0")}>
           {/* Scrollable content area (textarea, poll, CW, quoted event) */}
           <div className={cn(forceExpanded && "flex-1 min-h-0 overflow-y-auto")}>
+          {/* Shared shell keeps a stable min-height across edit ↔ preview so
+              pure-text posts don't jump when NoteContent metrics differ from
+              the textarea's scrollHeight. Preview may still grow taller when
+              embeds render larger than the typed text. */}
+          <div
+            ref={editorShellRef}
+            className="relative"
+            style={
+              isExpanded && editorShellMinHeight
+                ? { minHeight: editorShellMinHeight }
+                : undefined
+            }
+          >
           {!previewMode ? (
           /* ── Edit mode — Textarea ────────────────────────────── */
-          <div className="relative">
             <textarea
               ref={textareaRef}
               dir="auto"
@@ -1282,7 +1304,7 @@ export function ComposeBox({
                     : effectivePlaceholder
               }
               className={cn(
-                'w-full bg-transparent text-foreground placeholder:text-muted-foreground resize-none outline-none text-lg pt-2.5 pb-2 opacity-85 break-words overflow-hidden transition-[min-height] duration-200 ease-in-out',
+                'w-full bg-transparent text-foreground placeholder:text-muted-foreground resize-none outline-none text-lg leading-normal pt-2.5 pb-2 opacity-85 break-words overflow-hidden transition-[min-height] duration-200 ease-in-out',
                 isExpanded ? 'min-h-[100px]' : 'min-h-[44px]',
               )}
               rows={1}
@@ -1297,27 +1319,31 @@ export function ComposeBox({
                 }
               }}
             />
-            <MentionAutocomplete
-              textareaRef={textareaRef}
-              content={content}
-              onInsertMention={handleInsertMention}
-            />
-            <EmojiShortcodeAutocomplete
-              textareaRef={textareaRef}
-              content={content}
-              onInsertEmoji={handleInsertShortcodeEmoji}
-            />
-          </div>
-        ) : (
+          ) : (
           /* Preview mode - Show how post will look */
           mockEvent && (
-            <div className="pt-2.5 pb-2 min-h-[100px] overflow-hidden">
-              <div className="text-lg opacity-85 [&_img]:max-w-full [&_img]:h-auto">
+            <div className="pt-2.5 pb-2 overflow-hidden">
+              <div className="text-lg leading-normal opacity-85 [&_img]:max-w-full [&_img]:h-auto">
                 <NoteContent event={mockEvent} className="text-foreground" />
               </div>
             </div>
           )
-        )}
+          )}
+            {!previewMode && (
+              <>
+                <MentionAutocomplete
+                  textareaRef={textareaRef}
+                  content={content}
+                  onInsertMention={handleInsertMention}
+                />
+                <EmojiShortcodeAutocomplete
+                  textareaRef={textareaRef}
+                  content={content}
+                  onInsertEmoji={handleInsertShortcodeEmoji}
+                />
+              </>
+            )}
+          </div>
 
         {/* Poll options + settings — shown below the normal textarea/preview */}
         {mode === 'poll' && (
