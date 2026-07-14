@@ -1454,283 +1454,245 @@ export function ComposeBox({
         </div>{/* end flex-1 content column */}
       </div>{/* end avatar + content row */}
 
-        {/* Meta row above the toolbar: Edit/Preview toggle (uncontrolled
-            composer only) shares this line with the "Post to" destination
-            selector so the toggle no longer overlays the textarea. */}
-        {(() => {
-          const showPreviewToggle =
-            content.trim().length > 0 && controlledPreviewMode === undefined;
-          const showDestination = canChooseDestination && isExpanded;
-          if (!showPreviewToggle && !showDestination) return null;
-
-          return (
-            <div className="mt-2 flex items-center justify-between gap-2">
-              {showPreviewToggle ? (
-                <div className="inline-flex items-center gap-0.5 p-1 bg-muted/70 backdrop-blur-sm rounded-lg shadow-sm border border-border/60 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setInternalPreviewMode(false)}
-                    className={cn(
-                      "px-3 py-1 text-xs font-medium rounded-md transition-all",
-                      !previewMode
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {t('compose.preview.edit')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setInternalPreviewMode(true)}
-                    className={cn(
-                      "px-3 py-1 text-xs font-medium rounded-md transition-all",
-                      previewMode
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {t('compose.preview.previewMode')}
-                  </button>
-                </div>
-              ) : (
-                <span />
-              )}
-
-              {showDestination && (
-                <div className="flex items-center justify-end gap-2 min-w-0">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {t('compose.destination.label')}
+        {/* Destination row — its own line above the toolbar so the
+            "Post to" label gives it semantic context. The dropdown lists
+            "Global" first, then every country the user follows. The
+            help icon opens a popover that explains the difference
+            between a global post and a country community post. Shown
+            only for new top-level posts from a logged-in user with
+            at least one followed country. */}
+        {canChooseDestination && isExpanded && (
+          <div className="mt-2 flex items-center justify-end gap-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              {t('compose.destination.label')}
+            </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t('compose.destination.ariaHelp')}
+                  className={cn(
+                    'inline-flex items-center justify-center size-5 rounded-full shrink-0',
+                    'text-muted-foreground/70 hover:text-foreground hover:bg-muted/60',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+                    'transition-colors',
+                  )}
+                >
+                  <HelpCircle className="size-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="top"
+                align="end"
+                className="w-72 p-0 rounded-2xl overflow-hidden"
+              >
+                {(() => {
+                  // Use the currently-selected country (falling back to
+                  // the first followed one) only as the *flag emoji* in
+                  // the example. The text stays generic so the popover
+                  // reads as an explanation of the feature, not a
+                  // description of the user's current pick.
+                  const exampleCode = selectedCountryCode ?? followedCountries[0];
+                  const exampleFlag = exampleCode ? getCountryInfo(exampleCode)?.flag : null;
+                  return (
+                    <div className="p-4 space-y-3">
+                      <div className="flex gap-3">
+                        <span className="text-2xl leading-none shrink-0" aria-hidden="true">🌍</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold">{t('compose.destination.global')}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {t('compose.destination.globalExplainer')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className="text-2xl leading-none shrink-0" aria-hidden="true">
+                          {exampleFlag ?? '🌐'}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold">{t('compose.destination.community')}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {t('compose.destination.communityExplainer')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </PopoverContent>
+            </Popover>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                aria-label={t('compose.destination.ariaTrigger')}
+                className={cn(
+                  'inline-flex items-center justify-center h-8 w-auto gap-1.5 px-2.5 py-1 text-base leading-none',
+                  'bg-muted/50 hover:bg-muted shadow-none',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0',
+                  'rounded-lg motion-safe:transition-colors',
+                )}
+              >
+                {/* Show just the flag in the trigger to keep the row
+                    compact on mobile. The list items below carry the
+                    country name so users can still tell them apart. */}
+                {selectedCountryCode && selectedCountryInfo ? (
+                  <CountryFlag
+                    code={selectedCountryCode}
+                    emoji={selectedCountryInfo.flag}
+                    label={`Flag of ${selectedCountryInfo.subdivisionName ?? selectedCountryInfo.name}`}
+                  />
+                ) : (
+                  <span aria-hidden="true">🌍</span>
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[240px]">
+                <DropdownMenuItem
+                  onSelect={() => setDestination('world')}
+                  className="cursor-pointer"
+                >
+                  <span className="inline-flex items-center gap-2 flex-1">
+                    <span aria-hidden="true">🌍</span>
+                    <span>{t('compose.destination.global')}</span>
                   </span>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label={t('compose.destination.ariaHelp')}
-                        className={cn(
-                          'inline-flex items-center justify-center size-5 rounded-full shrink-0',
-                          'text-muted-foreground/70 hover:text-foreground hover:bg-muted/60',
-                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
-                          'transition-colors',
-                        )}
-                      >
-                        <HelpCircle className="size-3.5" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      side="top"
-                      align="end"
-                      className="w-72 p-0 rounded-2xl overflow-hidden"
-                    >
-                      {(() => {
-                        // Use the currently-selected country (falling back to
-                        // the first followed one) only as the *flag emoji* in
-                        // the example. The text stays generic so the popover
-                        // reads as an explanation of the feature, not a
-                        // description of the user's current pick.
-                        const exampleCode = selectedCountryCode ?? followedCountries[0];
-                        const exampleFlag = exampleCode ? getCountryInfo(exampleCode)?.flag : null;
-                        return (
-                          <div className="p-4 space-y-3">
-                            <div className="flex gap-3">
-                              <span className="text-2xl leading-none shrink-0" aria-hidden="true">🌍</span>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold">{t('compose.destination.global')}</p>
-                                <p className="text-xs text-muted-foreground mt-0.5">
-                                  {t('compose.destination.globalExplainer')}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex gap-3">
-                              <span className="text-2xl leading-none shrink-0" aria-hidden="true">
-                                {exampleFlag ?? '🌐'}
-                              </span>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold">{t('compose.destination.community')}</p>
-                                <p className="text-xs text-muted-foreground mt-0.5">
-                                  {t('compose.destination.communityExplainer')}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </PopoverContent>
-                  </Popover>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      aria-label={t('compose.destination.ariaTrigger')}
-                      className={cn(
-                        'inline-flex items-center justify-center h-8 w-auto gap-1.5 px-2.5 py-1 text-base leading-none',
-                        'bg-muted/50 hover:bg-muted shadow-none',
-                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0',
-                        'rounded-lg motion-safe:transition-colors',
-                      )}
-                    >
-                      {/* Show just the flag in the trigger to keep the row
-                          compact on mobile. The list items below carry the
-                          country name so users can still tell them apart. */}
-                      {selectedCountryCode && selectedCountryInfo ? (
-                        <CountryFlag
-                          code={selectedCountryCode}
-                          emoji={selectedCountryInfo.flag}
-                          label={`Flag of ${selectedCountryInfo.subdivisionName ?? selectedCountryInfo.name}`}
-                        />
-                      ) : (
-                        <span aria-hidden="true">🌍</span>
-                      )}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="min-w-[240px]">
+                  {destination === 'world' && (
+                    <Check className="size-4 text-primary" aria-hidden />
+                  )}
+                </DropdownMenuItem>
+                {/* Build the quick-pick list. Followed countries appear first;
+                    if the user has selected an ad-hoc country via the
+                    searchable picker that they don't follow, show it too so
+                    they have a one-tap way back to it. De-duplicates by code. */}
+                {(() => {
+                  const codes = new Set<string>();
+                  const quickPicks: string[] = [];
+                  for (const code of followedCountries) {
+                    if (!codes.has(code) && getCountryInfo(code)) {
+                      codes.add(code);
+                      quickPicks.push(code);
+                    }
+                  }
+                  if (selectedCountryCode && !codes.has(selectedCountryCode) && getCountryInfo(selectedCountryCode)) {
+                    quickPicks.push(selectedCountryCode);
+                  }
+                  return quickPicks.map((code) => {
+                    const info = getCountryInfo(code);
+                    if (!info) return null;
+                    return (
                       <DropdownMenuItem
-                        onSelect={() => setDestination('world')}
+                        key={code}
+                        onSelect={() => setDestination(code)}
                         className="cursor-pointer"
                       >
                         <span className="inline-flex items-center gap-2 flex-1">
-                          <span aria-hidden="true">🌍</span>
-                          <span>{t('compose.destination.global')}</span>
+                          <CountryFlag
+                            code={code}
+                            emoji={info.flag}
+                            label={`Flag of ${info.subdivisionName ?? info.name}`}
+                          />
+                          <span>{info.subdivisionName ?? info.name}</span>
                         </span>
-                        {destination === 'world' && (
+                        {destination === code && (
                           <Check className="size-4 text-primary" aria-hidden />
                         )}
                       </DropdownMenuItem>
-                      {/* Build the quick-pick list. Followed countries appear first;
-                          if the user has selected an ad-hoc country via the
-                          searchable picker that they don't follow, show it too so
-                          they have a one-tap way back to it. De-duplicates by code. */}
-                      {(() => {
-                        const codes = new Set<string>();
-                        const quickPicks: string[] = [];
-                        for (const code of followedCountries) {
-                          if (!codes.has(code) && getCountryInfo(code)) {
-                            codes.add(code);
-                            quickPicks.push(code);
-                          }
-                        }
-                        if (selectedCountryCode && !codes.has(selectedCountryCode) && getCountryInfo(selectedCountryCode)) {
-                          quickPicks.push(selectedCountryCode);
-                        }
-                        return quickPicks.map((code) => {
-                          const info = getCountryInfo(code);
-                          if (!info) return null;
-                          return (
-                            <DropdownMenuItem
-                              key={code}
-                              onSelect={() => setDestination(code)}
-                              className="cursor-pointer"
-                            >
-                              <span className="inline-flex items-center gap-2 flex-1">
-                                <CountryFlag
-                                  code={code}
-                                  emoji={info.flag}
-                                  label={`Flag of ${info.subdivisionName ?? info.name}`}
-                                />
-                                <span>{info.subdivisionName ?? info.name}</span>
-                              </span>
-                              {destination === code && (
-                                <Check className="size-4 text-primary" aria-hidden />
-                              )}
-                            </DropdownMenuItem>
-                          );
-                        });
-                      })()}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onSelect={(e) => {
-                          e.preventDefault();
-                          setCountryPickerOpen(true);
-                        }}
-                        className="cursor-pointer text-sm"
-                      >
-                        <Globe className="size-4 mr-2 text-muted-foreground" aria-hidden />
-                        {t('compose.destination.chooseAnother')}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {destination === defaultPostCountry ? (
-                        <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                          {(() => {
-                            if (defaultPostCountry === 'world') return t('compose.destination.globalIsDefault');
-                            const info = getCountryInfo(defaultPostCountry);
-                            return info ? t('compose.destination.isDefault', { name: info.name }) : t('compose.destination.thisIsDefault');
-                          })()}
-                        </div>
-                      ) : (
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            setDefaultPostCountry(destination);
-                            const info = destination === 'world'
-                              ? null
-                              : getCountryInfo(destination);
-                            toast({
-                              title: t('compose.destination.defaultUpdated'),
-                              description: info
-                                ? t('compose.destination.defaultUpdatedCountry', { name: info.name })
-                                : t('compose.destination.defaultUpdatedGlobal'),
-                            });
-                          }}
-                          className="cursor-pointer text-sm"
-                        >
-                          {t('compose.destination.setAsDefault')}
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  {/* Searchable picker over the full country list. Opened from the
-                      "Choose another country…" item in the destination dropdown,
-                      so users can post to any country without having to follow it
-                      first. */}
-                  <CommandDialog
-                    open={countryPickerOpen}
-                    onOpenChange={setCountryPickerOpen}
+                    );
+                  });
+                })()}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setCountryPickerOpen(true);
+                  }}
+                  className="cursor-pointer text-sm"
+                >
+                  <Globe className="size-4 mr-2 text-muted-foreground" aria-hidden />
+                  {t('compose.destination.chooseAnother')}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {destination === defaultPostCountry ? (
+                  <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                    {(() => {
+                      if (defaultPostCountry === 'world') return t('compose.destination.globalIsDefault');
+                      const info = getCountryInfo(defaultPostCountry);
+                      return info ? t('compose.destination.isDefault', { name: info.name }) : t('compose.destination.thisIsDefault');
+                    })()}
+                  </div>
+                ) : (
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setDefaultPostCountry(destination);
+                      const info = destination === 'world'
+                        ? null
+                        : getCountryInfo(destination);
+                      toast({
+                        title: t('compose.destination.defaultUpdated'),
+                        description: info
+                          ? t('compose.destination.defaultUpdatedCountry', { name: info.name })
+                          : t('compose.destination.defaultUpdatedGlobal'),
+                      });
+                    }}
+                    className="cursor-pointer text-sm"
                   >
-                    <CommandInput placeholder={t('compose.destination.searchPlaceholder')} />
-                    <CommandList>
-                      <CommandEmpty>{t('compose.destination.noResults')}</CommandEmpty>
-                      <CommandGroup>
-                        <CommandItem
-                          value={`${t('compose.destination.global')} 🌍`}
-                          onSelect={() => {
-                            setDestination('world');
-                            setCountryPickerOpen(false);
-                          }}
-                        >
-                          <span aria-hidden="true" className="mr-2">🌍</span>
-                          <span>{t('compose.destination.global')}</span>
-                          {destination === 'world' && (
-                            <Check className="ml-auto size-4 text-primary" aria-hidden />
-                          )}
-                        </CommandItem>
-                        {COUNTRY_LIST.map((country) => (
-                          <CommandItem
-                            key={country.code}
-                            // Include code + name in the searchable value so users
-                            // can type either "iran" or "IR".
-                            value={`${country.name} ${country.code}`}
-                            onSelect={() => {
-                              setDestination(country.code);
-                              setCountryPickerOpen(false);
-                            }}
-                          >
-                            <CountryFlag
-                              code={country.code}
-                              emoji={country.flag}
-                              label={`Flag of ${country.name}`}
-                              className="mr-2"
-                            />
-                            <span>{country.name}</span>
-                            <span className="ml-2 text-xs text-muted-foreground">{country.code}</span>
-                            {destination === country.code && (
-                              <Check className="ml-auto size-4 text-primary" aria-hidden />
-                            )}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </CommandDialog>
-                </div>
-              )}
-            </div>
-          );
-        })()}
+                    {t('compose.destination.setAsDefault')}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Searchable picker over the full country list. Opened from the
+                "Choose another country…" item in the destination dropdown,
+                so users can post to any country without having to follow it
+                first. */}
+            <CommandDialog
+              open={countryPickerOpen}
+              onOpenChange={setCountryPickerOpen}
+            >
+              <CommandInput placeholder={t('compose.destination.searchPlaceholder')} />
+              <CommandList>
+                <CommandEmpty>{t('compose.destination.noResults')}</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    value={`${t('compose.destination.global')} 🌍`}
+                    onSelect={() => {
+                      setDestination('world');
+                      setCountryPickerOpen(false);
+                    }}
+                  >
+                    <span aria-hidden="true" className="mr-2">🌍</span>
+                    <span>{t('compose.destination.global')}</span>
+                    {destination === 'world' && (
+                      <Check className="ml-auto size-4 text-primary" aria-hidden />
+                    )}
+                  </CommandItem>
+                  {COUNTRY_LIST.map((country) => (
+                    <CommandItem
+                      key={country.code}
+                      // Include code + name in the searchable value so users
+                      // can type either "iran" or "IR".
+                      value={`${country.name} ${country.code}`}
+                      onSelect={() => {
+                        setDestination(country.code);
+                        setCountryPickerOpen(false);
+                      }}
+                    >
+                      <CountryFlag
+                        code={country.code}
+                        emoji={country.flag}
+                        label={`Flag of ${country.name}`}
+                        className="mr-2"
+                      />
+                      <span>{country.name}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">{country.code}</span>
+                      {destination === country.code && (
+                        <Check className="ml-auto size-4 text-primary" aria-hidden />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </CommandDialog>
+          </div>
+        )}
 
         {/* Toolbar + post button — full width, not indented by avatar */}
         {isExpanded && (
@@ -1911,7 +1873,7 @@ export function ComposeBox({
               {/* Spacer */}
               <div className="flex-1" />
 
-              {/* Right: char count + post/poll button */}
+              {/* Right: char count + preview + post/poll button */}
               <div className="flex items-center gap-3">
                 {mode === 'post' && charCount > 0 && (
                   <div className="flex items-center gap-1.5">
@@ -1923,6 +1885,24 @@ export function ComposeBox({
                       {remaining}
                     </span>
                   </div>
+                )}
+
+                {content.trim().length > 0 && controlledPreviewMode === undefined && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setInternalPreviewMode((v) => !v)}
+                    aria-pressed={previewMode}
+                    className={cn(
+                      'rounded-full px-3 font-medium',
+                      previewMode
+                        ? 'bg-primary/15 text-primary hover:bg-primary/20 hover:text-primary'
+                        : 'text-muted-foreground',
+                    )}
+                  >
+                    {t('compose.preview.previewMode')}
+                  </Button>
                 )}
 
                 {mode === 'poll' ? (
