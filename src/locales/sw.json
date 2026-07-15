@@ -2102,6 +2102,8 @@
       "networkBody": "Angalia muunganisho wako na ujaribu tena.",
       "mempoolConflictTitle": "Muamala unaopingana",
       "mempoolConflictBody": "Mojawapo ya pembejeo tayari imekwisha tumika au inatumika na muamala mwingine.",
+      "staleUtxoTitle": "Pochi haijasawazishwa",
+      "staleUtxoBody": "Baadhi ya sarafu katika pochi hii hazikulingana na rekodi ya blockchain, kwa hivyo muamala ulisitishwa kabla ya kutangazwa. Pochi imejisawazisha upya kadri ilivyoweza — tafadhali jaribu tena.",
       "tooLongChainTitle": "Miamala mingi ambayo haijathibitishwa",
       "tooLongChainBody": "Una mlolongo mrefu wa miamala ambayo haijathibitishwa. Subiri mmoja uthibitishwe kisha ujaribu tena.",
       "badInputsTitle": "Muamala umekataliwa",

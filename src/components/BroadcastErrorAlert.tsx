@@ -103,6 +103,11 @@ export function BroadcastErrorAlert({
           title: t('walletSend.broadcastError.mempoolConflictTitle'),
           body: t('walletSend.broadcastError.mempoolConflictBody'),
         };
+      case 'staleUtxo':
+        return {
+          title: t('walletSend.broadcastError.staleUtxoTitle'),
+          body: t('walletSend.broadcastError.staleUtxoBody'),
+        };
       case 'tooLongChain':
         return {
           title: t('walletSend.broadcastError.tooLongChainTitle'),

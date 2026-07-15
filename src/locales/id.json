@@ -2145,6 +2145,8 @@
       "networkBody": "Periksa koneksi Anda dan coba lagi.",
       "mempoolConflictTitle": "Transaksi berbenturan",
       "mempoolConflictBody": "Salah satu input sudah dibelanjakan atau sedang dibelanjakan oleh transaksi lain.",
+      "staleUtxoTitle": "Dompet tidak sinkron",
+      "staleUtxoBody": "Sebagian koin di dompet ini tidak cocok dengan catatan blockchain, sehingga transaksi dihentikan sebelum disiarkan. Dompet sudah menyinkronkan ulang sebisanya — silakan coba lagi.",
       "tooLongChainTitle": "Terlalu banyak transaksi yang belum terkonfirmasi",
       "tooLongChainBody": "Anda punya rantai panjang transaksi yang belum terkonfirmasi. Tunggu sampai ada yang terkonfirmasi dan coba lagi.",
       "badInputsTitle": "Transaksi ditolak",

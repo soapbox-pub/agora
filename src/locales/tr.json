@@ -2141,6 +2141,8 @@
       "networkBody": "Bağlantınızı kontrol edip tekrar deneyin.",
       "mempoolConflictTitle": "Çakışan işlem",
       "mempoolConflictBody": "Girdilerden biri zaten harcanmış ya da başka bir işlem tarafından harcanıyor.",
+      "staleUtxoTitle": "Cüzdan senkron dışı",
+      "staleUtxoBody": "Bu cüzdandaki bazı coinler blok zinciri kaydıyla eşleşmediği için işlem yayınlanmadan önce durduruldu. Cüzdan yapabildiği kadarını yeniden senkronize etti — lütfen tekrar deneyin.",
       "tooLongChainTitle": "Çok fazla onaylanmamış işlem",
       "tooLongChainBody": "Uzun bir onaylanmamış işlem zinciriniz var. Birinin onaylanmasını bekleyip tekrar deneyin.",
       "badInputsTitle": "İşlem reddedildi",

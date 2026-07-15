@@ -1630,6 +1630,8 @@
       "networkBody": "請檢查你的網路連線後再試一次。",
       "mempoolConflictTitle": "交易衝突",
       "mempoolConflictBody": "其中一個輸入已被花費，或正在被另一筆交易花費。",
+      "staleUtxoTitle": "錢包與區塊鏈不同步",
+      "staleUtxoBody": "錢包中的部分資金與區塊鏈紀錄不符，因此交易在廣播前已被中止。錢包已盡可能重新同步——請再試一次。",
       "tooLongChainTitle": "未確認交易過多",
       "tooLongChainBody": "你有一長串未確認的交易。請等待其中一筆確認後再試一次。",
       "badInputsTitle": "交易已被拒絕",

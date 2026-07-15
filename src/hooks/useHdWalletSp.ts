@@ -235,6 +235,20 @@ interface UseHdWalletSpResult {
    */
   pruneSpentUtxos: (spent: ReadonlyArray<{ txid: string; vout: number }>) => void;
 
+  /**
+   * Overwrite the stored `value` of the given active SP UTXOs with the
+   * authoritative on-chain values and republish the NIP-78 document.
+   *
+   * Called by the send flow when its pre-broadcast verification finds a
+   * stored value that disagrees with the chain — the BIP-341 sighash
+   * commits to every prevout's amount, so signing with a wrong value
+   * produces a broadcast rejected with "Invalid Schnorr signature". After
+   * the correction a retry builds against the fixed values and succeeds.
+   */
+  correctUtxoValues: (
+    corrections: ReadonlyArray<{ txid: string; vout: number; value: number }>,
+  ) => void;
+
   /** Progress for an in-flight reconcile (or the last completed one). */
   reconcileProgress?: {
     /** Number of UTXOs queued for checking this run. */
@@ -276,6 +290,7 @@ const EMPTY_RESULT: UseHdWalletSpResult = {
   scanRecent: async () => {},
   cancelScan: () => {},
   pruneSpentUtxos: () => {},
+  correctUtxoValues: () => {},
   isReconciling: false,
   reconcileSpentUtxos: async () => 0,
 };
@@ -467,7 +482,16 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
           merged = {
             version: SP_STORAGE_VERSION,
             scanHeight: Math.max(remote.scanHeight, next.scanHeight),
-            utxos: mergeUtxos(remoteUtxos, next.utxos),
+            // The merged archive is authoritative: an outpoint recorded as
+            // spent by EITHER side must never survive in the active set.
+            // `mergeUtxos` is insert-preferring, so without this filter a
+            // stale relay copy that still lists an already-spent UTXO in
+            // `utxos` would resurrect it in the canonical published doc —
+            // the coin selector would then re-pick it and the broadcast
+            // would be rejected as a mempool conflict.
+            utxos: mergeUtxos(remoteUtxos, next.utxos).filter(
+              (u) => !archiveByKey.has(`${u.txid}:${u.vout}`),
+            ),
             spent: Array.from(archiveByKey.values()),
           };
         } catch {
@@ -759,12 +783,24 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
             }
 
             const opt = optimisticRef.current!;
-            const spentKeys = new Set(freshArchive.map((u) => `${u.txid}:${u.vout}`));
+            // Tombstone check: never resurrect an outpoint that is already
+            // in the spent archive. The archive is the wallet's durable
+            // record of "this was spent" — the indexer (and especially the
+            // immutable-by-design IndexedDB block cache) can keep reporting
+            // `spent: false` long after our own send consumed the UTXO,
+            // and without this filter a rescan of the receive block would
+            // re-add the spent UTXO to the active set, to be re-picked by
+            // the coin selector and rejected as a mempool conflict.
+            const archivedKeys = new Set(
+              [...(opt.spent ?? []), ...freshArchive].map(
+                (u) => `${u.txid}:${u.vout}`,
+              ),
+            );
             optimisticRef.current = {
               version: SP_STORAGE_VERSION,
               scanHeight: opt.scanHeight,
               utxos: mergeUtxos(opt.utxos, freshActive).filter(
-                (u) => !spentKeys.has(`${u.txid}:${u.vout}`),
+                (u) => !archivedKeys.has(`${u.txid}:${u.vout}`),
               ),
               spent: mergeUtxos(opt.spent ?? [], freshArchive),
             };
@@ -998,6 +1034,47 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     [publishStorage, queryClient, pubkey, dTag],
   );
 
+  // ── Correct stored SP UTXO values against the chain ──────────
+  //
+  // The scanner records each UTXO's value from the BIP-352 indexer and the
+  // send flow signs against it (the BIP-341 sighash commits to prevout
+  // amounts). When the pre-broadcast verification detects a stored value
+  // that disagrees with Blockbook's view of the chain, this callback fixes
+  // the document so the next build succeeds.
+  const correctUtxoValues = useCallback<UseHdWalletSpResult['correctUtxoValues']>(
+    (corrections) => {
+      if (!corrections.length) return;
+      const base = storageRef.current ?? optimisticRef.current;
+      if (!base) return;
+      const byKey = new Map(
+        corrections.map((c) => [`${c.txid}:${c.vout}`, c.value]),
+      );
+      let changed = false;
+      const utxos = base.utxos.map((u) => {
+        const value = byKey.get(`${u.txid}:${u.vout}`);
+        if (value === undefined || value === u.value) return u;
+        changed = true;
+        return { ...u, value };
+      });
+      if (!changed) return;
+      const next: SPStorageDocument = { ...base, utxos };
+      optimisticRef.current = next;
+      setOptimisticVersion((v) => v + 1);
+      const eventId = queryClient.getQueryData<{ id?: string } | null>([
+        'hdwallet-sp-event',
+        pubkey,
+        dTag,
+      ])?.id;
+      if (eventId) {
+        queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
+      }
+      // `mergeUtxos` in the publish merge is fresh-preferring for same-key
+      // entries, so the corrected values win over any stale relay copy.
+      publishStorage.mutate({ next });
+    },
+    [publishStorage, queryClient, pubkey, dTag],
+  );
+
   // ── Manual reconcile of spent SP UTXOs against Blockbook ─────
   //
   // The send flow's prune (above) only catches UTXOs the *current* session
@@ -1138,6 +1215,10 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
           const t = heightTimes.get(u.height);
           return t !== undefined ? { ...u, time: t } : u;
         }),
+        // Preserve the archive — dropping it here would erase the spent
+        // tombstones (resurrecting spent UTXOs on the next merge) and the
+        // receive history for already-spent outputs.
+        spent: (storage.spent ?? []).slice(),
       };
 
       // Mirror the scan-loop pattern: update the optimistic copy and
@@ -1175,6 +1256,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     scanRecent,
     cancelScan,
     pruneSpentUtxos,
+    correctUtxoValues,
     isReconciling,
     reconcileProgress,
     reconcileError,

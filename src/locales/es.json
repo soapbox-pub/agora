@@ -1694,6 +1694,8 @@
       "networkBody": "Comprueba tu conexión e inténtalo de nuevo.",
       "mempoolConflictTitle": "Transacción en conflicto",
       "mempoolConflictBody": "Una de las entradas ya se gastó o la está gastando otra transacción.",
+      "staleUtxoTitle": "Cartera desincronizada",
+      "staleUtxoBody": "Algunas monedas de esta cartera no coincidían con el registro de la blockchain, así que la transacción se detuvo antes de transmitirse. La cartera se ha resincronizado en lo posible; inténtalo de nuevo.",
       "tooLongChainTitle": "Demasiadas transacciones sin confirmar",
       "tooLongChainBody": "Tienes una cadena larga de transacciones sin confirmar. Espera a que se confirme una e inténtalo de nuevo.",
       "badInputsTitle": "La transacción fue rechazada",

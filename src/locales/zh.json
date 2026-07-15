@@ -1694,6 +1694,8 @@
       "networkBody": "请检查你的网络连接后再试。",
       "mempoolConflictTitle": "交易冲突",
       "mempoolConflictBody": "其中一个输入已被花费，或正在被另一笔交易花费。",
+      "staleUtxoTitle": "钱包与区块链不同步",
+      "staleUtxoBody": "钱包中的部分资金与区块链记录不符，因此交易在广播前被中止。钱包已尽可能重新同步——请重试。",
       "tooLongChainTitle": "未确认交易过多",
       "tooLongChainBody": "你有一长串未确认的交易。请等待其中一笔确认后再试。",
       "badInputsTitle": "交易被拒绝",

@@ -2250,6 +2250,8 @@
       "networkBody": "Vérifiez votre connexion et réessayez.",
       "mempoolConflictTitle": "Transaction en conflit",
       "mempoolConflictBody": "L'une des entrées a déjà été dépensée ou est en train d'être dépensée par une autre transaction.",
+      "staleUtxoTitle": "Portefeuille désynchronisé",
+      "staleUtxoBody": "Certaines pièces de ce portefeuille ne correspondaient pas au registre de la blockchain, la transaction a donc été arrêtée avant sa diffusion. Le portefeuille s'est resynchronisé autant que possible — réessayez.",
       "tooLongChainTitle": "Trop de transactions non confirmées",
       "tooLongChainBody": "Vous avez une longue chaîne de transactions non confirmées. Attendez qu'une soit confirmée et réessayez.",
       "badInputsTitle": "Transaction rejetée",

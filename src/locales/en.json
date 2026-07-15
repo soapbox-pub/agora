@@ -2324,6 +2324,8 @@
       "networkBody": "Check your connection and try again.",
       "mempoolConflictTitle": "Conflicting transaction",
       "mempoolConflictBody": "One of the inputs has already been spent or is being spent by another transaction.",
+      "staleUtxoTitle": "Wallet out of sync",
+      "staleUtxoBody": "Some coins in this wallet didn't match the blockchain record, so the transaction was stopped before broadcasting. The wallet has re-synced what it can — please try again.",
       "tooLongChainTitle": "Too many unconfirmed transactions",
       "tooLongChainBody": "You have a long chain of unconfirmed transactions. Wait for one to confirm and try again.",
       "badInputsTitle": "Transaction was rejected",

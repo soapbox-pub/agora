@@ -47,6 +47,7 @@ import {
 } from '@/lib/bitcoinFeeSpeed';
 import {
   classifyBroadcastError,
+  ClassifiedBroadcastError,
   type BroadcastErrorKind,
 } from '@/lib/bitcoinBroadcastError';
 import { formatSats, isLargeAmount, satsToUSD } from '@/lib/bitcoin';
@@ -55,6 +56,8 @@ import {
   fetchAddressInfo,
   fetchFeeRates,
 } from '@/lib/hdwallet/blockbook';
+import { recordSpentOutpoints } from '@/lib/hdwallet/spentOutpoints';
+import { psbtInputRefs, verifyPsbtInputs } from '@/lib/hdwallet/verifyInputs';
 import {
   buildHdSpendPsbt,
   buildHdMaxSpendPsbt,
@@ -165,6 +168,7 @@ export function HDSendBitcoinDialog({
     ownPublicAddresses,
     refetch: refetchWallet,
     pruneSpentSilentPaymentUtxos,
+    correctSilentPaymentUtxoValues,
   } = useHdWallet();
   const { config } = useAppContext();
   const { blockbookBaseUrl } = config;
@@ -528,6 +532,76 @@ export function HDSendBitcoinDialog({
       }
 
       setProgress('signing');
+      // ── Pre-broadcast input verification ─────────────────────
+      //
+      // The BIP-341 sighash commits to every input's prevout script and
+      // value. For silent-payment inputs both come from locally stored
+      // scan data that has never been checked against the chain — a stale
+      // or wrong entry produces a broadcast rejected with the inscrutable
+      // "mandatory-script-verify-flag-failed (Invalid Schnorr signature)",
+      // and an already-spent input is rejected as a mempool conflict.
+      // Verify against Blockbook first so we can fail with an actionable,
+      // classified error AND repair the wallet's stored data so a retry
+      // succeeds. Verification is best-effort: lookups that fail are
+      // skipped and the broadcast stays the final authority.
+      const inputRefs = psbtInputRefs(psbtHex);
+      const verification = await verifyPsbtInputs(blockbookBaseUrl, inputRefs)
+        .catch((err: unknown) => {
+          console.warn('Pre-broadcast input verification failed:', err);
+          return null;
+        });
+      if (verification) {
+        if (verification.spent.length > 0) {
+          // Drop the spent inputs from the wallet's view so the retry
+          // selects different coins: archive spent SP entries, and refresh
+          // the Blockbook scan for BIP-86 ones.
+          const spentKeys = new Set(
+            verification.spent.map((s) => `${s.txid}:${s.vout}`),
+          );
+          const spentSp = consumedSpUtxos.filter((u) =>
+            spentKeys.has(`${u.txid}:${u.vout}`),
+          );
+          if (spentSp.length > 0) pruneSpentSilentPaymentUtxos(spentSp);
+          queryClient.invalidateQueries({ queryKey: ['hdwallet-scan'] });
+          throw new ClassifiedBroadcastError(
+            `Inputs already spent: ${verification.spent
+              .map((s) => `${s.txid}:${s.vout}`)
+              .join(', ')}`,
+            { kind: 'mempoolConflict' },
+          );
+        }
+        if (verification.valueMismatch.length > 0) {
+          // Repair the stored SP values from the chain, then ask the user
+          // to retry — the next build signs against the correct amounts.
+          const spKeys = new Set(consumedSpUtxos.map((u) => `${u.txid}:${u.vout}`));
+          const spCorrections = verification.valueMismatch
+            .filter((m) => spKeys.has(`${m.txid}:${m.vout}`))
+            .map((m) => ({ txid: m.txid, vout: m.vout, value: m.chainValue }));
+          if (spCorrections.length > 0) {
+            correctSilentPaymentUtxoValues(spCorrections);
+          }
+          console.warn('Input value mismatch vs chain:', verification.valueMismatch);
+          throw new ClassifiedBroadcastError(
+            `Stored input values disagree with the chain: ${verification.valueMismatch
+              .map((m) => `${m.txid}:${m.vout} (stored ${m.value}, chain ${m.chainValue})`)
+              .join(', ')}`,
+            { kind: 'staleUtxo' },
+          );
+        }
+        if (verification.scriptMismatch.length > 0) {
+          console.error(
+            'Input script mismatch vs chain — stored key data is wrong:',
+            verification.scriptMismatch,
+          );
+          throw new ClassifiedBroadcastError(
+            `Stored input scripts disagree with the chain: ${verification.scriptMismatch
+              .map((m) => `${m.txid}:${m.vout}`)
+              .join(', ')}`,
+            { kind: 'staleUtxo' },
+          );
+        }
+      }
+
       const signedHex = signHdPsbt(
         psbtHex,
         inputDescriptors,
@@ -538,6 +612,13 @@ export function HDSendBitcoinDialog({
 
       setProgress('broadcasting');
       const txid = await broadcastBlockbookTx(blockbookBaseUrl, txHex);
+
+      // Tombstone every consumed outpoint so the scan pipeline stops
+      // offering them to the coin selector while Blockbook catches up with
+      // the mempool spend — without this, an immediate second send would
+      // deterministically re-pick the just-spent coins and be rejected as
+      // a mempool conflict.
+      recordSpentOutpoints(availability.pubkey, inputRefs);
 
       return { txid, amountSats: sentAmountSats, fee, consumedSpUtxos, recipient };
     },

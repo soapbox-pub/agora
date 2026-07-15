@@ -47,7 +47,32 @@ export type BroadcastErrorKind =
   | { kind: 'tooLongChain' }
   | { kind: 'badInputs' }
   | { kind: 'network' }
+  /**
+   * Pre-broadcast check found that the wallet's stored data for one of the
+   * selected inputs disagrees with the chain (wrong prevout value or
+   * script). Broadcasting would be rejected with an inscrutable
+   * `mandatory-script-verify-flag-failed (Invalid Schnorr signature)`, so
+   * the send flow aborts before signing and re-syncs what it can.
+   */
+  | { kind: 'staleUtxo' }
   | { kind: 'unknown'; raw: string };
+
+/**
+ * Error thrown by the app's own pre-broadcast checks with the
+ * classification already attached. `classifyBroadcastError` returns the
+ * embedded kind verbatim instead of substring-matching the message, so
+ * internally-detected failures (spent input, stale UTXO data) reuse the
+ * exact same alert UI as real relay rejections.
+ */
+export class ClassifiedBroadcastError extends Error {
+  readonly classified: BroadcastErrorKind;
+
+  constructor(message: string, classified: BroadcastErrorKind) {
+    super(message);
+    this.name = 'ClassifiedBroadcastError';
+    this.classified = classified;
+  }
+}
 
 /**
  * The `min relay fee not met, <actual> < <minimum>` form `bitcoind` emits
@@ -89,6 +114,9 @@ function includesCI(haystack: string, needle: string): boolean {
  * text where useful.
  */
 export function classifyBroadcastError(error: unknown): BroadcastErrorKind {
+  // App-internal failures carry their classification with them.
+  if (error instanceof ClassifiedBroadcastError) return error.classified;
+
   const raw = parseRawMessage(error);
   if (!raw) return { kind: 'unknown', raw: '' };
 

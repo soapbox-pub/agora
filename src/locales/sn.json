@@ -1690,6 +1690,8 @@
       "networkBody": "Tarisa kubatana kwako wozoedza zvakare.",
       "mempoolConflictTitle": "Chinoitwa chinopikisana",
       "mempoolConflictBody": "Imwe yezvinopinda yatoshandiswa kana iri kushandiswa nechimwe chinoitwa.",
+      "staleUtxoTitle": "Chikwama hachienderani neblockchain",
+      "staleUtxoBody": "Mimwe mari iri muchikwama ichi yakanga isingaenderani nerekodhi yeblockchain, saka chinoitwa chamiswa chisati chatumirwa. Chikwama chagadzirisazve zvachinokwanisa — edza zvakare.",
       "tooLongChainTitle": "Zvinoitwa zvisina kusimbiswa zvakawanda",
       "tooLongChainBody": "Une cheni refu yezvinoitwa zvisina kusimbiswa. Mirira chimwe chisimbiswe wozoedza zvakare.",
       "badInputsTitle": "Chinoitwa charambwa",

@@ -582,6 +582,8 @@ interface BlockbookTxVout {
   n: number;
   /** Value in sats, as a string. */
   value?: string;
+  /** ScriptPubKey hex. */
+  hex?: string;
   /** True if this output has been spent in a later transaction. */
   spent?: boolean;
 }
@@ -607,6 +609,52 @@ async function fetchBlockbookTransaction(
     { txid },
     signal,
   );
+}
+
+/**
+ * One prevout row for the pre-broadcast input verification in
+ * `verifyInputs.ts`. All fields are optional-by-absence: Blockbook versions
+ * vary in what they populate, and the verifier only acts on data that is
+ * actually present.
+ */
+export interface BlockbookTxOutput {
+  /** Output index (0-based). */
+  n: number;
+  /** Value in sats, or `undefined` when unparseable. */
+  valueSats?: number;
+  /** ScriptPubKey as lowercase hex, or `undefined` when absent. */
+  scriptHex?: string;
+  /** True if Blockbook reports this output as spent (confirmed OR mempool). */
+  spent?: boolean;
+}
+
+/**
+ * Fetch the outputs of one transaction — value, scriptPubKey hex, and spent
+ * status per vout. Used by the send flow to verify each selected input's
+ * witness data against the chain *before* signing: a stored value or script
+ * that disagrees with the chain would otherwise produce a doomed broadcast
+ * rejected with `mandatory-script-verify-flag-failed (Invalid Schnorr
+ * signature)`, and a spent input would be rejected as a mempool conflict.
+ */
+export async function fetchTxOutputs(
+  baseUrl: string,
+  txid: string,
+  signal?: AbortSignal,
+): Promise<BlockbookTxOutput[]> {
+  const tx = await fetchBlockbookTransaction(baseUrl, txid, signal);
+  const voutArr = Array.isArray(tx.vout) ? tx.vout : [];
+  const out: BlockbookTxOutput[] = [];
+  for (const v of voutArr) {
+    if (typeof v.n !== 'number' || !Number.isInteger(v.n) || v.n < 0) continue;
+    const value = typeof v.value === 'string' ? Number(v.value) : undefined;
+    out.push({
+      n: v.n,
+      valueSats: Number.isFinite(value) ? value : undefined,
+      scriptHex: typeof v.hex === 'string' ? v.hex.toLowerCase() : undefined,
+      spent: typeof v.spent === 'boolean' ? v.spent : undefined,
+    });
+  }
+  return out;
 }
 
 /**

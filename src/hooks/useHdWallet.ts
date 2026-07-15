@@ -17,6 +17,7 @@ import {
   type HdTransaction,
   scanAccount,
 } from '@/lib/hdwallet/scan';
+import { filterRecentlySpent } from '@/lib/hdwallet/spentOutpoints';
 import type { SPStorageDocument } from '@/lib/hdwallet/sp/storage';
 
 // ---------------------------------------------------------------------------
@@ -129,6 +130,13 @@ interface UseHdWalletResult {
    * silent-payment UTXOs — see `useHdWalletSp.pruneSpentUtxos`.
    */
   pruneSpentSilentPaymentUtxos: (spent: ReadonlyArray<{ txid: string; vout: number }>) => void;
+  /**
+   * Overwrite the stored value of the given silent-payment UTXOs with the
+   * authoritative on-chain values — see `useHdWalletSp.correctUtxoValues`.
+   */
+  correctSilentPaymentUtxoValues: (
+    corrections: ReadonlyArray<{ txid: string; vout: number; value: number }>,
+  ) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -180,7 +188,11 @@ export function useHdWallet(): UseHdWalletResult {
     queryKey: scanKey,
     queryFn: async ({ signal }) => {
       if (!account || !pubkey) throw new Error('HD wallet account unavailable');
-      return scanAccount(account, blockbookBaseUrl, signal);
+      const result = await scanAccount(account, blockbookBaseUrl, signal);
+      // Suppress UTXOs the wallet itself just spent but Blockbook hasn't
+      // indexed as spent yet — otherwise the coin selector re-picks them
+      // and the next broadcast is rejected as a mempool conflict.
+      return filterRecentlySpent(pubkey, result);
     },
     enabled: !!account && pubkey !== '',
     refetchInterval: REFRESH_INTERVAL_MS,
@@ -359,5 +371,6 @@ export function useHdWallet(): UseHdWalletResult {
     refetch,
     nextReceiveAddress,
     pruneSpentSilentPaymentUtxos: sp.pruneSpentUtxos,
+    correctSilentPaymentUtxoValues: sp.correctUtxoValues,
   };
 }

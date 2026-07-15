@@ -2246,6 +2246,8 @@
       "networkBody": "Verifique sua conexão e tente novamente.",
       "mempoolConflictTitle": "Transação conflitante",
       "mempoolConflictBody": "Uma das entradas já foi gasta ou está sendo gasta por outra transação.",
+      "staleUtxoTitle": "Carteira fora de sincronia",
+      "staleUtxoBody": "Algumas moedas desta carteira não correspondiam ao registro da blockchain, então a transação foi interrompida antes da transmissão. A carteira ressincronizou o que pôde — tente novamente.",
       "tooLongChainTitle": "Muitas transações não confirmadas",
       "tooLongChainBody": "Você tem uma longa cadeia de transações não confirmadas. Aguarde uma delas ser confirmada e tente novamente.",
       "badInputsTitle": "A transação foi rejeitada",

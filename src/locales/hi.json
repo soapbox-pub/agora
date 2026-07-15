@@ -2141,6 +2141,8 @@
       "networkBody": "अपना कनेक्शन जाँचें और दोबारा कोशिश करें।",
       "mempoolConflictTitle": "विरोधाभासी transaction",
       "mempoolConflictBody": "एक input पहले ही खर्च हो चुका है या किसी दूसरे transaction द्वारा खर्च किया जा रहा है।",
+      "staleUtxoTitle": "Wallet sync में नहीं है",
+      "staleUtxoBody": "इस wallet के कुछ coins blockchain रिकॉर्ड से मेल नहीं खाए, इसलिए broadcast से पहले transaction रोक दिया गया। Wallet ने जितना संभव था फिर से sync कर लिया है — कृपया दोबारा कोशिश करें।",
       "tooLongChainTitle": "बहुत सारे unconfirmed transactions",
       "tooLongChainBody": "आपके पास unconfirmed transactions की लंबी chain है। किसी एक के confirm होने का इंतज़ार करें और दोबारा कोशिश करें।",
       "badInputsTitle": "Transaction अस्वीकृत हो गया",
