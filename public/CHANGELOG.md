@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.10.1] - 2026-07-15
+
+A behind-the-scenes maintenance release with no user-facing changes.
+
+### Fixed
+
+- Fixed a build failure that prevented the iOS app from being published.
+
 ## [2.10.0] - 2026-07-15
 
 Campaigns now have short, shareable links, and you can mention them by name while writing — they turn into cards right inside your posts. The home and campaigns pages are rebuilt around verified causes and curated lists, with search built in. Agora opens in light mode now, the compose box is decluttered, and signing in is one simple flow. Campaigns can accept card payments alongside Bitcoin, and your feed keeps working when the connection doesn't.
