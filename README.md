@@ -180,7 +180,7 @@ Configuration priority (highest first):
 Use a custom config path:
 
 ```sh
-CONFIG_FILE=./my-config.json npm run build
+AGORA_CONFIG_FILE=./my-config.json npm run build
 ```
 
 ---

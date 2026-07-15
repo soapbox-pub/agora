@@ -13,10 +13,14 @@ import { BuildConfigSchema } from "./src/lib/schemas";
 /**
  * Load and validate the build-time app configuration file.
  * Returns the parsed config object, or `undefined` if the file doesn't exist.
- * Set the CONFIG_FILE env var to override the default path ("./agora.json").
+ * Set the AGORA_CONFIG_FILE env var to override the default path ("./agora.json").
+ *
+ * The env var is namespaced because GitLab Runner's shell executor exports
+ * CONFIG_FILE, pointing at its own config.toml — an unprefixed name makes the
+ * Mac iOS build parse that TOML as JSON and die.
  */
 function loadBuildConfig(): object | undefined {
-  const configPath = path.resolve(process.env.CONFIG_FILE ?? "./agora.json");
+  const configPath = path.resolve(process.env.AGORA_CONFIG_FILE ?? "./agora.json");
 
   let raw: string;
   try {
