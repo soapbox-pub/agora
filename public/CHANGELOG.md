@@ -1,5 +1,49 @@
 # Changelog
 
+## [2.10.0] - 2026-07-15
+
+Campaigns now have short, shareable links, and you can mention them by name while writing — they turn into cards right inside your posts. The home and campaigns pages are rebuilt around verified causes and curated lists, with search built in. Agora opens in light mode now, the compose box is decluttered, and signing in is one simple flow. Campaigns can accept card payments alongside Bitcoin, and your feed keeps working when the connection doesn't.
+
+### Added
+
+- Campaigns now have short, shareable links you can hand out anywhere, and the share button in the header copies the pretty version.
+- Mention campaigns by name while you write: they autocomplete as you type and render as cards in posts and campaign stories, sitting side by side when you attach more than one.
+- Campaigns can accept card payments alongside Bitcoin, and those donations count toward the campaign total.
+- Search campaigns straight from the top of the campaigns page.
+- Campaign lists get cover images, and the strip always shows every campaign in the list.
+- A muted-content settings page to see and manage everyone you've muted.
+- Signing up now walks you through verifying your key, with password-manager autofill along the way.
+- Campaigns from unverified sources carry a banner, and hidden campaigns sit behind a gate.
+- A revamped sponsorship page with partner and press logos.
+- An Agora Funds entry in the FAQ.
+- Your feed is cached on your device, so it loads instantly and survives a dropped connection.
+
+### Changed
+
+- Agora opens in light mode by default, with the home hero keeping its dark treatment.
+- The home and campaigns pages are reorganized around verified campaigns and curated lists.
+- A new brand direction built around "Give Without Borders", with a "Fundraise Without Borders" home hero.
+- The compose box is decluttered: preview moved into a bottom toolbar toggle, the character count only appears as you approach the limit, and voice notes tuck into the More menu.
+- Signing in is one consolidated dialog, with browser-extension login and a clearer path to creating an account.
+- Editing a campaign is split into Details, Funding, and Discovery tabs.
+- Verification badges now recognize reviews from any trusted reviewer, and verifying your own campaign no longer counts.
+- "Open external wallet" replaces "Open Bitcoin wallet", and tells you what to do when no wallet app answers.
+- Links open in an in-app browser on mobile instead of kicking you out to the share sheet.
+- Muted authors no longer appear in campaign listings.
+- Campaign pages drop a misleading donation count and duplicate engagement counters, and fold activity into a single stream.
+- The Agora feed is now called "Latest", and says so clearly when it can't load.
+- The About page is trimmed to the essentials.
+
+### Fixed
+
+- Campaign edits no longer revert moments after you save them.
+- A newly created campaign no longer lands on a "not found" page.
+- The wallet checks its inputs against the chain, so funds you've already spent can't reappear in your balance.
+- Native overlays and detail pages respect the edges of your screen.
+- Campaigns without a banner no longer stretch past the bottom of the screen.
+- You can no longer mute yourself.
+- Campaign story previews honor inline formatting.
+
 ## [2.9.3] - 2026-07-03
 
 A behind-the-scenes maintenance release with no user-facing changes.
