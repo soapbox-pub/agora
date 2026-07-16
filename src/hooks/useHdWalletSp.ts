@@ -363,8 +363,13 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // on the event id so a stale parse doesn't survive an event update.
   const storageEventQuery = useQuery({
     queryKey: ['hdwallet-sp-event', pubkey, dTag],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       if (!user) return null;
+      // Hard timeout: an un-signalled pool query can hang forever on a
+      // wonky relay, which pins `storage` (and therefore the whole wallet
+      // UI) in its pre-fetch state — most visibly right after an account
+      // switch, when this query is the only thing standing between the
+      // previous account's rendered wallet and the new account's.
       const events = await nostr.query([
         {
           kinds: [30078],
@@ -372,7 +377,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
           '#d': [dTag],
           limit: 1,
         },
-      ]);
+      ], { signal: AbortSignal.any([signal, AbortSignal.timeout(8000)]) });
       if (events.length === 0) return null;
       // Pick the most recent if multiple relays returned different versions.
       return events.reduce((latest, current) =>
@@ -387,7 +392,13 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   });
 
   const storageDocQuery = useQuery<SPStorageDocument>({
-    queryKey: ['hdwallet-sp-doc', storageEventQuery.data?.id ?? '(empty)'],
+    // Keyed by pubkey + event id. The '(none)' sentinel means "the event
+    // query settled and found no document" — a genuinely fresh wallet. It
+    // must NOT be reachable while the event query is still loading (see
+    // `enabled` below): serving the empty placeholder mid-load is what let
+    // the UI flash $0 on account switches, and what let effects latch
+    // against a doc that wasn't real.
+    queryKey: ['hdwallet-sp-doc', pubkey, storageEventQuery.data?.id ?? '(none)'],
     queryFn: async () => {
       const event = storageEventQuery.data;
       if (!event) return { ...EMPTY_SP_STORAGE };
@@ -401,7 +412,12 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         return { ...EMPTY_SP_STORAGE };
       }
     },
-    enabled: enabled && !!user,
+    // Wait for the event query to settle before producing ANY document.
+    // While it's in flight `storage` stays undefined ("loading"), which is
+    // semantically different from the empty document ("this wallet has no
+    // UTXOs"): scans, backfills, the ownership audit, and the UI all gate
+    // on `storage` being present.
+    enabled: enabled && !!user && storageEventQuery.isFetched,
     staleTime: 0,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -591,7 +607,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       if (signed.pubkey !== pubkey) return;
       // Update query caches in-place to avoid an immediate refetch round-trip.
       queryClient.setQueryData(['hdwallet-sp-event', pubkey, dTag], signed);
-      queryClient.setQueryData(['hdwallet-sp-doc', signed.id], merged);
+      queryClient.setQueryData(['hdwallet-sp-doc', pubkey, signed.id], merged);
     },
   });
 
@@ -1098,7 +1114,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         dTag,
       ])?.id;
       if (eventId) {
-        queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
+        queryClient.setQueryData(['hdwallet-sp-doc', pubkey, eventId], next);
       }
       publishStorage.mutate({ next, spent, owner: pubkey });
     },
@@ -1137,7 +1153,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         dTag,
       ])?.id;
       if (eventId) {
-        queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
+        queryClient.setQueryData(['hdwallet-sp-doc', pubkey, eventId], next);
       }
       // `mergeUtxos` in the publish merge is fresh-preferring for same-key
       // entries, so the corrected values win over any stale relay copy.
@@ -1548,7 +1564,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         dTag,
       ])?.id;
       if (eventId) {
-        queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
+        queryClient.setQueryData(['hdwallet-sp-doc', pubkey, eventId], next);
       }
       publishStorage.mutate({ next, purge: foreign, owner: pubkey });
     })().catch((err) => {
