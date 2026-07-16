@@ -4,11 +4,11 @@
 
 # Agora
 
-### Power to the people.
+### Give Without Borders.
 
-**Censorship-resistant, peer-to-peer crowdfunding on Nostr and Bitcoin.**
+**The world's first Borderless Micro-Philanthropy Network, powered by Bitcoin and Nostr.**
 
-No frozen bank accounts. No corporate shut-downs. Just direct support from people who believe in your cause.
+Give directly to people and causes anywhere in the world — no borders, no middlemen, no platform fees. No frozen bank accounts. No corporate shut-downs. Just direct support from people who believe in your cause.
 
 [![Website](https://img.shields.io/badge/web-agora.spot-14161f?style=for-the-badge)](https://agora.spot)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=for-the-badge)](LICENSE)

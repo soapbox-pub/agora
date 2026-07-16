@@ -48,7 +48,7 @@ export function LinkFooter({ onNavigate }: LinkFooterProps) {
         </Link>
 
         <a
-          href="https://gitlab.com/soapbox-pub/agora-3"
+          href="https://gitlab.com/soapbox-pub/agora"
           className={chipClass}
           target="_blank"
           rel="noopener noreferrer"

@@ -1,16 +1,17 @@
-repository: https://gitlab.com/soapbox-pub/agora-3
+repository: https://gitlab.com/soapbox-pub/agora
 
 name: Agora
 
-summary: Power to the people.
+summary: Give Without Borders.
 
-description: Agora is a censorship-resistant donation platform built on Nostr and Bitcoin. No frozen bank accounts. No corporate shut-downs. Just direct support from people who believe in your cause.
+description: Agora is a borderless micro-philanthropy network built on Nostr and Bitcoin. Give directly to people and causes anywhere in the world — no borders, no middlemen, no platform fees. Donations move wallet-to-wallet on-chain, so Agora never holds your funds. Includes a non-custodial Bitcoin wallet derived from your Nostr key, with Taproot and silent payment support. No frozen bank accounts. No corporate shut-downs. Just direct support from people who believe in your cause.
 
 tags:
   - nostr
+  - bitcoin
+  - crowdfunding
   - social
   - messaging
-  - lightning
   - decentralized
 
 license: AGPL-3.0

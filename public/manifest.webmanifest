@@ -1,7 +1,7 @@
 {
   "name": "Agora",
   "short_name": "Agora",
-  "description": "Power to the people. Organize, create, and connect across the open Nostr network.",
+  "description": "Give Without Borders. Give directly to people and causes anywhere in the world with Bitcoin — no borders, no middlemen, no platform fees.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0c14",
