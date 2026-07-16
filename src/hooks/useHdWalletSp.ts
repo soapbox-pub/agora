@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNostr } from '@nostrify/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -336,6 +336,15 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // ── Stable d-tag for the persisted UTXO event ────────────────
   const dTag = spStorageDTag(config.appId);
 
+  // One string that changes iff the wallet identity changes. The provider
+  // hosting this hook is mounted once at the app root and survives account
+  // switches, so every piece of in-memory state below (the optimistic doc,
+  // the ran-once backfill latches, in-flight async work) must be scoped to
+  // the identity that produced it — otherwise one account's UTXO set leaks
+  // into the next account's storage and gets signed and published under
+  // the wrong key.
+  const walletId = `${pubkey}:${dTag}`;
+
   // ── Tip-height query (cheap, refreshed every 60s when enabled) ──
   const { data: tipHeight } = useQuery<number>({
     queryKey: ['hdwallet-sp-tip', indexerUrl],
@@ -409,6 +418,18 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   const [optimisticVersion, setOptimisticVersion] = useState(0);
   void optimisticVersion; // touched so React knows to re-render on bump
 
+  // The optimistic doc belongs to exactly one wallet identity. Reset it
+  // synchronously during render on identity change (same render-write
+  // pattern as `storageRef` below) so not even this render's `storage`
+  // memo can observe the previous account's doc — the freshness heuristic
+  // would happily prefer a leftover doc with a higher scanHeight and more
+  // entries, presenting account A's UTXOs as account B's wallet.
+  const optimisticOwnerRef = useRef(walletId);
+  if (optimisticOwnerRef.current !== walletId) {
+    optimisticOwnerRef.current = walletId;
+    optimisticRef.current = null;
+  }
+
   const storage = useMemo<SPStorageDocument | undefined>(() => {
     if (!enabled) return undefined;
     if (!storageDocQuery.data) return undefined;
@@ -439,9 +460,20 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     mutationFn: async (args: {
       next: SPStorageDocument;
       spent?: ReadonlyArray<SpentOutpoint>;
+      /**
+       * Pubkey of the account whose state produced `next`. Callers pass the
+       * pubkey from their own closure; a stale chain surviving from before
+       * an account switch therefore carries the OLD pubkey and is rejected
+       * here instead of being merged into the new account's document and
+       * signed with the new account's key.
+       */
+      owner: string;
     }) => {
-      const { next, spent } = args;
+      const { next, spent, owner } = args;
       if (!user) throw new Error('not logged in');
+      if (owner !== user.pubkey) {
+        throw new Error('SP storage publish dropped: wallet identity changed since this document was built');
+      }
       if (!user.signer.nip44) throw new Error('signer does not support NIP-44');
       // Always read-modify-write off the freshest event so a concurrent device
       // doesn't lose its progress.
@@ -535,6 +567,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       return { merged, signed };
     },
     onSuccess: ({ merged, signed }) => {
+      // A publish that raced an account switch must not write the previous
+      // account's event into the current account's cache slots.
+      if (signed.pubkey !== pubkey) return;
       // Update query caches in-place to avoid an immediate refetch round-trip.
       queryClient.setQueryData(['hdwallet-sp-event', pubkey, dTag], signed);
       queryClient.setQueryData(['hdwallet-sp-doc', signed.id], merged);
@@ -581,8 +616,8 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     const doc = optimisticRef.current;
     if (!doc) return;
     republishDirtyRef.current = false;
-    publishStorage.mutate({ next: doc });
-  }, [publishStorage]);
+    publishStorage.mutate({ next: doc, owner: pubkey });
+  }, [publishStorage, pubkey]);
 
   const REPUBLISH_THROTTLE_MS = 5000;
   const scheduleRepublish = useCallback(() => {
@@ -598,9 +633,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       if (!doc) return;
       if (!republishDirtyRef.current) return;
       republishDirtyRef.current = false;
-      publishStorage.mutate({ next: doc });
+      publishStorage.mutate({ next: doc, owner: pubkey });
     }, REPUBLISH_THROTTLE_MS);
-  }, [publishStorage]);
+  }, [publishStorage, pubkey]);
 
   // ── The core scan loop ───────────────────────────────────────
   //
@@ -1046,7 +1081,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       if (eventId) {
         queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
       }
-      publishStorage.mutate({ next, spent });
+      publishStorage.mutate({ next, spent, owner: pubkey });
     },
     [publishStorage, queryClient, pubkey, dTag],
   );
@@ -1087,7 +1122,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       }
       // `mergeUtxos` in the publish merge is fresh-preferring for same-key
       // entries, so the corrected values win over any stale relay copy.
-      publishStorage.mutate({ next });
+      publishStorage.mutate({ next, owner: pubkey });
     },
     [publishStorage, queryClient, pubkey, dTag],
   );
@@ -1197,7 +1232,10 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // Bounded to avoid hammering Blockbook on a wallet with hundreds of
   // historical UTXOs — remaining entries get backfilled on subsequent
   // sessions.
-  const backfillRanRef = useRef(false);
+  // Latched to the wallet identity that ran (not a boolean): the provider
+  // survives account switches, so a boolean latched under one account would
+  // suppress the backfill for every account that follows.
+  const backfillRanRef = useRef<string | null>(null);
   // Abort the in-flight backfill only on unmount — NOT via an effect
   // cleanup. The effect below re-runs on every `storage` identity change
   // (auto-scan republishes bump it within seconds of page load), and a
@@ -1209,7 +1247,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     if (!enabled) return;
     if (!blockbookUrl) return;
     if (!storage) return;
-    if (backfillRanRef.current) return;
+    if (backfillRanRef.current === walletId) return;
     if (isScanning) return; // Don't race with an in-flight scan.
 
     const missing = storage.utxos.filter((u) => u.time === undefined);
@@ -1222,7 +1260,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       return;
     }
 
-    backfillRanRef.current = true;
+    backfillRanRef.current = walletId;
     const controller = new AbortController();
     backfillAbortRef.current = controller;
     const MAX_HEIGHTS = 50;
@@ -1268,16 +1306,16 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       // republish so other devices pick up the backfilled timestamps.
       optimisticRef.current = next;
       setOptimisticVersion((v) => v + 1);
-      publishStorage.mutate({ next });
+      publishStorage.mutate({ next, owner: pubkey });
     })();
 
     // No cleanup: the async chain is aborted on unmount via
     // `backfillAbortRef` and otherwise must be allowed to outlive the
     // storage identity changes that re-run this effect.
-    // We deliberately depend only on `storage` and the static URLs — running
-    // once per fresh load is the goal.
+    // We deliberately depend only on `storage`, the wallet identity, and the
+    // static URLs — running once per fresh load is the goal.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, blockbookUrl, storage]);
+  }, [enabled, blockbookUrl, storage, walletId]);
 
   // ── Backfill spender info on the spent archive ───────────────
   //
@@ -1292,15 +1330,39 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // fan-out, remaining entries picked up on later sessions. Each stamped
   // spend also gets a real block time for its history row when the spending
   // tx's height is known.
-  const spentStampRanRef = useRef(false);
+  // Identity-latched for the same reason as `backfillRanRef` above.
+  const spentStampRanRef = useRef<string | null>(null);
   // Unmount-only abort, for the same reason as `backfillAbortRef` above.
   const spentStampAbortRef = useRef<AbortController | null>(null);
   useEffect(() => () => spentStampAbortRef.current?.abort(), []);
+
+  // ── Kill in-flight work on account switch ────────────────────
+  //
+  // Async chains started under the previous wallet identity (scan,
+  // reconcile, both backfills, the throttled republish) must never write
+  // into — or publish under — the account that follows. The owner check in
+  // `publishStorage` is the backstop; this cuts the chains themselves.
+  // Layout effect so it runs synchronously in the commit that switched
+  // identities, before any pending promise continuation can resume.
+  const inflightOwnerRef = useRef(walletId);
+  useLayoutEffect(() => {
+    if (inflightOwnerRef.current === walletId) return;
+    inflightOwnerRef.current = walletId;
+    scanAbortRef.current?.abort();
+    reconcileAbortRef.current?.abort();
+    backfillAbortRef.current?.abort();
+    spentStampAbortRef.current?.abort();
+    if (republishTimerRef.current) {
+      clearTimeout(republishTimerRef.current);
+      republishTimerRef.current = null;
+    }
+    republishDirtyRef.current = false;
+  }, [walletId]);
   useEffect(() => {
     if (!enabled) return;
     if (!blockbookUrl) return;
     if (!storage) return;
-    if (spentStampRanRef.current) return;
+    if (spentStampRanRef.current === walletId) return;
     if (isScanning) return; // Don't race with an in-flight scan.
 
     const missing = (storage.spent ?? []).filter((u) => u.spentTxid === undefined);
@@ -1311,7 +1373,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       return;
     }
 
-    spentStampRanRef.current = true;
+    spentStampRanRef.current = walletId;
     const controller = new AbortController();
     spentStampAbortRef.current = controller;
     const MAX_OUTPOINTS = 25;
@@ -1366,7 +1428,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
 
       optimisticRef.current = next;
       setOptimisticVersion((v) => v + 1);
-      publishStorage.mutate({ next });
+      publishStorage.mutate({ next, owner: pubkey });
     })().catch((err) => {
       console.warn('Failed to backfill SP spender info:', err);
     });
@@ -1375,7 +1437,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     // cancel the backfill as soon as the auto-scan republishes storage.
     // Mirror the timestamp backfill: run once per fresh load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, blockbookUrl, storage]);
+  }, [enabled, blockbookUrl, storage, walletId]);
 
   // ── Assemble the public shape ───────────────────────────────
   if (!enabled) {
