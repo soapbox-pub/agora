@@ -634,7 +634,15 @@ export function HDSendBitcoinDialog({
       // spend (BIP-86 change is observed by Blockbook, but the consumed
       // SP value is not subtracted locally).
       if (result.consumedSpUtxos.length > 0) {
-        pruneSpentSilentPaymentUtxos(result.consumedSpUtxos);
+        // Stamp each archived entry with the tx that consumed it so the
+        // private tab's history can render this spend as a "Sent" row.
+        const spentAt = Math.floor(Date.now() / 1000);
+        pruneSpentSilentPaymentUtxos(result.consumedSpUtxos.map((u) => ({
+          txid: u.txid,
+          vout: u.vout,
+          spentTxid: result.txid,
+          spentTime: spentAt,
+        })));
       }
       // Refresh after pruning so transaction history can classify mixed
       // BIP-86 + SP sends with the spent SP outpoints already archived.

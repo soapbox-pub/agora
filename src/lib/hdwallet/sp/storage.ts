@@ -97,6 +97,34 @@ export interface SPStoredUtxo {
    * orchestrator backfills missing entries opportunistically on scan.
    */
   time?: number;
+  /**
+   * Txid of the transaction that consumed this UTXO. Only meaningful on
+   * `spent`-archive entries. Recorded at archive time by the send flow
+   * (which knows the txid it just broadcast) and the reconcile pass (from
+   * Blockbook's `spentTxId`), and backfilled for older archives once per
+   * session. Powers the private wallet's "Sent" history rows — without it
+   * the private tab shows only cumulative receives, which reads as missing
+   * money next to the (correct, much smaller) unspent balance.
+   */
+  spentTxid?: string;
+  /** Block height the spending transaction confirmed at, when known. */
+  spentHeight?: number;
+  /** Unix-seconds timestamp of the spend (block time, or broadcast time). */
+  spentTime?: number;
+}
+
+/**
+ * An outpoint being archived as spent, optionally annotated with what spent
+ * it. All spend metadata is best-effort — entries archived without it still
+ * tombstone correctly; they just can't power a "Sent" history row until the
+ * once-per-session backfill stamps them.
+ */
+export interface SpentOutpoint {
+  txid: string;
+  vout: number;
+  spentTxid?: string;
+  spentHeight?: number;
+  spentTime?: number;
 }
 
 /** The full persisted document, after NIP-44 decrypt + JSON parse. */
@@ -175,6 +203,18 @@ function parseUtxoArray(raw: unknown): SPStoredUtxo[] {
       typeof row.time === 'number' && Number.isInteger(row.time) && row.time > 0
         ? row.time
         : undefined;
+    const spentTxid =
+      typeof row.spentTxid === 'string' && /^[0-9a-f]{64}$/.test(row.spentTxid)
+        ? row.spentTxid
+        : undefined;
+    const spentHeight =
+      typeof row.spentHeight === 'number' && Number.isInteger(row.spentHeight) && row.spentHeight > 0
+        ? row.spentHeight
+        : undefined;
+    const spentTime =
+      typeof row.spentTime === 'number' && Number.isInteger(row.spentTime) && row.spentTime > 0
+        ? row.spentTime
+        : undefined;
     out.push({
       txid: row.txid,
       vout: row.vout,
@@ -183,6 +223,9 @@ function parseUtxoArray(raw: unknown): SPStoredUtxo[] {
       tweak: row.tweak,
       k: row.k,
       ...(time !== undefined ? { time } : {}),
+      ...(spentTxid !== undefined ? { spentTxid } : {}),
+      ...(spentHeight !== undefined ? { spentHeight } : {}),
+      ...(spentTime !== undefined ? { spentTime } : {}),
     });
   }
   return out;
@@ -284,15 +327,16 @@ export function pruneSpUtxos(
  */
 export function archiveSpentUtxos(
   doc: SPStorageDocument,
-  spent: ReadonlyArray<{ txid: string; vout: number }>,
+  spent: ReadonlyArray<SpentOutpoint>,
 ): SPStorageDocument {
   if (spent.length === 0) return doc;
-  const spentKeys = new Set(spent.map((s) => `${s.txid}:${s.vout}`));
+  const spentByKey = new Map(spent.map((s) => [`${s.txid}:${s.vout}`, s]));
   const remaining: SPStoredUtxo[] = [];
   const toArchive: SPStoredUtxo[] = [];
   for (const u of doc.utxos) {
-    if (spentKeys.has(`${u.txid}:${u.vout}`)) {
-      toArchive.push(u);
+    const info = spentByKey.get(`${u.txid}:${u.vout}`);
+    if (info) {
+      toArchive.push(stampSpentInfo(u, info));
     } else {
       remaining.push(u);
     }
@@ -300,13 +344,19 @@ export function archiveSpentUtxos(
   if (toArchive.length === 0) return doc;
 
   // Deduplicate the archive by `(txid, vout)`, keeping the existing entry
-  // when both exist (preserves any timestamps backfilled previously).
+  // when both exist (preserves any timestamps backfilled previously) but
+  // adopting spend metadata the existing entry lacks.
   const existingArchive = doc.spent ?? [];
   const archiveByKey = new Map<string, SPStoredUtxo>();
   for (const u of existingArchive) archiveByKey.set(`${u.txid}:${u.vout}`, u);
   for (const u of toArchive) {
     const k = `${u.txid}:${u.vout}`;
-    if (!archiveByKey.has(k)) archiveByKey.set(k, u);
+    const prior = archiveByKey.get(k);
+    if (!prior) {
+      archiveByKey.set(k, u);
+    } else if (prior.spentTxid === undefined && u.spentTxid !== undefined) {
+      archiveByKey.set(k, stampSpentInfo(prior, u));
+    }
   }
 
   return {
@@ -315,6 +365,47 @@ export function archiveSpentUtxos(
     utxos: remaining,
     spent: Array.from(archiveByKey.values()),
   };
+}
+
+/** Copy spend metadata onto a stored UTXO, leaving other fields untouched. */
+function stampSpentInfo(
+  u: SPStoredUtxo,
+  info: Pick<SpentOutpoint, 'spentTxid' | 'spentHeight' | 'spentTime'>,
+): SPStoredUtxo {
+  if (info.spentTxid === undefined && info.spentHeight === undefined && info.spentTime === undefined) {
+    return u;
+  }
+  return {
+    ...u,
+    ...(info.spentTxid !== undefined ? { spentTxid: info.spentTxid } : {}),
+    ...(info.spentHeight !== undefined ? { spentHeight: info.spentHeight } : {}),
+    ...(info.spentTime !== undefined ? { spentTime: info.spentTime } : {}),
+  };
+}
+
+/**
+ * Stamp spend metadata onto already-archived entries that are missing it —
+ * the backfill path for archives written before `spentTxid` existed.
+ * Returns the same document instance when nothing changed, so callers can
+ * cheaply detect a no-op and skip the republish.
+ */
+export function stampSpentArchive(
+  doc: SPStorageDocument,
+  stamps: ReadonlyArray<SpentOutpoint>,
+): SPStorageDocument {
+  const archive = doc.spent ?? [];
+  if (stamps.length === 0 || archive.length === 0) return doc;
+  const stampByKey = new Map(stamps.map((s) => [`${s.txid}:${s.vout}`, s]));
+  let changed = false;
+  const next = archive.map((u) => {
+    if (u.spentTxid !== undefined) return u;
+    const stamp = stampByKey.get(`${u.txid}:${u.vout}`);
+    if (!stamp || stamp.spentTxid === undefined) return u;
+    changed = true;
+    return stampSpentInfo(u, stamp);
+  });
+  if (!changed) return doc;
+  return { ...doc, spent: next };
 }
 
 // Re-export hex helpers for callers that want to read tweak bytes back.

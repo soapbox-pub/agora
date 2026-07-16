@@ -115,6 +115,20 @@ export interface HdTransaction {
    * persisted UI state that pre-dates the field.
    */
   source?: 'bip86' | 'silent-payment';
+  /**
+   * Sats of the wallet's silent-payment UTXOs consumed by this tx's inputs
+   * (already included in the net `amount`). Lets `useHdWallet` reassign a
+   * Blockbook-visible spend of private funds to the private tab instead of
+   * the public one.
+   */
+  spOutflow?: number;
+  /**
+   * Sats of the wallet's BIP-86 UTXOs consumed by this tx's inputs. Together
+   * with `spOutflow` this tells `useHdWallet` which wallet the spend was
+   * initiated from: `spOutflow > 0 && bip86Outflow === 0` is a pure
+   * private-wallet spend.
+   */
+  bip86Outflow?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -529,6 +543,8 @@ export function buildHdTransactions(
       confirmed: tx.confirmations > 0,
       timestamp: tx.blockTime,
       source: 'bip86',
+      spOutflow: outflowsSp,
+      bip86Outflow: outflowsBip86,
     });
   }
 

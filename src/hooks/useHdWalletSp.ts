@@ -24,11 +24,13 @@ import {
   parseSPStorage,
   pruneSpUtxos,
   serializeSPStorage,
+  type SpentOutpoint,
   type SPStorageDocument,
   type SPStoredUtxo,
   spStorageBalance,
   spStorageDTag,
   SP_STORAGE_VERSION,
+  stampSpentArchive,
 } from '@/lib/hdwallet/sp/storage';
 
 // ---------------------------------------------------------------------------
@@ -232,8 +234,12 @@ interface UseHdWalletSpResult {
    * this the wallet has no way to learn that an SP UTXO it just spent is
    * gone. Failure to call it (or to publish) results in stale balance and
    * subsequent double-spend attempts.
+   *
+   * Entries may carry `spentTxid` / `spentHeight` / `spentTime` — the
+   * archived copies are stamped with them so the private tab's history can
+   * render the spend as a "Sent" row (see `useHdWallet`'s tx assembly).
    */
-  pruneSpentUtxos: (spent: ReadonlyArray<{ txid: string; vout: number }>) => void;
+  pruneSpentUtxos: (spent: ReadonlyArray<SpentOutpoint>) => void;
 
   /**
    * Overwrite the stored `value` of the given active SP UTXOs with the
@@ -432,7 +438,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   const publishStorage = useMutation({
     mutationFn: async (args: {
       next: SPStorageDocument;
-      spent?: ReadonlyArray<{ txid: string; vout: number }>;
+      spent?: ReadonlyArray<SpentOutpoint>;
     }) => {
       const { next, spent } = args;
       if (!user) throw new Error('not logged in');
@@ -464,18 +470,29 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
           const archiveByKey = new Map<string, SPStoredUtxo>();
           for (const u of remoteArchive) archiveByKey.set(`${u.txid}:${u.vout}`, u);
           for (const u of localArchive) {
-            if (!archiveByKey.has(`${u.txid}:${u.vout}`)) {
-              archiveByKey.set(`${u.txid}:${u.vout}`, u);
+            const k = `${u.txid}:${u.vout}`;
+            const prior = archiveByKey.get(k);
+            // Prefer whichever copy knows what spent the UTXO — a stale
+            // relay archive written before spend-stamping must not wipe a
+            // freshly-stamped local entry.
+            if (!prior || (prior.spentTxid === undefined && u.spentTxid !== undefined)) {
+              archiveByKey.set(k, u);
             }
           }
           // Pull pruned-from-remote rows into the archive too — they're
           // outpoints we know are spent but the remote didn't realise.
           if (spent && spent.length > 0) {
-            const spentKeys = new Set(spent.map((s) => `${s.txid}:${s.vout}`));
+            const spentByKey = new Map(spent.map((s) => [`${s.txid}:${s.vout}`, s]));
             for (const u of remote.utxos) {
               const k = `${u.txid}:${u.vout}`;
-              if (spentKeys.has(k) && !archiveByKey.has(k)) {
-                archiveByKey.set(k, u);
+              const info = spentByKey.get(k);
+              if (info && !archiveByKey.has(k)) {
+                archiveByKey.set(k, {
+                  ...u,
+                  ...(info.spentTxid !== undefined ? { spentTxid: info.spentTxid } : {}),
+                  ...(info.spentHeight !== undefined ? { spentHeight: info.spentHeight } : {}),
+                  ...(info.spentTime !== undefined ? { spentTime: info.spentTime } : {}),
+                });
               }
             }
           }
@@ -1131,9 +1148,16 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       );
       if (controller.signal.aborted) return 0;
 
-      const spent: Array<{ txid: string; vout: number }> = [];
+      const spent: SpentOutpoint[] = [];
       for (const c of candidates) {
-        if (spentMap.get(`${c.txid}:${c.vout}`) === true) spent.push(c);
+        const status = spentMap.get(`${c.txid}:${c.vout}`);
+        if (status?.spent === true) {
+          spent.push({
+            ...c,
+            ...(status.spentTxid !== undefined ? { spentTxid: status.spentTxid } : {}),
+            ...(status.spentHeight !== undefined ? { spentHeight: status.spentHeight } : {}),
+          });
+        }
       }
       setReconcileProgress({
         total: candidates.length,
@@ -1231,6 +1255,97 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     return () => controller.abort();
     // We deliberately depend only on `storage` and the static URLs — running
     // once per fresh load is the goal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, blockbookUrl, storage]);
+
+  // ── Backfill spender info on the spent archive ───────────────
+  //
+  // Archives written before `spentTxid` existed (and reconcile passes run
+  // against Blockbook versions that omit `spentTxId`) hold spent UTXOs with
+  // no record of what spent them. Without the spender, the private tab's
+  // history can only show those UTXOs as receives — cumulative inflows with
+  // no offsetting "Sent" rows, which users read as missing funds when
+  // compared against the (correct) unspent balance.
+  //
+  // Same shape as the timestamp backfill above: once per session, bounded
+  // fan-out, remaining entries picked up on later sessions. Each stamped
+  // spend also gets a real block time for its history row when the spending
+  // tx's height is known.
+  const spentStampRanRef = useRef(false);
+  useEffect(() => {
+    if (!enabled) return;
+    if (!blockbookUrl) return;
+    if (!storage) return;
+    if (spentStampRanRef.current) return;
+    if (isScanning) return; // Don't race with an in-flight scan.
+
+    const missing = (storage.spent ?? []).filter((u) => u.spentTxid === undefined);
+    if (missing.length === 0) {
+      spentStampRanRef.current = true;
+      return;
+    }
+
+    spentStampRanRef.current = true;
+    const controller = new AbortController();
+    const MAX_OUTPOINTS = 25;
+
+    (async () => {
+      const candidates = missing.slice(0, MAX_OUTPOINTS);
+      const spentMap = await fetchUtxoSpentStatus(
+        blockbookUrl,
+        candidates,
+        controller.signal,
+      );
+      if (controller.signal.aborted) return;
+
+      const stamps: SpentOutpoint[] = [];
+      for (const c of candidates) {
+        const status = spentMap.get(`${c.txid}:${c.vout}`);
+        if (status?.spent === true && status.spentTxid !== undefined) {
+          stamps.push({
+            txid: c.txid,
+            vout: c.vout,
+            spentTxid: status.spentTxid,
+            ...(status.spentHeight !== undefined ? { spentHeight: status.spentHeight } : {}),
+          });
+        }
+      }
+      if (stamps.length === 0) return;
+
+      // Resolve real block times for the spending heights so the history
+      // rows don't fall back to the drifting synthetic estimate.
+      const heights = Array.from(
+        new Set(stamps.map((s) => s.spentHeight).filter((h): h is number => h !== undefined)),
+      );
+      const heightTimes = new Map<number, number>();
+      for (const h of heights) {
+        if (controller.signal.aborted) return;
+        try {
+          heightTimes.set(h, await fetchBlockTime(blockbookUrl, h, controller.signal));
+        } catch (err) {
+          // Skip; the row falls back to the synthetic height estimate.
+          console.warn(`Failed to fetch block time for spend height ${h}:`, err);
+        }
+      }
+      for (const s of stamps) {
+        const t = s.spentHeight !== undefined ? heightTimes.get(s.spentHeight) : undefined;
+        if (t !== undefined) s.spentTime = t;
+      }
+      if (controller.signal.aborted) return;
+
+      const base = optimisticRef.current ?? storage;
+      const next = stampSpentArchive(base, stamps);
+      if (next === base) return;
+
+      optimisticRef.current = next;
+      setOptimisticVersion((v) => v + 1);
+      publishStorage.mutate({ next });
+    })().catch((err) => {
+      console.warn('Failed to backfill SP spender info:', err);
+    });
+
+    return () => controller.abort();
+    // Mirror the timestamp backfill: run once per fresh load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, blockbookUrl, storage]);
 

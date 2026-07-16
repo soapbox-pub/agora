@@ -18,7 +18,7 @@ import {
   scanAccount,
 } from '@/lib/hdwallet/scan';
 import { filterRecentlySpent } from '@/lib/hdwallet/spentOutpoints';
-import type { SPStorageDocument } from '@/lib/hdwallet/sp/storage';
+import type { SpentOutpoint, SPStorageDocument } from '@/lib/hdwallet/sp/storage';
 
 // ---------------------------------------------------------------------------
 // Persisted UI cursor (per user)
@@ -127,9 +127,10 @@ interface UseHdWalletResult {
   /**
    * Drop the given SP UTXOs from local storage and republish so other
    * devices stay in sync. Call after a successful spend that consumed
-   * silent-payment UTXOs — see `useHdWalletSp.pruneSpentUtxos`.
+   * silent-payment UTXOs — see `useHdWalletSp.pruneSpentUtxos`. Entries
+   * may carry spend stamps (`spentTxid` et al.) for the history UI.
    */
-  pruneSpentSilentPaymentUtxos: (spent: ReadonlyArray<{ txid: string; vout: number }>) => void;
+  pruneSpentSilentPaymentUtxos: (spent: ReadonlyArray<SpentOutpoint>) => void;
   /**
    * Overwrite the stored value of the given silent-payment UTXOs with the
    * authoritative on-chain values — see `useHdWalletSp.correctUtxoValues`.
@@ -259,15 +260,111 @@ export function useHdWallet(): UseHdWalletResult {
       }
     }
 
+    // Group archived SP UTXOs by the tx that spent them. These become the
+    // private tab's "Sent" rows — without them the tab lists every receive
+    // ever (including long-spent ones) with no offsetting outflows, so the
+    // history visually sums to far more than the unspent balance and users
+    // conclude funds are missing. Entries without a `spentTxid` stamp
+    // (pre-stamping archives awaiting backfill) still show as receives only.
+    const spSpendByTxid = new Map<
+      string,
+      { sent: number; height?: number; time?: number }
+    >();
+    for (const u of archivedSpUtxos) {
+      if (u.spentTxid === undefined) continue;
+      const existing = spSpendByTxid.get(u.spentTxid);
+      if (existing) {
+        existing.sent += u.value;
+        if (existing.time === undefined && u.spentTime !== undefined) existing.time = u.spentTime;
+        if (existing.height === undefined && u.spentHeight !== undefined) existing.height = u.spentHeight;
+      } else {
+        spSpendByTxid.set(u.spentTxid, {
+          sent: u.value,
+          height: u.spentHeight,
+          time: u.spentTime,
+        });
+      }
+    }
+
     const HEIGHT_ANCHOR = 800_000;
     const TIMESTAMP_ANCHOR = 1_690_070_400; // 2023-07-23T00:00:00Z (block 800,000)
     const SECONDS_PER_BLOCK = 600;
     const nowSeconds = Math.floor(Date.now() / 1000);
+    const toTimestamp = (time: number | undefined, height: number | undefined) => {
+      if (time !== undefined) return time;
+      if (height === undefined) return undefined;
+      const synthetic = TIMESTAMP_ANCHOR + (height - HEIGHT_ANCHOR) * SECONDS_PER_BLOCK;
+      return Math.min(synthetic, nowSeconds);
+    };
 
-    const spRows: HdTransaction[] = Array.from(spByTxid.entries()).map(([txid, info]) => {
-      const synthetic = TIMESTAMP_ANCHOR + (info.height - HEIGHT_ANCHOR) * SECONDS_PER_BLOCK;
-      const timestamp = info.time ?? Math.min(synthetic, nowSeconds);
-      return {
+    const merged: HdTransaction[] = [];
+
+    for (const row of bip86) {
+      // A Blockbook-visible tx supersedes any stamp-derived row for the
+      // same txid — its confirmation state and block time are authoritative.
+      const stamp = spSpendByTxid.get(row.txid);
+      spSpendByTxid.delete(row.txid);
+
+      const rowSpOutflow = row.spOutflow ?? 0;
+      // Trust the stamps for the total SP outflow when they exceed what vin
+      // matching attributed (Blockbook often omits the prevout index on
+      // taproot inputs, so vin matching can undercount).
+      const spOutflow = Math.max(rowSpOutflow, stamp?.sent ?? 0);
+
+      if (spOutflow > 0 && (row.bip86Outflow ?? 0) === 0) {
+        // Spend initiated from the private wallet. Re-net it against any SP
+        // change received in the same tx and move it to the private tab —
+        // otherwise the private tab shows the change as a bare receive and
+        // the spend itself lands in the public tab (or nowhere).
+        let net = row.type === 'receive' ? row.amount : -row.amount;
+        net -= spOutflow - rowSpOutflow;
+        const spChange = spByTxid.get(row.txid);
+        if (spChange) {
+          net += spChange.amount;
+          spByTxid.delete(row.txid);
+        }
+        merged.push({
+          txid: row.txid,
+          amount: Math.abs(net),
+          type: net >= 0 ? 'receive' : 'send',
+          confirmed: row.confirmed,
+          timestamp: row.timestamp,
+          source: 'silent-payment',
+        });
+      } else {
+        merged.push(row);
+      }
+    }
+
+    // Private spends invisible to Blockbook (SP inputs, SP change): the
+    // only record is the wallet's own spend stamps on the archive.
+    for (const [txid, info] of spSpendByTxid) {
+      let net = -info.sent;
+      let time = info.time;
+      let height = info.height;
+      const spChange = spByTxid.get(txid);
+      if (spChange) {
+        net += spChange.amount;
+        // The change output's block data is the spend's block data.
+        if (spChange.time !== undefined) time = spChange.time;
+        if (height === undefined) height = spChange.height;
+        spByTxid.delete(txid);
+      }
+      merged.push({
+        txid,
+        amount: Math.abs(net),
+        type: net >= 0 ? 'receive' : 'send',
+        // Stamps are only written for spends observed on-chain (or
+        // broadcast by this wallet), so treat them as confirmed.
+        confirmed: true,
+        timestamp: toTimestamp(time, height),
+        source: 'silent-payment',
+      });
+    }
+
+    // Whatever remains in spByTxid is a plain silent-payment receive.
+    for (const [txid, info] of spByTxid) {
+      merged.push({
         txid,
         amount: info.amount,
         type: 'receive',
@@ -275,12 +372,10 @@ export function useHdWallet(): UseHdWalletResult {
         // SP detection isn't supported by BlindBit (you need a confirmed block
         // to derive `input_hash`), so any UTXO we've persisted is confirmed.
         confirmed: true,
-        timestamp,
+        timestamp: toTimestamp(info.time, info.height),
         source: 'silent-payment',
-      };
-    });
-
-    const merged = [...bip86, ...spRows];
+      });
+    }
     merged.sort((a, b) => {
       if (!a.timestamp && !b.timestamp) return 0;
       if (!a.timestamp) return -1;

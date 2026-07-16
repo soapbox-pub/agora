@@ -586,6 +586,10 @@ interface BlockbookTxVout {
   hex?: string;
   /** True if this output has been spent in a later transaction. */
   spent?: boolean;
+  /** Txid of the spending transaction (present when `spent` is true). */
+  spentTxId?: string;
+  /** Block height the spending transaction confirmed at. */
+  spentHeight?: number;
 }
 
 /** Subset of the `getTransaction` response we consume. */
@@ -657,9 +661,20 @@ export async function fetchTxOutputs(
   return out;
 }
 
+/** Spent status for one checked outpoint, with the spender when Blockbook knows it. */
+export interface UtxoSpentStatus {
+  spent: boolean;
+  /** Txid of the spending transaction, when the output is spent and Blockbook populated it. */
+  spentTxid?: string;
+  /** Confirmation height of the spending transaction, when available. */
+  spentHeight?: number;
+}
+
 /**
  * For each `(txid, vout)` in `utxos`, ask Blockbook whether that output is
- * spent. Returns a map keyed `"txid:vout"` → boolean.
+ * spent. Returns a map keyed `"txid:vout"` → spent status (including the
+ * spending txid/height when Blockbook's spending index provides them —
+ * the wallet stamps those onto the SP archive to power "Sent" history rows).
  *
  * Fires one WS call per distinct txid (typically equal to `utxos.length`
  * since most txids contribute a single SP output to us). Individual lookup
@@ -671,7 +686,7 @@ export async function fetchUtxoSpentStatus(
   baseUrl: string,
   utxos: ReadonlyArray<{ txid: string; vout: number }>,
   signal?: AbortSignal,
-): Promise<Map<string, boolean>> {
+): Promise<Map<string, UtxoSpentStatus>> {
   // Group requested vouts by txid so we only make one WS call per tx.
   const byTxid = new Map<string, Set<number>>();
   for (const u of utxos) {
@@ -683,7 +698,7 @@ export async function fetchUtxoSpentStatus(
     vouts.add(u.vout);
   }
 
-  const result = new Map<string, boolean>();
+  const result = new Map<string, UtxoSpentStatus>();
   for (const [txid, vouts] of byTxid) {
     if (signal?.aborted) return result;
     try {
@@ -692,7 +707,19 @@ export async function fetchUtxoSpentStatus(
       for (const v of voutArr) {
         if (typeof v.n !== 'number' || !vouts.has(v.n)) continue;
         if (typeof v.spent !== 'boolean') continue;
-        result.set(`${txid}:${v.n}`, v.spent);
+        const spentTxid =
+          v.spent && typeof v.spentTxId === 'string' && /^[0-9a-f]{64}$/i.test(v.spentTxId)
+            ? v.spentTxId.toLowerCase()
+            : undefined;
+        const spentHeight =
+          v.spent && typeof v.spentHeight === 'number' && Number.isInteger(v.spentHeight) && v.spentHeight > 0
+            ? v.spentHeight
+            : undefined;
+        result.set(`${txid}:${v.n}`, {
+          spent: v.spent,
+          ...(spentTxid !== undefined ? { spentTxid } : {}),
+          ...(spentHeight !== undefined ? { spentHeight } : {}),
+        });
       }
     } catch (err) {
       // Best-effort: one failed lookup shouldn't sink the reconcile pass.
