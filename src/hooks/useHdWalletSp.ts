@@ -1214,7 +1214,11 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
 
     const missing = storage.utxos.filter((u) => u.time === undefined);
     if (missing.length === 0) {
-      backfillRanRef.current = true;
+      // Nothing to do for THIS storage identity — but don't latch the
+      // ran-once ref. `storageDocQuery` resolves to EMPTY_SP_STORAGE while
+      // the relay event is still loading, so the first identity of every
+      // session is an empty placeholder; latching here would poison the
+      // backfill for the whole session before the real document arrives.
       return;
     }
 
@@ -1239,10 +1243,17 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       if (heightTimes.size === 0) return;
       if (controller.signal.aborted) return;
 
+      // Rebase on the freshest local state, not the `storage` closure this
+      // effect captured: the async chain deliberately outlives storage
+      // republishes (see `backfillAbortRef`), so by now the auto-scan or the
+      // spender backfill may have advanced scanHeight, found UTXOs, or
+      // stamped the archive — all of which a stale-snapshot write would
+      // clobber.
+      const base = optimisticRef.current ?? storage;
       const next: SPStorageDocument = {
         version: SP_STORAGE_VERSION,
-        scanHeight: storage.scanHeight,
-        utxos: storage.utxos.map((u) => {
+        scanHeight: base.scanHeight,
+        utxos: base.utxos.map((u) => {
           if (u.time !== undefined) return u;
           const t = heightTimes.get(u.height);
           return t !== undefined ? { ...u, time: t } : u;
@@ -1250,7 +1261,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         // Preserve the archive — dropping it here would erase the spent
         // tombstones (resurrecting spent UTXOs on the next merge) and the
         // receive history for already-spent outputs.
-        spent: (storage.spent ?? []).slice(),
+        spent: (base.spent ?? []).slice(),
       };
 
       // Mirror the scan-loop pattern: update the optimistic copy and
@@ -1294,7 +1305,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
 
     const missing = (storage.spent ?? []).filter((u) => u.spentTxid === undefined);
     if (missing.length === 0) {
-      spentStampRanRef.current = true;
+      // Don't latch the ran-once ref — see the timestamp backfill above.
+      // The session's first storage identity is an empty placeholder doc,
+      // and latching on it would skip the backfill for the whole session.
       return;
     }
 

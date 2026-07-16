@@ -263,9 +263,11 @@ export function matchedUtxoToStored(m: SPMatchedUtxo): SPStoredUtxo {
  * Merge a batch of newly-discovered UTXOs into the persisted set, de-duplicated
  * by `(txid, vout)`. New entries overwrite existing ones with the same key —
  * useful if a re-scan corrects a previously-mis-recorded height/value. The
- * one exception: if the new entry has no `time` but the existing one does,
- * the existing `time` is preserved (a re-scan without a Blockbook lookup
- * shouldn't undo a previously-backfilled real timestamp).
+ * exception: metadata absent from the new entry but present on the existing
+ * one (`time`, and the `spentTxid`/`spentHeight`/`spentTime` spend stamps)
+ * is preserved — a re-scan without a Blockbook lookup shouldn't undo a
+ * previously-backfilled timestamp, and re-emitting a matched block must not
+ * strip the spend stamps that power the private tab's Sent rows.
  */
 export function mergeUtxos(
   existing: ReadonlyArray<SPStoredUtxo>,
@@ -277,11 +279,29 @@ export function mergeUtxos(
   for (const u of fresh) {
     const k = key(u);
     const prior = map.get(k);
-    if (prior && prior.time !== undefined && u.time === undefined) {
-      map.set(k, { ...u, time: prior.time });
-    } else {
+    if (!prior) {
       map.set(k, u);
+      continue;
     }
+    // Fresh wins, but never at the cost of metadata the fresh copy simply
+    // doesn't know: a rescan of a matched block re-emits the bare stored
+    // form, and replacing wholesale would strip a previously-backfilled
+    // `time` or — worse — the spend stamps that power the private tab's
+    // Sent rows.
+    const merged = { ...u };
+    if (merged.time === undefined && prior.time !== undefined) {
+      merged.time = prior.time;
+    }
+    if (merged.spentTxid === undefined && prior.spentTxid !== undefined) {
+      merged.spentTxid = prior.spentTxid;
+      if (merged.spentHeight === undefined && prior.spentHeight !== undefined) {
+        merged.spentHeight = prior.spentHeight;
+      }
+      if (merged.spentTime === undefined && prior.spentTime !== undefined) {
+        merged.spentTime = prior.spentTime;
+      }
+    }
+    map.set(k, merged);
   }
   return Array.from(map.values());
 }
