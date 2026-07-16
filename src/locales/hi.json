@@ -3356,11 +3356,5 @@
     "lastScanned": "block {{height}} तक scan हुआ",
     "paused": "अपने आप scan होना बंद है",
     "manualLink": "scan विकल्प"
-  },
-  "campaignMatch": {
-    "action": "मैच",
-    "errors": {
-      "wrongSettlementAddress": "सेटलमेंट भुगतान कैंपेन के स्नैपशॉट किए गए एड्रेस पर नहीं भेजा गया था।"
-    }
   }
 }

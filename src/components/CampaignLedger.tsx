@@ -1,21 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { ArrowDownLeft, ArrowUpRight, Clock, ExternalLink } from 'lucide-react';
 
-import { CampaignLedgerMatchAction } from '@/components/CampaignDonationMatchAction';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAddressLedger } from '@/hooks/useAddressLedger';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { type AddressTransaction, formatBTC, satsToUSD } from '@/lib/bitcoin';
-import type { ParsedCampaign } from '@/lib/campaign';
 import { openUrl } from '@/lib/downloadFile';
 import { timeAgo } from '@/lib/timeAgo';
 
 interface CampaignLedgerProps {
   /** The campaign's on-chain (`bc1…`) Bitcoin address. */
   address: string;
-  /** Optional campaign context for rendering Match on inflow rows. */
-  campaign?: ParsedCampaign;
 }
 
 /**
@@ -28,7 +24,7 @@ interface CampaignLedgerProps {
  * silent-payment-only campaigns have no scannable address and should not
  * surface this tab at all.
  */
-export function CampaignLedger({ address, campaign }: CampaignLedgerProps) {
+export function CampaignLedger({ address }: CampaignLedgerProps) {
   const { t } = useTranslation();
   const { data: btcPrice } = useBtcPrice();
   const query = useAddressLedger(address, true);
@@ -59,7 +55,7 @@ export function CampaignLedger({ address, campaign }: CampaignLedgerProps) {
           <ul className="divide-y divide-primary/20">
             {txs.map((tx) => (
               <li key={tx.txid}>
-                <CampaignLedgerTransaction tx={tx} btcPrice={btcPrice} campaign={campaign} />
+                <CampaignLedgerTransaction tx={tx} btcPrice={btcPrice} />
               </li>
             ))}
           </ul>
@@ -114,11 +110,9 @@ export function CampaignLedgerHeader({ address }: { address: string }) {
 export function CampaignLedgerTransaction({
   tx,
   btcPrice,
-  campaign,
 }: {
   tx: AddressTransaction;
   btcPrice: number | undefined;
-  campaign?: ParsedCampaign;
 }) {
   const { t } = useTranslation();
   const isInflow = tx.netSats >= 0;
@@ -172,9 +166,6 @@ export function CampaignLedgerTransaction({
 
       <div className="shrink-0 flex flex-col items-end">
         <div className="flex items-center gap-3">
-          {isInflow && campaign ? (
-            <CampaignLedgerMatchAction campaign={campaign} amountSats={absSats} />
-          ) : null}
           {btcPrice ? (
             <div
               className={`latin-display font-display font-normal tracking-wide leading-none tabular-nums text-2xl inline-block ${tone}`}

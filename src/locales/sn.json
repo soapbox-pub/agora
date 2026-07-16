@@ -3356,11 +3356,5 @@
       "successDesc": "{{sats}} sats dzatumirwa muchikwama chako."
     },
     "footnote": "Uku kutumira kwenzira imwe chete muchikwama chako chazvino. Mibhadharo yakanyararira yakakanganiswa chete ndiyo inobatwa; hapana chimwe chinochinja."
-  },
-  "campaignMatch": {
-    "action": "Match",
-    "errors": {
-      "wrongSettlementAddress": "Mubhadharo hauna kutumirwa kukero yemushandirapamwe yakachengetwa."
-    }
   }
 }

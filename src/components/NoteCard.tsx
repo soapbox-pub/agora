@@ -36,7 +36,6 @@ import {
   PodcastTrailerContent,
 } from "@/components/AudioKindContent";
 import { CampaignInlinePreview, GroupInlinePreview, PledgeInlinePreview } from "@/components/AgoraInlinePreview";
-import { CampaignDonationMatchAction } from "@/components/CampaignDonationMatchAction";
 import { BadgeAwardCard } from "@/components/BadgeAwardCard";
 import { BadgeContent } from "@/components/BadgeContent";
 import { CalendarEventContent } from "@/components/CalendarEventContent";
@@ -269,8 +268,6 @@ interface NoteCardProps {
   authorBadge?: ReactNode;
   /** Event used for actions/navigation when the displayed card is synthetic. */
   actionEvent?: NostrEvent;
-  /** Optional action rendered in the shared action row. */
-  extraAction?: ReactNode;
   /** Verified/claimed on-chain amount shown by a synthetic kind 8333 card. */
   donationAmountSats?: number;
   /** On-chain metadata merged into a kind 8333 card on campaign pages. */
@@ -406,7 +403,6 @@ export const NoteCard = memo(function NoteCard({
   hideCommentContext,
   authorBadge,
   actionEvent,
-  extraAction,
   donationAmountSats,
   donationTransaction,
   donationTxid,
@@ -721,7 +717,6 @@ export const NoteCard = memo(function NoteCard({
             </div>
 
             <div className="shrink-0 flex items-center gap-3">
-              {extraAction}
               <div
                 className="latin-display text-right font-display font-normal tracking-wide leading-none tabular-nums text-2xl inline-block text-emerald-600 dark:text-emerald-400"
                 style={{
@@ -1204,7 +1199,6 @@ export const NoteCard = memo(function NoteCard({
         hideKindHeader
         commentContextPrefix={donationPrefix}
         hideCommentContext={hideCommentContext}
-        extraAction={event.kind === 8333 ? <CampaignDonationMatchAction event={event} /> : undefined}
         donationAmountSats={event.kind === 8333 ? zapAmountSats : undefined}
         donationTransaction={donationTransaction}
         donationTxid={event.kind === 8333 ? extractOnchainZapTxid(event) ?? undefined : undefined}

@@ -3356,11 +3356,5 @@
     "lastScanned": "Imechanganuliwa hadi block {{height}}",
     "paused": "Uchanganuzi wa kiotomatiki umezimwa",
     "manualLink": "Chaguzi za uchanganuzi"
-  },
-  "campaignMatch": {
-    "action": "Linganisha",
-    "errors": {
-      "wrongSettlementAddress": "Malipo hayakutumwa kwa anwani ya kampeni iliyohifadhiwa."
-    }
   }
 }

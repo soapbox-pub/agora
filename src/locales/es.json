@@ -3397,11 +3397,5 @@
       "successDesc": "{{sats}} sats barridos a tu cartera."
     },
     "footnote": "Este es un barrido en un solo sentido hacia tu cartera actual. Solo se tocan los pagos silenciosos afectados; nada más cambia."
-  },
-  "campaignMatch": {
-    "action": "Igualar",
-    "errors": {
-      "wrongSettlementAddress": "El pago de liquidación no se envió a la dirección de la campaña guardada en la instantánea."
-    }
   }
 }

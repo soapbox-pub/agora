@@ -3356,11 +3356,5 @@
     "lastScanned": "已掃描至區塊 {{height}}",
     "paused": "自動掃描已關閉",
     "manualLink": "掃描選項"
-  },
-  "campaignMatch": {
-    "action": "匹配",
-    "errors": {
-      "wrongSettlementAddress": "結算付款未傳送至已記錄的活動地址。"
-    }
   }
 }
