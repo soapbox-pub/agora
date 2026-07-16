@@ -62,8 +62,14 @@ const PRESS: LogoDef[] = [
   {
     name: 'Forbes',
     src: '/logos/forbes.svg',
-    href: 'https://www.forbes.com/sites/digital-assets/2026/06/04/how-freedom-tech-is-pushing-back-against-digital-authoritarianism/',
+    href: 'https://www.forbes.com/sites/digital-assets/2026/07/16/when-the-financial-system-cant-reach-people-in-crisis-bitcoin-can/',
     imgClass: 'h-5 sm:h-6',
+  },
+  {
+    name: 'NERDS.xyz',
+    src: '/logos/nerds.png',
+    href: 'https://nerds.xyz/2026/07/venezuela-bitcoin-earthquake-relief/',
+    imgClass: 'h-6 sm:h-7',
   },
   {
     name: 'Oslo Freedom Forum',
