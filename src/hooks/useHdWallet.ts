@@ -311,29 +311,35 @@ export function useHdWallet(): UseHdWalletResult {
       // taproot inputs, so vin matching can undercount).
       const spOutflow = Math.max(rowSpOutflow, stamp?.sent ?? 0);
 
-      if (spOutflow > 0 && (row.bip86Outflow ?? 0) === 0) {
-        // Spend initiated from the private wallet. Re-net it against any SP
-        // change received in the same tx and move it to the private tab —
-        // otherwise the private tab shows the change as a bare receive and
-        // the spend itself lands in the public tab (or nowhere).
-        let net = row.type === 'receive' ? row.amount : -row.amount;
-        net -= spOutflow - rowSpOutflow;
-        const spChange = spByTxid.get(row.txid);
-        if (spChange) {
-          net += spChange.amount;
-          spByTxid.delete(row.txid);
-        }
-        merged.push({
-          txid: row.txid,
-          amount: Math.abs(net),
-          type: net >= 0 ? 'receive' : 'send',
-          confirmed: row.confirmed,
-          timestamp: row.timestamp,
-          source: 'silent-payment',
-        });
-      } else {
+      if (spOutflow === 0) {
         merged.push(row);
+        continue;
       }
+
+      // The tx spent the wallet's own SP UTXOs. Any SP output received in
+      // the same tx is change, not income — fold it into the net instead of
+      // letting it render as a standalone receive row. (An SP inflow with
+      // spOutflow === 0 is a genuine receive — e.g. a public→private
+      // self-transfer — and keeps its own row via the leftover-receives
+      // loop below.)
+      let net = row.type === 'receive' ? row.amount : -row.amount;
+      net -= spOutflow - rowSpOutflow;
+      const spChange = spByTxid.get(row.txid);
+      if (spChange) {
+        net += spChange.amount;
+        spByTxid.delete(row.txid);
+      }
+      merged.push({
+        txid: row.txid,
+        amount: Math.abs(net),
+        type: net >= 0 ? 'receive' : 'send',
+        confirmed: row.confirmed,
+        timestamp: row.timestamp,
+        // Spends whose inputs are exclusively private-wallet UTXOs belong
+        // to the private tab; a mixed spend (SP + BIP-86 inputs) stays in
+        // the public tab as before, but still with change netted out.
+        source: (row.bip86Outflow ?? 0) === 0 ? 'silent-payment' : 'bip86',
+      });
     }
 
     // Private spends invisible to Blockbook (SP inputs, SP change): the
