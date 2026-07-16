@@ -3358,11 +3358,5 @@
     "lastScanned": "Dipindai hingga blok {{height}}",
     "paused": "Pemindaian otomatis nonaktif",
     "manualLink": "Opsi pindaian"
-  },
-  "campaignMatch": {
-    "action": "Samakan",
-    "errors": {
-      "wrongSettlementAddress": "Pembayaran penyelesaian tidak dikirim ke alamat kampanye yang telah direkam."
-    }
   }
 }

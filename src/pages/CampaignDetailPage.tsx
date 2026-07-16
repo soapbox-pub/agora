@@ -592,7 +592,6 @@ function CampaignDetailContent({ campaign }: { campaign: ParsedCampaign }) {
                           <CampaignLedgerTransaction
                             tx={item.tx}
                             btcPrice={btcPrice}
-                            campaign={displayCampaign}
                           />
                         </div>
                       );

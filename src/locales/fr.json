@@ -3399,11 +3399,5 @@
       "successDesc": "{{sats}} sats balayés vers votre portefeuille."
     },
     "footnote": "Il s'agit d'un balayage à sens unique vers votre portefeuille actuel. Seuls les paiements silencieux concernés sont touchés ; rien d'autre ne change."
-  },
-  "campaignMatch": {
-    "action": "Égaler",
-    "errors": {
-      "wrongSettlementAddress": "Le paiement de règlement n'a pas été envoyé à l'adresse de campagne enregistrée dans l'instantané."
-    }
   }
 }

@@ -3400,11 +3400,5 @@
         "body": "Custodial mixers can steal your coins, log who sent what, or turn out to be law-enforcement honeypots. Use a silent-payments hop or a non-custodial coinjoin instead."
       }
     }
-  },
-  "campaignMatch": {
-    "action": "Match",
-    "errors": {
-      "wrongSettlementAddress": "The settlement payment was not sent to the snapshotted campaign address."
-    }
   }
 }

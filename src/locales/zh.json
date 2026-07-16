@@ -3358,11 +3358,5 @@
       "successDesc": "已将 {{sats}} sats 归集到你的钱包。"
     },
     "footnote": "这是一次单向归集到你当前钱包的操作。只会处理受影响的静默支付；其他一切保持不变。"
-  },
-  "campaignMatch": {
-    "action": "匹配",
-    "errors": {
-      "wrongSettlementAddress": "结算付款未发送到已记录的活动地址。"
-    }
   }
 }

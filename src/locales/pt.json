@@ -3399,11 +3399,5 @@
       "successDesc": "{{sats}} sats varridos para sua carteira."
     },
     "footnote": "Esta é uma varredura de via única para sua carteira atual. Apenas os pagamentos silenciosos afetados são tocados; nada mais muda."
-  },
-  "campaignMatch": {
-    "action": "Igualar",
-    "errors": {
-      "wrongSettlementAddress": "O pagamento da liquidação não foi enviado ao endereço da campanha registrado no snapshot."
-    }
   }
 }
