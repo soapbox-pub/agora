@@ -70,7 +70,7 @@ A fully integrated, **non-custodial HD Bitcoin wallet** — no seed phrase to wr
 
 ### Social & Platform
 - **Full Nostr client** — notes, articles, comments, reposts, reactions, and rich media
-- **Private messaging** — NIP-04 and NIP-17 gift-wrapped DMs
+- **Private messaging** — NIP-04 encrypted DMs (message *contents* only; NIP-04 leaks metadata, so recipients and timing are public. NIP-17 gift wrap is not implemented yet)
 - **Communities & events** — moderated communities and calendar events
 - **Lightning tipping** — zaps via Nostr Wallet Connect and WebLN (tipping only — *not* campaigns)
 - **Native mobile apps** — Android & iOS via Capacitor
@@ -119,7 +119,7 @@ Development server: [`http://localhost:8080`](http://localhost:8080)
 
 ### Docker
 
-Use Docker Compose for the nginx reverse-proxy stack (needed for decryptable media in NIP-17 messages):
+Use Docker Compose to run the dev server behind an nginx reverse proxy:
 
 ```sh
 git clone https://gitlab.com/soapbox-pub/agora.git
