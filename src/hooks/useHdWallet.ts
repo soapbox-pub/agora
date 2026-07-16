@@ -316,29 +316,48 @@ export function useHdWallet(): UseHdWalletResult {
         continue;
       }
 
-      // The tx spent the wallet's own SP UTXOs. Any SP output received in
-      // the same tx is change, not income — fold it into the net instead of
-      // letting it render as a standalone receive row. (An SP inflow with
-      // spOutflow === 0 is a genuine receive — e.g. a public→private
-      // self-transfer — and keeps its own row via the leftover-receives
-      // loop below.)
-      let net = row.type === 'receive' ? row.amount : -row.amount;
-      net -= spOutflow - rowSpOutflow;
+      // The tx spent the wallet's own SP UTXOs. Split it double-entry
+      // style so each tab reads as a self-contained ledger:
+      //
+      //   - The private tab gets a send row for the SP value that left,
+      //     net of any SP change received in the same tx. Change is never
+      //     income, so it must not surface as its own receive row.
+      //   - The public tab gets a row for the BIP-86 side, if any. The
+      //     builder never routes private-send change to BIP-86 (change
+      //     goes back to the wallet's own sp1 address), so a BIP-86 inflow
+      //     here is a deliberate private→public transfer and *should* show
+      //     as money arriving in the public wallet.
+      //
+      // Without the split, a private→public transfer rendered as a lone
+      // "-fee" row in the private tab and nothing at all in the public tab
+      // — whose balance had visibly increased.
+      const combinedNet = row.type === 'receive' ? row.amount : -row.amount;
+      // buildHdTransactions folded its attributed SP outflow into the net;
+      // remove it to recover the pure BIP-86 side.
+      const net86 = combinedNet + rowSpOutflow;
+      if (net86 !== 0) {
+        merged.push({
+          txid: row.txid,
+          amount: Math.abs(net86),
+          type: net86 >= 0 ? 'receive' : 'send',
+          confirmed: row.confirmed,
+          timestamp: row.timestamp,
+          source: 'bip86',
+        });
+      }
+      let netSp = -spOutflow;
       const spChange = spByTxid.get(row.txid);
       if (spChange) {
-        net += spChange.amount;
+        netSp += spChange.amount;
         spByTxid.delete(row.txid);
       }
       merged.push({
         txid: row.txid,
-        amount: Math.abs(net),
-        type: net >= 0 ? 'receive' : 'send',
+        amount: Math.abs(netSp),
+        type: netSp >= 0 ? 'receive' : 'send',
         confirmed: row.confirmed,
         timestamp: row.timestamp,
-        // Spends whose inputs are exclusively private-wallet UTXOs belong
-        // to the private tab; a mixed spend (SP + BIP-86 inputs) stays in
-        // the public tab as before, but still with change netted out.
-        source: (row.bip86Outflow ?? 0) === 0 ? 'silent-payment' : 'bip86',
+        source: 'silent-payment',
       });
     }
 
