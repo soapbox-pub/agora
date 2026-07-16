@@ -11,7 +11,6 @@ import {
   ArrowUpRight,
   ShieldOff,
   KeyRound,
-  Radar,
   MoreVertical,
   History,
 } from 'lucide-react';
@@ -458,7 +457,6 @@ function formatTxDate(timestamp: number | undefined, t: (key: string, options?: 
 function TxRow({ tx, btcPrice }: { tx: HdTransaction; btcPrice?: number }) {
   const { t, i18n } = useTranslation();
   const isReceive = tx.type === 'receive';
-  const isSilent = tx.source === 'silent-payment';
   const isPending = !tx.confirmed;
   return (
     <Link
@@ -476,17 +474,8 @@ function TxRow({ tx, btcPrice }: { tx: HdTransaction; btcPrice?: number }) {
             : <ArrowUpRight className="size-4" />}
         </div>
         <div>
-          <p className="text-sm font-medium flex items-center gap-1.5">
+          <p className="text-sm font-medium">
             {isReceive ? t('wallet.tx.received') : t('wallet.tx.sent')}
-            {isSilent && (
-              <span
-                className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary"
-                title={t('wallet.tx.silentDetectedTitle')}
-              >
-                <Radar className="size-2.5" />
-                {t('wallet.tx.silentBadge')}
-              </span>
-            )}
           </p>
           {isPending ? (
             <p className="text-xs text-orange-500 dark:text-orange-400 inline-flex items-center gap-1">

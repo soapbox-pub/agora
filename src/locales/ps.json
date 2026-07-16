@@ -1403,9 +1403,7 @@
       "daysAgo_one": "{{count}} ورځې وړاندې",
       "daysAgo_other": "{{count}} ورځې وړاندې",
       "received": "ترلاسه شوي",
-      "sent": "لیږل شوي",
-      "silentBadge": "چوپ",
-      "silentDetectedTitle": "د BIP-352 چوپې ورکړې د سکن له لارې کشف شو"
+      "sent": "لیږل شوي"
     },
     "openMenu": "د والټ مینو",
     "sendPublic": "لیږل",

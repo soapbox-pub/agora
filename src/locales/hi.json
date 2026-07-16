@@ -1918,9 +1918,7 @@
       "daysAgo_one": "{{count}}d पहले",
       "daysAgo_other": "{{count}}d पहले",
       "received": "मिले",
-      "sent": "भेजे",
-      "silentBadge": "silent",
-      "silentDetectedTitle": "BIP-352 साइलेंट पेमेंट scan से पाया गया"
+      "sent": "भेजे"
     },
     "openMenu": "वॉलेट मेन्यू",
     "sendPublic": "भेजें",

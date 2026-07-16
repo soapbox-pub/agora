@@ -1918,9 +1918,7 @@
       "daysAgo_one": "siku {{count}} iliyopita",
       "daysAgo_other": "siku {{count}} zilizopita",
       "received": "Imepokelewa",
-      "sent": "Imetumwa",
-      "silentBadge": "kimya",
-      "silentDetectedTitle": "Imegunduliwa kupitia uchanganuzi wa malipo ya kimya wa BIP-352"
+      "sent": "Imetumwa"
     },
     "sendPublic": "Tuma",
     "sendPrivate": "Tuma kwa faragha",

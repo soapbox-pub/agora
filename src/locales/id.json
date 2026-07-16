@@ -1918,9 +1918,7 @@
       "daysAgo_one": "{{count}} hari lalu",
       "daysAgo_other": "{{count}} hari lalu",
       "received": "Diterima",
-      "sent": "Terkirim",
-      "silentBadge": "silent",
-      "silentDetectedTitle": "Terdeteksi melalui pemindaian silent payment BIP-352"
+      "sent": "Terkirim"
     },
     "openMenu": "Menu dompet",
     "sendPublic": "Kirim",

@@ -1403,9 +1403,7 @@
       "daysAgo_one": "mazuva {{count}} apfuura",
       "daysAgo_other": "mazuva {{count}} apfuura",
       "received": "Zvagamuchirwa",
-      "sent": "Zvatumirwa",
-      "silentBadge": "wakanyararira",
-      "silentDetectedTitle": "Zvakaonekwa kuburikidza nokuongorora kwemubhadharo wakanyararira weBIP-352"
+      "sent": "Zvatumirwa"
     },
     "openMenu": "Menyu yechikwama",
     "sendPublic": "Tumira",

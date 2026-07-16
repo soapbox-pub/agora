@@ -1403,9 +1403,7 @@
       "daysAgo_one": "{{count}} روز پیش",
       "daysAgo_other": "{{count}} روز پیش",
       "received": "دریافت‌شده",
-      "sent": "ارسال‌شده",
-      "silentBadge": "خاموش",
-      "silentDetectedTitle": "از طریق پویش پرداخت خاموش BIP-352 شناسایی شد"
+      "sent": "ارسال‌شده"
     },
     "openMenu": "منوی کیف پول",
     "sendPublic": "ارسال",

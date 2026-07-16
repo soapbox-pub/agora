@@ -1403,9 +1403,7 @@
       "daysAgo_one": "{{count}} 天前",
       "daysAgo_other": "{{count}} 天前",
       "received": "已收到",
-      "sent": "已傳送",
-      "silentBadge": "靜默",
-      "silentDetectedTitle": "通過 BIP-352 靜默支付掃描檢測到"
+      "sent": "已傳送"
     },
     "openMenu": "錢包選單",
     "sendPublic": "傳送",

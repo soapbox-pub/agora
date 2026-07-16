@@ -1403,9 +1403,7 @@
       "daysAgo_one": "{{count}} ថ្ងៃមុន",
       "daysAgo_other": "{{count}} ថ្ងៃមុន",
       "received": "បានទទួល",
-      "sent": "បានផ្ញើ",
-      "silentBadge": "ស្ងាត់",
-      "silentDetectedTitle": "រកឃើញតាមរយៈការស្កេនការទូទាត់ស្ងាត់ BIP-352"
+      "sent": "បានផ្ញើ"
     },
     "openMenu": "ម៉ឺនុយកាបូប",
     "sendPublic": "ផ្ញើ",

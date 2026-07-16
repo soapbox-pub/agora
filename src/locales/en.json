@@ -1966,9 +1966,7 @@
       "daysAgo_one": "{{count}}d ago",
       "daysAgo_other": "{{count}}d ago",
       "received": "Received",
-      "sent": "Sent",
-      "silentBadge": "silent",
-      "silentDetectedTitle": "Detected via BIP-352 silent payment scan"
+      "sent": "Sent"
     },
     "openMenu": "Wallet menu"
   },

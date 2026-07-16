@@ -1918,9 +1918,7 @@
       "daysAgo_one": "{{count}}д назад",
       "daysAgo_other": "{{count}}д назад",
       "received": "Получено",
-      "sent": "Отправлено",
-      "silentBadge": "тихий",
-      "silentDetectedTitle": "Обнаружено через сканирование тихих платежей BIP-352"
+      "sent": "Отправлено"
     },
     "openMenu": "Меню кошелька",
     "sendPublic": "Отправить",

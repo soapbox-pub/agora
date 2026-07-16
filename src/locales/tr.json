@@ -1918,9 +1918,7 @@
       "daysAgo_one": "{{count}}g önce",
       "daysAgo_other": "{{count}}g önce",
       "received": "Alındı",
-      "sent": "Gönderildi",
-      "silentBadge": "sessiz",
-      "silentDetectedTitle": "BIP-352 sessiz ödeme taramasıyla algılandı"
+      "sent": "Gönderildi"
     },
     "openMenu": "Cüzdan menüsü",
     "sendPublic": "Gönder",

@@ -1403,9 +1403,7 @@
       "daysAgo_one": "hace {{count}}d",
       "daysAgo_other": "hace {{count}}d",
       "received": "Recibido",
-      "sent": "Enviado",
-      "silentBadge": "silencioso",
-      "silentDetectedTitle": "Detectado mediante el escaneo de pagos silenciosos BIP-352"
+      "sent": "Enviado"
     },
     "openMenu": "Menú de la cartera",
     "sendPublic": "Enviar",

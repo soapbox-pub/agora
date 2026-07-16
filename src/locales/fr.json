@@ -1959,9 +1959,7 @@
       "daysAgo_one": "il y a {{count}}j",
       "daysAgo_other": "il y a {{count}}j",
       "received": "Reçu",
-      "sent": "Envoyé",
-      "silentBadge": "silencieux",
-      "silentDetectedTitle": "Détecté via le scan de paiement silencieux BIP-352"
+      "sent": "Envoyé"
     },
     "openMenu": "Menu du portefeuille",
     "sendPublic": "Envoyer",
