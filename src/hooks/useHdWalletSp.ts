@@ -1198,6 +1198,13 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // historical UTXOs — remaining entries get backfilled on subsequent
   // sessions.
   const backfillRanRef = useRef(false);
+  // Abort the in-flight backfill only on unmount — NOT via an effect
+  // cleanup. The effect below re-runs on every `storage` identity change
+  // (auto-scan republishes bump it within seconds of page load), and a
+  // cleanup-scoped abort would kill the multi-round-trip backfill mid
+  // flight on the first re-run, every session.
+  const backfillAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => backfillAbortRef.current?.abort(), []);
   useEffect(() => {
     if (!enabled) return;
     if (!blockbookUrl) return;
@@ -1213,6 +1220,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
 
     backfillRanRef.current = true;
     const controller = new AbortController();
+    backfillAbortRef.current = controller;
     const MAX_HEIGHTS = 50;
 
     (async () => {
@@ -1252,7 +1260,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       publishStorage.mutate({ next });
     })();
 
-    return () => controller.abort();
+    // No cleanup: the async chain is aborted on unmount via
+    // `backfillAbortRef` and otherwise must be allowed to outlive the
+    // storage identity changes that re-run this effect.
     // We deliberately depend only on `storage` and the static URLs — running
     // once per fresh load is the goal.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1272,6 +1282,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // spend also gets a real block time for its history row when the spending
   // tx's height is known.
   const spentStampRanRef = useRef(false);
+  // Unmount-only abort, for the same reason as `backfillAbortRef` above.
+  const spentStampAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => spentStampAbortRef.current?.abort(), []);
   useEffect(() => {
     if (!enabled) return;
     if (!blockbookUrl) return;
@@ -1287,6 +1300,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
 
     spentStampRanRef.current = true;
     const controller = new AbortController();
+    spentStampAbortRef.current = controller;
     const MAX_OUTPOINTS = 25;
 
     (async () => {
@@ -1344,7 +1358,8 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       console.warn('Failed to backfill SP spender info:', err);
     });
 
-    return () => controller.abort();
+    // No cleanup — see `spentStampAbortRef`. An effect-cleanup abort would
+    // cancel the backfill as soon as the auto-scan republishes storage.
     // Mirror the timestamp backfill: run once per fresh load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, blockbookUrl, storage]);
