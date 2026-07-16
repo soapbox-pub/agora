@@ -11,7 +11,8 @@ import {
   deriveSilentPaymentKeys,
   type SilentPaymentKeys,
 } from '@/lib/hdwallet/derivation';
-import { fetchBlockTime, fetchUtxoSpentStatus } from '@/lib/hdwallet/blockbook';
+import { fetchBlockTime, fetchTxOutputs, fetchUtxoSpentStatus } from '@/lib/hdwallet/blockbook';
+import { bytesToHex, derivePkFromStoredTweak, hexToBytes } from '@/lib/hdwallet/sp/crypto';
 import { fetchTipHeight } from '@/lib/hdwallet/sp/indexer';
 import { fetchBlockEntriesCached } from '@/lib/hdwallet/sp/blockCache';
 import { scanBatch, type SPMatchedUtxo } from '@/lib/hdwallet/sp/scanner';
@@ -468,12 +469,23 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
        * signed with the new account's key.
        */
       owner: string;
+      /**
+       * Outpoints to remove from BOTH the active set and the archive, on
+       * both sides of the merge, without archiving them. Used by the
+       * ownership audit to expel foreign entries (another account's UTXOs
+       * that leaked in via the pre-fix account-switch contamination):
+       * unlike `spent`, these were never this wallet's coins, so they must
+       * not leave a tombstone — and without stripping them from the remote
+       * copy the insert-preferring merge would resurrect them.
+       */
+      purge?: ReadonlyArray<{ txid: string; vout: number }>;
     }) => {
-      const { next, spent, owner } = args;
+      const { next, spent, owner, purge } = args;
       if (!user) throw new Error('not logged in');
       if (owner !== user.pubkey) {
         throw new Error('SP storage publish dropped: wallet identity changed since this document was built');
       }
+      const purgeKeys = new Set((purge ?? []).map((p) => `${p.txid}:${p.vout}`));
       if (!user.signer.nip44) throw new Error('signer does not support NIP-44');
       // Always read-modify-write off the freshest event so a concurrent device
       // doesn't lose its progress.
@@ -487,18 +499,23 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
         try {
           const decrypted = await user.signer.nip44.decrypt(user.pubkey, prev.content);
           const remote = parseSPStorage(decrypted);
-          // Prune any spent UTXOs from the remote *before* the merge —
-          // otherwise insert-only `mergeUtxos` would re-add them.
-          const remoteUtxos = spent && spent.length > 0
+          // Prune any spent or purged UTXOs from the remote *before* the
+          // merge — otherwise insert-only `mergeUtxos` would re-add them.
+          const remoteUtxos = (spent && spent.length > 0
             ? pruneSpUtxos(remote.utxos, spent)
-            : remote.utxos;
+            : remote.utxos
+          ).filter((u) => !purgeKeys.has(`${u.txid}:${u.vout}`));
           // Merge the spent archive: union both sides' archives, plus the
           // entries we just pruned out of `remote.utxos`. Without this a
           // racing relay copy could resurrect a row in `utxos` that the
           // local prune already classified as spent, or drop archive
           // entries the local copy intentionally retained for history.
-          const localArchive = next.spent ?? [];
-          const remoteArchive = remote.spent ?? [];
+          const localArchive = (next.spent ?? []).filter(
+            (u) => !purgeKeys.has(`${u.txid}:${u.vout}`),
+          );
+          const remoteArchive = (remote.spent ?? []).filter(
+            (u) => !purgeKeys.has(`${u.txid}:${u.vout}`),
+          );
           const archiveByKey = new Map<string, SPStoredUtxo>();
           for (const u of remoteArchive) archiveByKey.set(`${u.txid}:${u.vout}`, u);
           for (const u of localArchive) {
@@ -539,7 +556,9 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
             // the coin selector would then re-pick it and the broadcast
             // would be rejected as a mempool conflict.
             utxos: mergeUtxos(remoteUtxos, next.utxos).filter(
-              (u) => !archiveByKey.has(`${u.txid}:${u.vout}`),
+              (u) =>
+                !archiveByKey.has(`${u.txid}:${u.vout}`) &&
+                !purgeKeys.has(`${u.txid}:${u.vout}`),
             ),
             spent: Array.from(archiveByKey.values()),
           };
@@ -1336,6 +1355,12 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   const spentStampAbortRef = useRef<AbortController | null>(null);
   useEffect(() => () => spentStampAbortRef.current?.abort(), []);
 
+  // Once-per-session ownership-audit latch + abort — the effect itself
+  // lives below, after the spender backfill.
+  const ownershipAuditRanRef = useRef<string | null>(null);
+  const ownershipAuditAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => ownershipAuditAbortRef.current?.abort(), []);
+
   // ── Kill in-flight work on account switch ────────────────────
   //
   // Async chains started under the previous wallet identity (scan,
@@ -1352,6 +1377,7 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     reconcileAbortRef.current?.abort();
     backfillAbortRef.current?.abort();
     spentStampAbortRef.current?.abort();
+    ownershipAuditAbortRef.current?.abort();
     if (republishTimerRef.current) {
       clearTimeout(republishTimerRef.current);
       republishTimerRef.current = null;
@@ -1438,6 +1464,100 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
     // Mirror the timestamp backfill: run once per fresh load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, blockbookUrl, storage, walletId]);
+
+  // ── Ownership audit: expel foreign UTXOs on load ─────────────
+  //
+  // Before the account-switch scoping fix, the root-mounted provider could
+  // leak one account's optimistic doc into another's storage, where the
+  // insert-preferring publish merge made it permanent — relay docs exist
+  // whose entries their own account cannot spend. Ownership is decidable
+  // without trusting the doc: an entry is ours iff
+  //
+  //   on-chain script == OP_1 <xonly(Bspend + t·G)>
+  //
+  // Once per session, verify every stored entry against Blockbook and purge
+  // the foreign ones from the active set and the archive. Entries whose
+  // script can't be fetched are kept — "unknown" is not proof of foreign
+  // ownership; the next session retries. Legitimate entries always pass:
+  // the scanner only persists tweaks it derived by matching this same
+  // equation during discovery.
+  useEffect(() => {
+    if (!enabled) return;
+    if (!blockbookUrl) return;
+    if (!storage) return;
+    if (!keys) return;
+    if (ownershipAuditRanRef.current === walletId) return;
+    if (isScanning) return; // Don't race with an in-flight scan.
+
+    const all = [...storage.utxos, ...(storage.spent ?? [])];
+    if (all.length === 0) return; // Empty/placeholder doc — don't latch.
+
+    ownershipAuditRanRef.current = walletId;
+    const controller = new AbortController();
+    ownershipAuditAbortRef.current = controller;
+    const MAX_TXIDS = 25;
+
+    (async () => {
+      const byTxid = new Map<string, { vout: number; tweak: string }[]>();
+      for (const u of all) {
+        const list = byTxid.get(u.txid) ?? [];
+        list.push({ vout: u.vout, tweak: u.tweak });
+        byTxid.set(u.txid, list);
+      }
+      const foreign: { txid: string; vout: number }[] = [];
+      let checked = 0;
+      for (const [txid, entries] of byTxid) {
+        if (checked >= MAX_TXIDS) break;
+        if (controller.signal.aborted) return;
+        checked += 1;
+        let outputs;
+        try {
+          outputs = await fetchTxOutputs(blockbookUrl, txid, controller.signal);
+        } catch {
+          continue; // Unknown — keep and retry next session.
+        }
+        for (const e of entries) {
+          const out = outputs.find((o) => o.n === e.vout);
+          if (!out?.scriptHex) continue;
+          const expected =
+            '5120' + bytesToHex(derivePkFromStoredTweak(keys.Bspend, hexToBytes(e.tweak)));
+          if (out.scriptHex !== expected) foreign.push({ txid, vout: e.vout });
+        }
+      }
+      if (foreign.length === 0) return;
+      if (controller.signal.aborted) return;
+
+      const purgeSet = new Set(foreign.map((f) => `${f.txid}:${f.vout}`));
+      const base = optimisticRef.current ?? storage;
+      const next: SPStorageDocument = {
+        version: SP_STORAGE_VERSION,
+        scanHeight: base.scanHeight,
+        utxos: base.utxos.filter((u) => !purgeSet.has(`${u.txid}:${u.vout}`)),
+        spent: (base.spent ?? []).filter((u) => !purgeSet.has(`${u.txid}:${u.vout}`)),
+      };
+      console.warn(`SP ownership audit: purging ${foreign.length} foreign entries from wallet storage`);
+      optimisticRef.current = next;
+      setOptimisticVersion((v) => v + 1);
+      // A purge SHRINKS the doc, which the optimistic-preference heuristic
+      // reads as staleness — write the doc-query cache directly (like the
+      // prune path does) so the purged copy isn't shadowed by the fatter
+      // relay copy while the publish round-trip is in flight.
+      const eventId = queryClient.getQueryData<{ id?: string } | null>([
+        'hdwallet-sp-event',
+        pubkey,
+        dTag,
+      ])?.id;
+      if (eventId) {
+        queryClient.setQueryData(['hdwallet-sp-doc', eventId], next);
+      }
+      publishStorage.mutate({ next, purge: foreign, owner: pubkey });
+    })().catch((err) => {
+      console.warn('SP ownership audit failed:', err);
+    });
+
+    // Unmount-only abort via `ownershipAuditAbortRef`, like the backfills.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, blockbookUrl, storage, keys, walletId]);
 
   // ── Assemble the public shape ───────────────────────────────
   if (!enabled) {
