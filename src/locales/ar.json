@@ -94,7 +94,8 @@
     "safety": "السلامة",
     "changelog": "سجل التغييرات",
     "sourceCode": "الكود المصدري",
-    "getApp": "احصل على التطبيق"
+    "getApp": "احصل على التطبيق",
+    "walletBalanceHidden": "رصيد المحفظة مخفي"
   },
   "messages": {
     "title": "الرسائل",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "عام",
       "private": "خاص"
-    }
+    },
+    "hideBalance": "إخفاء الرصيد",
+    "showBalance": "إظهار الرصيد"
   },
   "walletSettings": {
     "backup": {

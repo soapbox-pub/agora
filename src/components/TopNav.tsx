@@ -27,6 +27,10 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useFeedSettings } from '@/hooks/useFeedSettings';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
 import { useHdWallet } from '@/hooks/useHdWallet';
+import {
+  HIDDEN_BALANCE_LABEL,
+  useHideWalletBalance,
+} from '@/hooks/useHideWalletBalance';
 import { satsToUSD } from '@/lib/bitcoin';
 import { ZAPSTORE_URL } from '@/lib/zapstore';
 import { cn } from '@/lib/utils';
@@ -229,16 +233,21 @@ function WalletBalancePill() {
   const { t } = useTranslation();
   const { availability, totalBalance, isLoading, error } = useHdWallet();
   const { data: btcPrice } = useHdBtcPrice();
+  const { hideBalance } = useHideWalletBalance();
 
   if (availability.status !== 'available') return null;
   if (isLoading || error || !btcPrice) return null;
+
+  const label = hideBalance
+    ? HIDDEN_BALANCE_LABEL
+    : satsToUSD(totalBalance, btcPrice);
 
   return (
     <Link
       to="/wallet"
       className="shrink-0 inline-flex items-center text-primary rounded-md px-1 hover:bg-primary/10 motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-      aria-label={t('nav.wallet')}
-      title={t('nav.wallet')}
+      aria-label={hideBalance ? t('nav.walletBalanceHidden') : t('nav.wallet')}
+      title={hideBalance ? t('nav.walletBalanceHidden') : t('nav.wallet')}
     >
       <span
         className="latin-display font-display font-normal tracking-wide leading-none uppercase text-xl inline-block tabular-nums"
@@ -248,7 +257,7 @@ function WalletBalancePill() {
           transformOrigin: '0 100%',
         }}
       >
-        {satsToUSD(totalBalance, btcPrice)}
+        {label}
       </span>
     </Link>
   );

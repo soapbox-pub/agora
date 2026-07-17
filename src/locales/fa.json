@@ -94,7 +94,8 @@
     "safety": "ایمنی",
     "changelog": "تغییرات",
     "sourceCode": "کد منبع",
-    "getApp": "دریافت برنامه"
+    "getApp": "دریافت برنامه",
+    "walletBalanceHidden": "موجودی کیف پول مخفی است"
   },
   "messages": {
     "title": "پیام‌ها",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "عمومی",
       "private": "خصوصی"
-    }
+    },
+    "hideBalance": "مخفی‌کردن موجودی",
+    "showBalance": "نمایش موجودی"
   },
   "walletSettings": {
     "backup": {

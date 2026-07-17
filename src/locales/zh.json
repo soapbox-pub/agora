@@ -94,7 +94,8 @@
     "safety": "安全",
     "changelog": "更新日志",
     "sourceCode": "源代码",
-    "getApp": "获取应用"
+    "getApp": "获取应用",
+    "walletBalanceHidden": "钱包余额已隐藏"
   },
   "messages": {
     "title": "私信",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "公开",
       "private": "私密"
-    }
+    },
+    "hideBalance": "隐藏余额",
+    "showBalance": "显示余额"
   },
   "walletSettings": {
     "backup": {

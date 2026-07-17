@@ -94,7 +94,8 @@
     "safety": "Kuchengetedzeka",
     "changelog": "Rondedzero yeshanduko",
     "sourceCode": "Kodhi yetsime",
-    "getApp": "Tora app"
+    "getApp": "Tora app",
+    "walletBalanceHidden": "Bharansi yechikwama yakavigwa"
   },
   "messages": {
     "title": "Mameseji",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "Pachena",
       "private": "Muchivande"
-    }
+    },
+    "hideBalance": "Viga balansi",
+    "showBalance": "Ratidza balansi"
   },
   "walletSettings": {
     "backup": {

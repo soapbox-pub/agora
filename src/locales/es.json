@@ -94,7 +94,8 @@
     "safety": "Seguridad",
     "changelog": "Novedades",
     "sourceCode": "Código fuente",
-    "getApp": "Descargar la app"
+    "getApp": "Descargar la app",
+    "walletBalanceHidden": "Saldo de la cartera oculto"
   },
   "messages": {
     "title": "Mensajes",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "Pública",
       "private": "Privada"
-    }
+    },
+    "hideBalance": "Ocultar saldo",
+    "showBalance": "Mostrar saldo"
   },
   "walletSettings": {
     "backup": {

@@ -13,6 +13,8 @@ import {
   KeyRound,
   MoreVertical,
   History,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -35,6 +37,10 @@ import { useAppContext } from '@/hooks/useAppContext';
 import { useHdWallet } from '@/hooks/useHdWallet';
 import { useHdWalletSp } from '@/hooks/useHdWalletSpContext';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
+import {
+  HIDDEN_BALANCE_LABEL,
+  useHideWalletBalance,
+} from '@/hooks/useHideWalletBalance';
 import { satsToUSD, formatBTC } from '@/lib/bitcoin';
 import type { WalletScope } from '@/lib/hdwallet/transaction';
 import type { HdTransaction } from '@/lib/hdwallet/scan';
@@ -270,8 +276,18 @@ function WalletTabPanel({
   footer,
 }: WalletTabPanelProps) {
   const { t } = useTranslation();
+  const { hideBalance, toggleHideBalance } = useHideWalletBalance();
   const [copied, setCopied] = useState(false);
   const [txOpen, setTxOpen] = useState(false);
+
+  const primaryBalanceLabel = hideBalance
+    ? HIDDEN_BALANCE_LABEL
+    : btcPrice
+      ? satsToUSD(balance, btcPrice)
+      : '---';
+  const secondaryBalanceLabel = hideBalance
+    ? `${HIDDEN_BALANCE_LABEL} BTC`
+    : `${formatBTC(balance)} BTC`;
 
   const copyPayload = async () => {
     if (!receivePayload) return;
@@ -301,40 +317,64 @@ function WalletTabPanel({
           </Button>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={onRefetch}
-          disabled={isFetching}
-          className="flex flex-col items-center space-y-1 group cursor-pointer disabled:cursor-default rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring px-4 py-2"
-          aria-label={t('wallet.refreshBalance')}
-          title={t('wallet.refreshBalanceTitle')}
-        >
-          <span className="flex items-center gap-2 text-primary group-hover:opacity-80 transition-opacity">
-            <span
-              className="latin-display font-display font-normal tracking-wide leading-none uppercase text-5xl inline-block tabular-nums"
-              style={{
-                WebkitTextStroke: '0.022em currentColor',
-                transform: 'skewX(-6deg) scaleX(1.1)',
-                transformOrigin: '0 100%',
-              }}
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-start gap-0.5">
+            <button
+              type="button"
+              onClick={onRefetch}
+              disabled={isFetching}
+              className="flex flex-col items-center space-y-1 group cursor-pointer disabled:cursor-default rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring px-2 py-2 sm:px-4"
+              aria-label={t('wallet.refreshBalance')}
+              title={t('wallet.refreshBalanceTitle')}
             >
-              {btcPrice ? satsToUSD(balance, btcPrice) : '---'}
-            </span>
-            {isFetching && (
-              <RefreshCw className="size-5 animate-spin text-muted-foreground" />
-            )}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            {formatBTC(balance)} BTC
-          </span>
+              <span className="flex items-center gap-2 text-primary group-hover:opacity-80 transition-opacity">
+                <span
+                  className="latin-display font-display font-normal tracking-wide leading-none uppercase text-5xl inline-block tabular-nums"
+                  style={{
+                    WebkitTextStroke: '0.022em currentColor',
+                    transform: 'skewX(-6deg) scaleX(1.1)',
+                    transformOrigin: '0 100%',
+                  }}
+                >
+                  {primaryBalanceLabel}
+                </span>
+                {isFetching && (
+                  <RefreshCw className="size-5 animate-spin text-muted-foreground" />
+                )}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {secondaryBalanceLabel}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={toggleHideBalance}
+              className="mt-2.5 shrink-0 inline-flex size-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={hideBalance ? t('wallet.showBalance') : t('wallet.hideBalance')}
+              aria-pressed={hideBalance}
+              title={hideBalance ? t('wallet.showBalance') : t('wallet.hideBalance')}
+            >
+              {hideBalance ? (
+                <Eye className="size-4" />
+              ) : (
+                <EyeOff className="size-4" />
+              )}
+            </button>
+          </div>
 
           {pendingBalance !== 0 && (
             <PendingBadge
-              amountLabel={btcPrice ? satsToUSD(Math.abs(pendingBalance), btcPrice) : undefined}
+              amountLabel={
+                hideBalance
+                  ? HIDDEN_BALANCE_LABEL
+                  : btcPrice
+                    ? satsToUSD(Math.abs(pendingBalance), btcPrice)
+                    : undefined
+              }
               className="pt-1 flex"
             />
           )}
-        </button>
+        </div>
       )}
 
       {footer}

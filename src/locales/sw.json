@@ -94,7 +94,8 @@
     "changelog": "Kumbukumbu ya mabadiliko",
     "sourceCode": "Msimbo wa chanzo",
     "getApp": "Pata programu",
-    "myDashboard": "Dashibodi Yangu"
+    "myDashboard": "Dashibodi Yangu",
+    "walletBalanceHidden": "Salio la pochi limefichwa"
   },
   "messages": {
     "title": "Ujumbe",
@@ -1926,7 +1927,9 @@
       "public": "Hadharani",
       "private": "Faragha"
     },
-    "openMenu": "Menyu ya pochi"
+    "openMenu": "Menyu ya pochi",
+    "hideBalance": "Ficha salio",
+    "showBalance": "Onyesha salio"
   },
   "walletRecovery": {
     "seoTitle": "Rejesha Pochi ya Zamani",

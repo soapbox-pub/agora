@@ -94,7 +94,8 @@
     "safety": "Keamanan",
     "changelog": "Catatan Versi",
     "sourceCode": "Kode sumber",
-    "getApp": "Dapatkan aplikasi"
+    "getApp": "Dapatkan aplikasi",
+    "walletBalanceHidden": "Saldo dompet disembunyikan"
   },
   "messages": {
     "title": "Pesan",
@@ -1926,7 +1927,9 @@
     "tabs": {
       "public": "Publik",
       "private": "Privat"
-    }
+    },
+    "hideBalance": "Sembunyikan saldo",
+    "showBalance": "Tampilkan saldo"
   },
   "walletSettings": {
     "backup": {

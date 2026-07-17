@@ -94,7 +94,8 @@
     "safety": "Безопасность",
     "changelog": "История изменений",
     "sourceCode": "Исходный код",
-    "getApp": "Скачать приложение"
+    "getApp": "Скачать приложение",
+    "walletBalanceHidden": "Баланс кошелька скрыт"
   },
   "messages": {
     "title": "Сообщения",
@@ -1926,7 +1927,9 @@
     "tabs": {
       "public": "Публичный",
       "private": "Приватный"
-    }
+    },
+    "hideBalance": "Скрыть баланс",
+    "showBalance": "Показать баланс"
   },
   "walletSettings": {
     "backup": {

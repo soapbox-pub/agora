@@ -94,7 +94,8 @@
     "safety": "Sécurité",
     "changelog": "Journal des modifications",
     "sourceCode": "Code source",
-    "getApp": "Télécharger l'application"
+    "getApp": "Télécharger l'application",
+    "walletBalanceHidden": "Solde du portefeuille masqué"
   },
   "messages": {
     "title": "Messages",
@@ -1967,7 +1968,9 @@
     "tabs": {
       "public": "Public",
       "private": "Privé"
-    }
+    },
+    "hideBalance": "Masquer le solde",
+    "showBalance": "Afficher le solde"
   },
   "walletSettings": {
     "backup": {

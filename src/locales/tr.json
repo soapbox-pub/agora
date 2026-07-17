@@ -94,7 +94,8 @@
     "safety": "Güvenlik",
     "changelog": "Sürüm notları",
     "sourceCode": "Kaynak kod",
-    "getApp": "Uygulamayı edinin"
+    "getApp": "Uygulamayı edinin",
+    "walletBalanceHidden": "Cüzdan bakiyesi gizli"
   },
   "messages": {
     "title": "Mesajlar",
@@ -1926,7 +1927,9 @@
     "tabs": {
       "public": "Herkese açık",
       "private": "Gizli"
-    }
+    },
+    "hideBalance": "Bakiyeyi gizle",
+    "showBalance": "Bakiyeyi göster"
   },
   "walletSettings": {
     "backup": {

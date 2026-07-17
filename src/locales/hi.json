@@ -94,7 +94,8 @@
     "safety": "सुरक्षा",
     "changelog": "बदलाव",
     "sourceCode": "सोर्स कोड",
-    "getApp": "ऐप पाएं"
+    "getApp": "ऐप पाएं",
+    "walletBalanceHidden": "वॉलेट बैलेंस छिपा है"
   },
   "messages": {
     "title": "संदेश",
@@ -1926,7 +1927,9 @@
     "tabs": {
       "public": "सार्वजनिक",
       "private": "निजी"
-    }
+    },
+    "hideBalance": "बैलेंस छिपाएँ",
+    "showBalance": "बैलेंस दिखाएँ"
   },
   "walletSettings": {
     "backup": {

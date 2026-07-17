@@ -38,6 +38,10 @@ import { useCountryFollows } from '@/hooks/useCountryFollows';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
 import { useHdWallet } from '@/hooks/useHdWallet';
+import {
+  HIDDEN_BALANCE_LABEL,
+  useHideWalletBalance,
+} from '@/hooks/useHideWalletBalance';
 import { useNotificationPreview } from '@/hooks/useNotificationPreview';
 import { useUserOrganizations, type UserOrganization } from '@/hooks/useUserOrganizations';
 
@@ -290,6 +294,7 @@ function StatTile({
 function WalletSummaryCard() {
   const { availability, totalBalance, isLoading, error } = useHdWallet();
   const { data: btcPrice } = useHdBtcPrice();
+  const { hideBalance } = useHideWalletBalance();
   const walletAvailable = availability.status === 'available';
 
   return (
@@ -321,10 +326,16 @@ function WalletSummaryCard() {
       ) : (
         <div>
           <span className="text-2xl font-bold tracking-tight">
-            {btcPrice ? satsToUSD(totalBalance, btcPrice) : '---'}
+            {hideBalance
+              ? HIDDEN_BALANCE_LABEL
+              : btcPrice
+                ? satsToUSD(totalBalance, btcPrice)
+                : '---'}
           </span>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {formatBTC(totalBalance)} BTC
+            {hideBalance
+              ? `${HIDDEN_BALANCE_LABEL} BTC`
+              : `${formatBTC(totalBalance)} BTC`}
           </p>
         </div>
       )}

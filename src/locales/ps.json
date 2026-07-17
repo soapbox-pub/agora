@@ -94,7 +94,8 @@
     "safety": "خوندیتوب",
     "changelog": "د بدلونونو لاګ",
     "sourceCode": "د سرچینې کوډ",
-    "getApp": "اپ ترلاسه کړئ"
+    "getApp": "اپ ترلاسه کړئ",
+    "walletBalanceHidden": "د والټ بیلانس پټ دی"
   },
   "messages": {
     "title": "پیغامونه",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "عام",
       "private": "محرم"
-    }
+    },
+    "hideBalance": "بیلانس پټول",
+    "showBalance": "بیلانس ښودل"
   },
   "walletSettings": {
     "backup": {

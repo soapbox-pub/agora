@@ -94,7 +94,8 @@
     "safety": "សុវត្ថិភាព",
     "changelog": "កំណត់ហេតុការផ្លាស់ប្តូរ",
     "sourceCode": "កូដប្រភព",
-    "getApp": "ទាញយកកម្មវិធី"
+    "getApp": "ទាញយកកម្មវិធី",
+    "walletBalanceHidden": "សមតុល្យកាបូបត្រូវបានលាក់"
   },
   "messages": {
     "title": "សារ",
@@ -1411,7 +1412,9 @@
     "tabs": {
       "public": "សាធារណៈ",
       "private": "ឯកជន"
-    }
+    },
+    "hideBalance": "លាក់សមតុល្យ",
+    "showBalance": "បង្ហាញសមតុល្យ"
   },
   "walletSettings": {
     "backup": {
