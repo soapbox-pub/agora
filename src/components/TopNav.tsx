@@ -28,7 +28,7 @@ import { useFeedSettings } from '@/hooks/useFeedSettings';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
 import { useHdWallet } from '@/hooks/useHdWallet';
 import {
-  HIDDEN_BALANCE_LABEL,
+  HIDDEN_USD_LABEL,
   useHideWalletBalance,
 } from '@/hooks/useHideWalletBalance';
 import { satsToUSD } from '@/lib/bitcoin';
@@ -239,7 +239,7 @@ function WalletBalancePill() {
   if (isLoading || error || !btcPrice) return null;
 
   const label = hideBalance
-    ? HIDDEN_BALANCE_LABEL
+    ? HIDDEN_USD_LABEL
     : satsToUSD(totalBalance, btcPrice);
 
   return (

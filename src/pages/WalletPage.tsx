@@ -38,7 +38,8 @@ import { useHdWallet } from '@/hooks/useHdWallet';
 import { useHdWalletSp } from '@/hooks/useHdWalletSpContext';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
 import {
-  HIDDEN_BALANCE_LABEL,
+  HIDDEN_BTC_LABEL,
+  HIDDEN_USD_LABEL,
   useHideWalletBalance,
 } from '@/hooks/useHideWalletBalance';
 import { satsToUSD, formatBTC } from '@/lib/bitcoin';
@@ -281,12 +282,12 @@ function WalletTabPanel({
   const [txOpen, setTxOpen] = useState(false);
 
   const primaryBalanceLabel = hideBalance
-    ? HIDDEN_BALANCE_LABEL
+    ? HIDDEN_USD_LABEL
     : btcPrice
       ? satsToUSD(balance, btcPrice)
       : '---';
   const secondaryBalanceLabel = hideBalance
-    ? `${HIDDEN_BALANCE_LABEL} BTC`
+    ? HIDDEN_BTC_LABEL
     : `${formatBTC(balance)} BTC`;
 
   const copyPayload = async () => {
@@ -366,7 +367,7 @@ function WalletTabPanel({
             <PendingBadge
               amountLabel={
                 hideBalance
-                  ? HIDDEN_BALANCE_LABEL
+                  ? HIDDEN_USD_LABEL
                   : btcPrice
                     ? satsToUSD(Math.abs(pendingBalance), btcPrice)
                     : undefined

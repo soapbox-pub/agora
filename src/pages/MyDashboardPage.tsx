@@ -39,7 +39,8 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useHdBtcPrice } from '@/hooks/useHdBtcPrice';
 import { useHdWallet } from '@/hooks/useHdWallet';
 import {
-  HIDDEN_BALANCE_LABEL,
+  HIDDEN_BTC_LABEL,
+  HIDDEN_USD_LABEL,
   useHideWalletBalance,
 } from '@/hooks/useHideWalletBalance';
 import { useNotificationPreview } from '@/hooks/useNotificationPreview';
@@ -327,14 +328,14 @@ function WalletSummaryCard() {
         <div>
           <span className="text-2xl font-bold tracking-tight">
             {hideBalance
-              ? HIDDEN_BALANCE_LABEL
+              ? HIDDEN_USD_LABEL
               : btcPrice
                 ? satsToUSD(totalBalance, btcPrice)
                 : '---'}
           </span>
           <p className="text-xs text-muted-foreground mt-0.5">
             {hideBalance
-              ? `${HIDDEN_BALANCE_LABEL} BTC`
+              ? HIDDEN_BTC_LABEL
               : `${formatBTC(totalBalance)} BTC`}
           </p>
         </div>
