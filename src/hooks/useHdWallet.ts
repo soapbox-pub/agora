@@ -18,7 +18,7 @@ import {
   scanAccount,
 } from '@/lib/hdwallet/scan';
 import { filterRecentlySpent } from '@/lib/hdwallet/spentOutpoints';
-import type { SpentOutpoint, SPStorageDocument } from '@/lib/hdwallet/sp/storage';
+import type { SpentOutpoint, SPStorageDocument, SPStoredUtxo } from '@/lib/hdwallet/sp/storage';
 
 // ---------------------------------------------------------------------------
 // Persisted UI cursor (per user)
@@ -128,9 +128,14 @@ interface UseHdWalletResult {
    * Drop the given SP UTXOs from local storage and republish so other
    * devices stay in sync. Call after a successful spend that consumed
    * silent-payment UTXOs — see `useHdWalletSp.pruneSpentUtxos`. Entries
-   * may carry spend stamps (`spentTxid` et al.) for the history UI.
+   * may carry spend stamps (`spentTxid` et al.) for the history UI, and
+   * `change` inserts the broadcast's own SP change output as a spendable
+   * UTXO in the same update.
    */
-  pruneSpentSilentPaymentUtxos: (spent: ReadonlyArray<SpentOutpoint>) => void;
+  pruneSpentSilentPaymentUtxos: (
+    spent: ReadonlyArray<SpentOutpoint>,
+    change?: ReadonlyArray<SPStoredUtxo>,
+  ) => void;
   /**
    * Overwrite the stored value of the given silent-payment UTXOs with the
    * authoritative on-chain values — see `useHdWalletSp.correctUtxoValues`.

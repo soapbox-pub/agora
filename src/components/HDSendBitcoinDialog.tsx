@@ -68,6 +68,7 @@ import {
   previewHdMaxSpend,
   previewHdFee,
   signHdPsbt,
+  type SpChangeOutput,
   type WalletScope,
 } from '@/lib/hdwallet/transaction';
 import { useQuery } from '@tanstack/react-query';
@@ -139,6 +140,15 @@ export interface HDSendBitcoinResult {
    * Blockbook's xpub balance while the SP entries remain locally).
    */
   consumedSpUtxos: Array<{ txid: string; vout: number }>;
+  /**
+   * The private wallet's own SP change output on the broadcast tx, when
+   * the build routed change back to the wallet's `sp1` address. Recorded
+   * into SP storage in `onSuccess` so the balance and the private tab's
+   * Sent row net out immediately — without it both overstate the spend by
+   * the change amount until the BIP-352 scanner reaches the confirming
+   * block (users read the inflated Sent row as money missing).
+   */
+  spChange?: SpChangeOutput;
 }
 
 /**
@@ -499,6 +509,7 @@ export function HDSendBitcoinDialog({
       let sentAmountSats = effectiveAmountSats;
       let inputDescriptors: Parameters<typeof signHdPsbt>[1];
       let consumedSpUtxos: Array<{ txid: string; vout: number }>;
+      let spChange: SpChangeOutput | undefined;
 
       if (sendMax) {
         const built = buildHdMaxSpendPsbt({
@@ -529,6 +540,7 @@ export function HDSendBitcoinDialog({
         fee = built.fee;
         inputDescriptors = built.inputDescriptors;
         consumedSpUtxos = built.consumedSpUtxos;
+        spChange = built.spChange;
       }
 
       setProgress('signing');
@@ -620,7 +632,7 @@ export function HDSendBitcoinDialog({
       // a mempool conflict.
       recordSpentOutpoints(availability.pubkey, inputRefs);
 
-      return { txid, amountSats: sentAmountSats, fee, consumedSpUtxos, recipient };
+      return { txid, amountSats: sentAmountSats, fee, consumedSpUtxos, recipient, spChange };
     },
     onSuccess: (result) => {
       notificationSuccess();
@@ -636,13 +648,33 @@ export function HDSendBitcoinDialog({
       if (result.consumedSpUtxos.length > 0) {
         // Stamp each archived entry with the tx that consumed it so the
         // private tab's history can render this spend as a "Sent" row.
+        // Record the tx's own SP change output (if any) in the same
+        // document update — the scanner can't discover it until the
+        // confirming block is scanned, and without it the balance and the
+        // Sent row both overstate the spend by the change amount.
         const spentAt = Math.floor(Date.now() / 1000);
-        pruneSpentSilentPaymentUtxos(result.consumedSpUtxos.map((u) => ({
-          txid: u.txid,
-          vout: u.vout,
-          spentTxid: result.txid,
-          spentTime: spentAt,
-        })));
+        const changeUtxos = result.spChange
+          ? [{
+              txid: result.txid,
+              vout: result.spChange.vout,
+              value: result.spChange.value,
+              // Unconfirmed at broadcast time; the scanner rediscovers the
+              // outpoint once mined and overwrites this with the real height.
+              height: 0,
+              tweak: result.spChange.tweakHex,
+              k: result.spChange.k,
+              time: spentAt,
+            }]
+          : undefined;
+        pruneSpentSilentPaymentUtxos(
+          result.consumedSpUtxos.map((u) => ({
+            txid: u.txid,
+            vout: u.vout,
+            spentTxid: result.txid,
+            spentTime: spentAt,
+          })),
+          changeUtxos,
+        );
       }
       // Refresh after pruning so transaction history can classify mixed
       // BIP-86 + SP sends with the spent SP outpoints already archived.

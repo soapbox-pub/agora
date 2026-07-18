@@ -239,8 +239,19 @@ interface UseHdWalletSpResult {
    * Entries may carry `spentTxid` / `spentHeight` / `spentTime` — the
    * archived copies are stamped with them so the private tab's history can
    * render the spend as a "Sent" row (see `useHdWallet`'s tx assembly).
+   *
+   * `change` are freshly-created SP UTXOs the same broadcast paid back to
+   * the wallet's own `sp1` address (private-send change). They're inserted
+   * into the active set in the same document update, so the balance and
+   * the Sent row net out immediately instead of overstating the spend by
+   * the change amount until the BIP-352 scanner reaches the confirming
+   * block. The scanner later rediscovers the same outpoint and overwrites
+   * the placeholder `height: 0` with the real block height.
    */
-  pruneSpentUtxos: (spent: ReadonlyArray<SpentOutpoint>) => void;
+  pruneSpentUtxos: (
+    spent: ReadonlyArray<SpentOutpoint>,
+    change?: ReadonlyArray<SPStoredUtxo>,
+  ) => void;
 
   /**
    * Overwrite the stored `value` of the given active SP UTXOs with the
@@ -1083,8 +1094,8 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
   // while Blockbook's view of the BIP-86 change credits to total balance,
   // so the wallet appears to *gain* money after a spend.
   const pruneSpentUtxos = useCallback<UseHdWalletSpResult['pruneSpentUtxos']>(
-    (spent) => {
-      if (!spent.length) return;
+    (spent, change) => {
+      if (!spent.length && !change?.length) return;
       // Cancel any pending throttled republish — its document snapshot
       // doesn't know about the prune. We're about to publish a strictly
       // newer doc below, so the throttle's pending payload would be stale.
@@ -1100,7 +1111,14 @@ export function useHdWalletSpInternal(): UseHdWalletSpResult {
       // receive classifier in `buildHdTransactions` can attribute any
       // future Blockbook tx that referenced one of these outpoints as a
       // wallet send.
-      const next: SPStorageDocument = archiveSpentUtxos(base, spent);
+      let next: SPStorageDocument = archiveSpentUtxos(base, spent);
+      // Insert the broadcast's own SP change output as a spendable UTXO in
+      // the same update — the BIP-352 scanner can't see it until the tx
+      // confirms and its block is scanned, but the send flow derived it
+      // locally and knows the value and tweak with certainty.
+      if (change && change.length > 0) {
+        next = { ...next, utxos: mergeUtxos(next.utxos, change) };
+      }
       optimisticRef.current = next;
       setOptimisticVersion((v) => v + 1);
       // Also write the pruned doc directly into the doc-query cache so

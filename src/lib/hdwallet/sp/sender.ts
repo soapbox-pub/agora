@@ -299,6 +299,15 @@ export interface SilentPaymentOutput {
   address: string;
   /** The recipient this output was generated for. */
   recipient: SilentPaymentRecipient;
+  /**
+   * 32-byte per-output BIP-352 tweak `t_k`. When the recipient is the
+   * sender's own wallet (private-send change), persisting this alongside
+   * the outpoint makes the output spendable immediately — the same value
+   * the receiver-side scanner would eventually recover from the block.
+   */
+  tweak: Uint8Array;
+  /** Output index `k` within the recipient's scan-key group. */
+  k: number;
 }
 
 /**
@@ -432,7 +441,7 @@ export function deriveSilentPaymentOutputs(
       // BIP-341 taproot output is the x-only of P.
       const xonly = new Uint8Array(Pbytes.subarray(1, 33));
       const addr = encodeP2TR(xonly, network);
-      out.push({ xOnlyPubKey: xonly, address: addr, recipient });
+      out.push({ xOnlyPubKey: xonly, address: addr, recipient, tweak: new Uint8Array(tK), k });
       k++;
     }
   }

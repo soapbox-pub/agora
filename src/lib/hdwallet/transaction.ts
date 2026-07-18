@@ -206,6 +206,28 @@ interface HdUnsignedPsbt {
    * the balance would still count them.
    */
   consumedSpUtxos: Array<{ txid: string; vout: number }>;
+  /**
+   * The private wallet's own silent-payment change output, when this build
+   * routed change back to the wallet's `sp1` address. Carries everything
+   * needed to persist the change as a spendable SP UTXO immediately after
+   * broadcast (the txid comes from the broadcast result) — without it the
+   * wallet only relearns its change once the BIP-352 scanner reaches the
+   * confirming block, so the balance and the private tab's Sent row both
+   * overstate the spend by the change amount until then.
+   */
+  spChange?: SpChangeOutput;
+}
+
+/** Self-change SP output details — see {@link HdUnsignedPsbt.spChange}. */
+export interface SpChangeOutput {
+  /** Output index of the change output on the built transaction. */
+  vout: number;
+  /** Change value in satoshis. */
+  value: number;
+  /** 32-byte BIP-352 per-output tweak `t_k`, lowercase hex. */
+  tweakHex: string;
+  /** Per-tx output index within the SP output set (`k = 0, 1, …`). */
+  k: number;
 }
 
 /** Per-input descriptor stored alongside the PSBT for signing dispatch. */
@@ -614,6 +636,7 @@ export function buildHdSpendPsbt(args: BuildHdSpendArgs): HdUnsignedPsbt {
 
   let resolvedRecipientAddress: string;
   let changeAddress: string | undefined;
+  let spChange: SpChangeOutput | undefined;
 
   if (recipient.kind === 'sp' || selfSpChange) {
     if (spSenderInputs.length === 0) {
@@ -658,6 +681,14 @@ export function buildHdSpendPsbt(args: BuildHdSpendArgs): HdUnsignedPsbt {
       const changeOut = findSpOutput(outputs, SELF_CHANGE_RAW);
       tx.addOutput({ script: spP2trScriptPubKey(changeOut.xOnlyPubKey), amount: BigInt(change) });
       changeAddress = changeOut.address;
+      // Exactly one recipient output precedes the change in this branch,
+      // so the change output always sits at index 1.
+      spChange = {
+        vout: 1,
+        value: change,
+        tweakHex: hex.encode(changeOut.tweak),
+        k: changeOut.k,
+      };
     } else if (hasChange) {
       // Public-wallet send to an SP recipient: the recipient output is SP,
       // but the change is ordinary public-wallet change → BIP-86 change
@@ -691,6 +722,7 @@ export function buildHdSpendPsbt(args: BuildHdSpendArgs): HdUnsignedPsbt {
     inputDescriptors,
     resolvedRecipientAddress,
     consumedSpUtxos,
+    spChange,
   };
 }
 
