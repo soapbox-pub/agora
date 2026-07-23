@@ -2510,9 +2510,14 @@
       "followSetNoun": "seti yokutevera"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Mushandirapamwe wekuunganidza mari weAgora",
+    "notFound": "Mushandirapamwe hauna kuwanikwa."
+  },
   "noteMoreMenu": {
     "title": "Zvisarudzo zvechinyorwa",
     "viewPost": "Ona zvinyorwa zvechinyorwa",
+    "copyEmbed": "Kopa widget inogona kuiswa",
     "viewEventJson": "Ona JSON yechiitiko",
     "bookmark": "Chiratidziro",
     "removeBookmark": "Bvisa chiratidziro",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "Hazvina kubudirira kudzima chinyorwa",
       "eventBroadcast": "Chiitiko chatumirwa kumarelay",
       "broadcastFailed": "Hazvina kubudirira kutumira chiitiko",
-      "copied": "{{label}} yakopwa muclipboard"
+      "copied": "{{label}} yakopwa muclipboard",
+      "embedCopied": "Kodhi yekuisa yakopwa kuclipboard"
     },
     "deleteDialog": {
       "title": "Dzima chinyorwa?",

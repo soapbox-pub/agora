@@ -2510,9 +2510,14 @@
       "followSetNoun": "conjunto de seguidos"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Campaña de recaudación de Agora",
+    "notFound": "Campaña no encontrada."
+  },
   "noteMoreMenu": {
     "title": "Opciones de la publicación",
-    "viewPost": "Ver detalles de la publicación",
+     "viewPost": "Ver detalles de la publicación",
+    "copyEmbed": "Copiar widget insertable",
     "viewEventJson": "Ver JSON del evento",
     "bookmark": "Marcador",
     "removeBookmark": "Quitar marcador",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "No se pudo eliminar la publicación",
       "eventBroadcast": "Evento transmitido a los relays",
       "broadcastFailed": "No se pudo transmitir el evento",
-      "copied": "{{label}} copiado al portapapeles"
+       "copied": "{{label}} copiado al portapapeles",
+      "embedCopied": "Código de inserción copiado al portapapeles"
     },
     "deleteDialog": {
       "title": "¿Eliminar publicación?",

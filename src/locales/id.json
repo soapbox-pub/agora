@@ -538,9 +538,14 @@
       "followSetNoun": "set follow"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Kampanye penggalangan dana Agora",
+    "notFound": "Kampanye tidak ditemukan."
+  },
   "noteMoreMenu": {
     "title": "Opsi unggahan",
     "viewPost": "Lihat detail unggahan",
+    "copyEmbed": "Salin widget yang dapat disematkan",
     "viewEventJson": "Lihat JSON Event",
     "bookmark": "Bookmark",
     "removeBookmark": "Hapus Bookmark",
@@ -577,7 +582,8 @@
       "deleteFailed": "Gagal menghapus unggahan",
       "eventBroadcast": "Event disiarkan ke relay",
       "broadcastFailed": "Gagal menyiarkan event",
-      "copied": "{{label}} disalin ke papan klip"
+      "copied": "{{label}} disalin ke papan klip",
+      "embedCopied": "Kode sematan disalin ke papan klip"
     },
     "deleteDialog": {
       "title": "Hapus unggahan?",

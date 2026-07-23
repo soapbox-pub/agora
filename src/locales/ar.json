@@ -2510,9 +2510,14 @@
       "followSetNoun": "مجموعة متابعة"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "حملة تبرعات Agora",
+    "notFound": "الحملة غير موجودة."
+  },
   "noteMoreMenu": {
     "title": "خيارات المنشور",
-    "viewPost": "عرض تفاصيل المنشور",
+     "viewPost": "عرض تفاصيل المنشور",
+    "copyEmbed": "نسخ عنصر واجهة قابل للتضمين",
     "viewEventJson": "عرض JSON الحدث",
     "bookmark": "إشارة مرجعية",
     "removeBookmark": "إزالة الإشارة المرجعية",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "فشل حذف المنشور",
       "eventBroadcast": "تم بث الحدث إلى الـrelays",
       "broadcastFailed": "فشل بث الحدث",
-      "copied": "تم نسخ {{label}} إلى الحافظة"
+       "copied": "تم نسخ {{label}} إلى الحافظة",
+      "embedCopied": "تم نسخ كود التضمين إلى الحافظة"
     },
     "deleteDialog": {
       "title": "حذف المنشور؟",

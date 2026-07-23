@@ -2510,9 +2510,14 @@
       "followSetNoun": "مجموعه دنبال‌شوندگان"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "کمپین جمع‌آوری کمک Agora",
+    "notFound": "کمپین یافت نشد."
+  },
   "noteMoreMenu": {
     "title": "گزینه‌های پست",
-    "viewPost": "مشاهده جزئیات پست",
+     "viewPost": "مشاهده جزئیات پست",
+    "copyEmbed": "کپی ویجت قابل جاسازی",
     "viewEventJson": "مشاهده JSON رویداد",
     "bookmark": "نشانه‌گذاری",
     "removeBookmark": "حذف نشانه",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "حذف پست ناموفق بود",
       "eventBroadcast": "رویداد به ریلی‌ها پخش شد",
       "broadcastFailed": "پخش رویداد ناموفق بود",
-      "copied": "{{label}} در کلیپ‌بورد کپی شد"
+       "copied": "{{label}} در کلیپ‌بورد کپی شد",
+      "embedCopied": "کد جاسازی در کلیپ‌بورد کپی شد"
     },
     "deleteDialog": {
       "title": "حذف پست؟",

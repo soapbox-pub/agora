@@ -26,6 +26,7 @@ const CreateCampaignPage = lazy(() => import("./pages/CreateCampaignPage").then(
 const AllCampaignsPage = lazy(() => import("./pages/AllCampaignsPage").then(m => ({ default: m.AllCampaignsPage })));
 const CampaignListDetailPage = lazy(() => import("./pages/CampaignListDetailPage").then(m => ({ default: m.CampaignListDetailPage })));
 const CampaignByNip05Page = lazy(() => import("./pages/CampaignByNip05Page").then(m => ({ default: m.CampaignByNip05Page })));
+const EmbedCampaignPage = lazy(() => import("./pages/EmbedCampaignPage").then(m => ({ default: m.EmbedCampaignPage })));
 
 // All other pages: code-split via React.lazy
 const ActionsPage = lazy(() => import("./pages/ActionsPage"));
@@ -151,6 +152,19 @@ export function AppRouter() {
       <TorStatusBanner />
       <OnboardingGate>
         <Routes>
+        {/* Standalone, chrome-less embed widgets for third-party sites.
+            Rendered *outside* FundraiserLayout (no top nav / footer) so the
+            iframe carries just the card. The "Copy embeddable widget" action
+            in a campaign's overflow menu produces the <iframe> snippet. */}
+        <Route
+          path="/embed/campaign/:nip19"
+          element={
+            <Suspense fallback={<PageSkeleton />}>
+              <EmbedCampaignPage />
+            </Suspense>
+          }
+        />
+
         {/* Narrow layout — `max-w-3xl` center column. The default for
             form/prose-style pages. */}
         <Route element={<FundraiserLayout narrow />}>

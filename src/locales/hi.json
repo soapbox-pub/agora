@@ -538,9 +538,14 @@
       "followSetNoun": "follow set"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Agora धन-संग्रह अभियान",
+    "notFound": "अभियान नहीं मिला।"
+  },
   "noteMoreMenu": {
     "title": "पोस्ट विकल्प",
     "viewPost": "पोस्ट विवरण देखें",
+    "copyEmbed": "एम्बेड करने योग्य विजेट कॉपी करें",
     "viewEventJson": "Event JSON देखें",
     "bookmark": "बुकमार्क",
     "removeBookmark": "बुकमार्क हटाएँ",
@@ -577,7 +582,8 @@
       "deleteFailed": "पोस्ट डिलीट नहीं कर सके",
       "eventBroadcast": "Event को रिले पर ब्रॉडकास्ट किया",
       "broadcastFailed": "Event ब्रॉडकास्ट नहीं कर सके",
-      "copied": "{{label}} क्लिपबोर्ड पर कॉपी हो गया"
+      "copied": "{{label}} क्लिपबोर्ड पर कॉपी हो गया",
+      "embedCopied": "एम्बेड कोड क्लिपबोर्ड पर कॉपी हो गया"
     },
     "deleteDialog": {
       "title": "पोस्ट डिलीट करें?",

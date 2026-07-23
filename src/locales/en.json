@@ -539,9 +539,14 @@
       "followSetNoun": "follow set"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Agora fundraiser campaign",
+    "notFound": "Campaign not found."
+  },
   "noteMoreMenu": {
     "title": "Post options",
     "viewPost": "View post details",
+    "copyEmbed": "Copy embeddable widget",
     "viewEventJson": "View Event JSON",
     "bookmark": "Bookmark",
     "removeBookmark": "Remove Bookmark",
@@ -578,7 +583,8 @@
       "deleteFailed": "Failed to delete post",
       "eventBroadcast": "Event broadcast to relays",
       "broadcastFailed": "Failed to broadcast event",
-      "copied": "{{label}} copied to clipboard"
+      "copied": "{{label}} copied to clipboard",
+      "embedCopied": "Embed code copied to clipboard"
     },
     "deleteDialog": {
       "title": "Delete post?",

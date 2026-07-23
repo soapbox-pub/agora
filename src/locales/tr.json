@@ -538,9 +538,14 @@
       "followSetNoun": "takip seti paylaştı"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Agora bağış kampanyası",
+    "notFound": "Kampanya bulunamadı."
+  },
   "noteMoreMenu": {
     "title": "Gönderi seçenekleri",
     "viewPost": "Gönderi ayrıntılarını görüntüle",
+    "copyEmbed": "Gömülebilir widget'ı kopyala",
     "viewEventJson": "Event JSON'unu görüntüle",
     "bookmark": "Yer imine ekle",
     "removeBookmark": "Yer iminden kaldır",
@@ -577,7 +582,8 @@
       "deleteFailed": "Gönderi silinemedi",
       "eventBroadcast": "Event rölelere yayınlandı",
       "broadcastFailed": "Event yayınlanamadı",
-      "copied": "{{label}} panoya kopyalandı"
+      "copied": "{{label}} panoya kopyalandı",
+      "embedCopied": "Gömme kodu panoya kopyalandı"
     },
     "deleteDialog": {
       "title": "Gönderi silinsin mi?",

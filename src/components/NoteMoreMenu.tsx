@@ -14,6 +14,7 @@ import {
   ListPlus,
   PanelLeft,
   Copy,
+  Code,
   Check,
   Radio,
   ShieldBan,
@@ -472,6 +473,20 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
     close();
   };
 
+  // Copy an <iframe> snippet that embeds this campaign's card on a third-party
+  // site. `nip19Id` is the campaign's naddr (addressable), which the
+  // chrome-less `/embed/campaign/:nip19` route resolves back to a CampaignCard.
+  const handleCopyEmbed = () => {
+    const embedUrl = `${window.location.origin}/embed/campaign/${nip19Id}`;
+    const snippet =
+      `<iframe src="${embedUrl}" width="420" height="560" ` +
+      `style="border:0;width:100%;max-width:420px;" loading="lazy" ` +
+      `title="${t('embedCampaign.iframeTitle')}"></iframe>`;
+    navigator.clipboard.writeText(snippet);
+    toast({ title: t('noteMoreMenu.toast.embedCopied') });
+    close();
+  };
+
   const handleBookmark = () => {
     impactLight();
     toggleBookmark.mutate(event.id);
@@ -554,6 +569,13 @@ function NoteMoreMenuContent({ event, open, onOpenChange, communityContext, onRe
             label={t('noteMoreMenu.viewPost')}
             onClick={handleViewPostDetails}
           />
+          {isCampaign && (
+            <MenuItem
+              icon={<Code className="size-5" />}
+              label={t('noteMoreMenu.copyEmbed')}
+              onClick={handleCopyEmbed}
+            />
+          )}
           <MenuItem
             icon={<FileJson className="size-5" />}
             label={t('noteMoreMenu.viewEventJson')}

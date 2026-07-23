@@ -538,9 +538,14 @@
       "followSetNoun": "ensemble de suivis"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Campagne de collecte de fonds Agora",
+    "notFound": "Campagne introuvable."
+  },
   "noteMoreMenu": {
     "title": "Options de la publication",
     "viewPost": "Voir les détails",
+    "copyEmbed": "Copier le widget intégrable",
     "viewEventJson": "Voir le JSON de l'événement",
     "bookmark": "Mettre en favori",
     "removeBookmark": "Retirer des favoris",
@@ -577,7 +582,8 @@
       "deleteFailed": "Échec de la suppression de la publication",
       "eventBroadcast": "Événement diffusé aux relais",
       "broadcastFailed": "Échec de la diffusion de l'événement",
-      "copied": "{{label}} copié dans le presse-papiers"
+      "copied": "{{label}} copié dans le presse-papiers",
+      "embedCopied": "Code d'intégration copié dans le presse-papiers"
     },
     "deleteDialog": {
       "title": "Supprimer la publication ?",

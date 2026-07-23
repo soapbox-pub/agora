@@ -2510,9 +2510,14 @@
       "followSetNoun": "សំណុំតាមដាន"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "យុទ្ធនាការរៃអង្គាសប្រាក់ Agora",
+    "notFound": "រកមិនឃើញយុទ្ធនាការ។"
+  },
   "noteMoreMenu": {
     "title": "ជម្រើសប្រកាស",
     "viewPost": "មើលព័ត៌មានលម្អិតប្រកាស",
+    "copyEmbed": "ចម្លងធាតុក្រាហ្វិកដែលអាចបង្កប់បាន",
     "viewEventJson": "មើល JSON ព្រឹត្តិការណ៍",
     "bookmark": "ចំណាំ",
     "removeBookmark": "លុបការចំណាំ",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "បរាជ័យក្នុងការលុបការប្រកាស",
       "eventBroadcast": "ព្រឹត្តិការណ៍ត្រូវបានផ្សាយទៅ relays",
       "broadcastFailed": "បរាជ័យក្នុងការផ្សាយព្រឹត្តិការណ៍",
-      "copied": "បានចម្លង {{label}} ទៅក្ដារតម្បៀតខ្ទាស់"
+      "copied": "បានចម្លង {{label}} ទៅក្ដារតម្បៀតខ្ទាស់",
+      "embedCopied": "កូដបង្កប់ត្រូវបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់"
     },
     "deleteDialog": {
       "title": "លុបការប្រកាស?",

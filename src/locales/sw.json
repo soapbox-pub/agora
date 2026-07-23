@@ -538,9 +538,14 @@
       "followSetNoun": "seti ya kufuata"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Kampeni ya kuchangisha fedha ya Agora",
+    "notFound": "Kampeni haijapatikana."
+  },
   "noteMoreMenu": {
     "title": "Chaguzi za chapisho",
     "viewPost": "Tazama maelezo ya chapisho",
+    "copyEmbed": "Nakili wijeti inayoweza kupachikwa",
     "viewEventJson": "Tazama JSON ya tukio",
     "bookmark": "Alamisha",
     "removeBookmark": "Ondoa alamisho",
@@ -577,7 +582,8 @@
       "deleteFailed": "Imeshindikana kufuta chapisho",
       "eventBroadcast": "Tukio limetangazwa kwa relei",
       "broadcastFailed": "Imeshindikana kutangaza tukio",
-      "copied": "{{label}} imenakiliwa kwenye ubao wa kunakili"
+      "copied": "{{label}} imenakiliwa kwenye ubao wa kunakili",
+      "embedCopied": "Msimbo wa kupachika umenakiliwa kwenye ubao wa kunakili"
     },
     "deleteDialog": {
       "title": "Futa chapisho?",

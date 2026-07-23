@@ -2510,9 +2510,14 @@
       "followSetNoun": "关注集"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "Agora 筹款活动",
+    "notFound": "未找到活动。"
+  },
   "noteMoreMenu": {
     "title": "帖子选项",
     "viewPost": "查看帖子详情",
+    "copyEmbed": "复制可嵌入小组件",
     "viewEventJson": "查看事件 JSON",
     "bookmark": "书签",
     "removeBookmark": "移除书签",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "删除帖子失败",
       "eventBroadcast": "事件已广播到中继",
       "broadcastFailed": "广播事件失败",
-      "copied": "{{label}} 已复制到剪贴板"
+      "copied": "{{label}} 已复制到剪贴板",
+      "embedCopied": "嵌入代码已复制到剪贴板"
     },
     "deleteDialog": {
       "title": "删除帖子？",

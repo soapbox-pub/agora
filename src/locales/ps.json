@@ -2510,9 +2510,14 @@
       "followSetNoun": "د تعقیب ټولګه"
     }
   },
+  "embedCampaign": {
+    "iframeTitle": "د Agora د بسپنې راټولولو کمپاین",
+    "notFound": "کمپاین ونه موندل شو."
+  },
   "noteMoreMenu": {
     "title": "د پوسټ انتخابونه",
     "viewPost": "د پوسټ تفصیلات وګورئ",
+    "copyEmbed": "د ځای‌پرځای‌کېدونکي ویجیټ کاپي",
     "viewEventJson": "د پیښې JSON وګورئ",
     "bookmark": "بک مارک",
     "removeBookmark": "بک مارک لرې کړئ",
@@ -2549,7 +2554,8 @@
       "deleteFailed": "د پوسټ حذف ناکام شو",
       "eventBroadcast": "پیښه ریلیو ته خپره شوه",
       "broadcastFailed": "د پیښې خپرول ناکام شو",
-      "copied": "{{label}} کلیپ بورډ ته کاپي شو"
+      "copied": "{{label}} کلیپ بورډ ته کاپي شو",
+      "embedCopied": "د ځای‌پرځای‌کولو کوډ کلیپ بورډ ته کاپي شو"
     },
     "deleteDialog": {
       "title": "پوسټ حذف کړئ؟",
