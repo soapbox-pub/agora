@@ -54,7 +54,6 @@ import { PendingBadge } from '@/components/PendingBadge';
 import { ReplyComposeModal } from '@/components/ReplyComposeModal';
 import { NoteMoreMenu } from '@/components/NoteMoreMenu';
 import { NoteCard } from '@/components/NoteCard';
-import { Progress } from '@/components/ui/progress';
 import { ThreadedReplyList, type ReplyNode } from '@/components/ThreadedReplyList';
 import { useAppContext } from '@/hooks/useAppContext';
 import { useAddressLedger } from '@/hooks/useAddressLedger';
@@ -1198,17 +1197,29 @@ function DonateColumn({
         ) : statsLoading ? (
           <Skeleton className="h-16 w-full" />
         ) : (
-          <div className="space-y-3">
+          // No progress bar: leading with the raised amount (or an
+          // invitation while it's still zero) keeps a modest on-chain
+          // total from reading as "barely started" against an ambitious
+          // goal. The goal drops to a quiet reference line beneath.
+          <div className="space-y-2">
             <div className="space-y-1">
-              <div className="text-2xl font-bold tracking-tight">
-                {formatSatsFull(raisedSats, btcPrice)}
-                <span className="ml-1.5 text-sm font-normal text-muted-foreground">
-                  {t('campaignsDetail.raised')}
-                </span>
-              </div>
+              {raisedSats > 0 ? (
+                <div className="text-3xl font-bold tracking-tight">
+                  {formatSatsFull(raisedSats, btcPrice)}
+                  <span className="ml-1.5 text-sm font-normal text-muted-foreground">
+                    {t('campaignsDetail.raised')}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-2xl font-bold tracking-tight text-primary">
+                  {t('campaignsDetail.beFirstDonor')}
+                </div>
+              )}
               {campaign.goalUsd ? (
                 <div className="text-xs text-muted-foreground">
-                  {t('campaignsDetail.ofGoal', { amount: formatUsdGoal(campaign.goalUsd) })}
+                  {raisedSats > 0
+                    ? t('campaignsDetail.ofGoal', { amount: formatUsdGoal(campaign.goalUsd) })
+                    : t('campaignsDetail.goalAmount', { amount: formatUsdGoal(campaign.goalUsd) })}
                   {inflowCount > 0 && (
                     <>
                       {' · '}
@@ -1228,17 +1239,15 @@ function DonateColumn({
                 />
               )}
             </div>
-            {campaign.goalUsd && raisedUsd(raisedSats, btcPrice) !== undefined && (
-              <Progress
-                value={Math.min(
-                  100,
-                  Math.round((raisedUsd(raisedSats, btcPrice)! / campaign.goalUsd) * 100),
-                )}
-                // `bg-foreground/15` overrides the primitive's default
-                // `bg-secondary` track for legibility against the card
-                // surface — matches the treatment in CampaignCard.
-                className="h-2 bg-foreground/15"
-              />
+            {/* Dual-endpoint campaign: the public total above is only the
+                on-chain slice. Silent-payment donations to this same
+                campaign are unlinkable and uncounted, so nudge donors that
+                the real total may be higher. */}
+            {campaign.wallets.sp && (
+              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <ShieldCheck className="size-3.5 shrink-0" />
+                {t('campaignsDetail.privateMayAddMore')}
+              </div>
             )}
           </div>
         )}
@@ -1312,12 +1321,6 @@ function DonateColumn({
       <NoBitcoinDialog open={noBitcoinOpen} onOpenChange={setNoBitcoinOpen} />
     </Card>
   );
-}
-
-/** Convert sats to USD via the live BTC price; undefined when price unknown. */
-function raisedUsd(sats: number, btcPrice: number | undefined): number | undefined {
-  if (!btcPrice || !Number.isFinite(btcPrice) || btcPrice <= 0) return undefined;
-  return (sats / 100_000_000) * btcPrice;
 }
 
 // ─────────────────────────────────────────────────────────────────────

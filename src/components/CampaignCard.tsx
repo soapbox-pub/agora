@@ -1,13 +1,13 @@
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { HandHeart, ShieldCheck } from 'lucide-react';
 
 import { AuthorByline } from '@/components/AuthorByline';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
 import { InlineMarkdown } from '@/components/InlineMarkdown';
 import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ModerationOverlay } from '@/components/moderation';
 import { useAuthor } from '@/hooks/useAuthor';
@@ -21,7 +21,7 @@ import {
   getCampaignCountryLabel,
   parseCampaign,
 } from '@/lib/campaign';
-import { formatCampaignAmount, formatUsdGoal, satsToUsd } from '@/lib/formatCampaignAmount';
+import { formatCampaignAmount, formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { cn } from '@/lib/utils';
 
@@ -34,10 +34,11 @@ import { cn } from '@/lib/utils';
  * time using the live BTC price. While the price is loading the raised
  * amount falls back to sats.
  */
-function CampaignProgress({
+function CampaignRaised({
   raisedSats,
   goalUsd,
   btcPrice,
+  hasSp,
   isLoading,
   className,
 }: {
@@ -45,65 +46,76 @@ function CampaignProgress({
   goalUsd?: number;
   btcPrice?: number;
   /**
-   * True while the donation totals are still being fetched. The bar gets
+   * True when the campaign also declares a silent-payment endpoint. The
+   * on-chain total we show is then only the *public* slice — private
+   * donations to the `sp1…` code are unlinkable and never counted — so we
+   * surface a quiet hint that the real total may be higher.
+   */
+  hasSp?: boolean;
+  /**
+   * True while the donation totals are still being fetched. The block gets
    * its own skeleton — independent of the card, which paints immediately —
    * so we never flash a misleading "0 raised" before the on-chain balance
-   * lands. Footprint matches the loaded state (bar row + one text row).
+   * lands.
    */
   isLoading?: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
-      <div className={cn('space-y-1.5', className)}>
-        <Skeleton className="h-2 w-full" />
-        <div className="flex items-baseline justify-between gap-2">
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-4 w-24" />
-        </div>
+      <div className={cn('space-y-1', className)}>
+        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-3 w-20" />
       </div>
     );
   }
 
   const hasGoal = !!goalUsd && goalUsd > 0;
-  const raisedUsd = satsToUsd(raisedSats, btcPrice);
-  const pct = hasGoal && raisedUsd !== undefined
-    ? Math.min(100, Math.round((raisedUsd / goalUsd!) * 100))
-    : 0;
+  const hasRaised = raisedSats > 0;
+  const goalLabel = hasGoal ? formatUsdGoal(goalUsd!) : undefined;
 
-  // Always reserve a bar row so cards with and without a goal occupy
-  // the same vertical space. The bar is rendered invisibly when
-  // there's no goal — same height, no visual weight.
-  //
-  // The primitive's default `bg-secondary` track is too close to the
-  // card surface in both light and dark modes (in dark mode they're
-  // both `0 0% 18%`, making the empty portion of the bar invisible).
-  // `bg-foreground/15` overrides it with a foreground-tinted track
-  // that has real contrast against the card in either theme.
+  // No progress bar. Leading with the raised amount (or an invitation when
+  // it's still zero) keeps a small on-chain total from reading as "barely
+  // started" against an ambitious goal — the goal drops to a quiet
+  // reference line beneath. The footer carries `mt-auto`, so a variable
+  // number of lines here never leaves cards misaligned.
   return (
-    <div className={cn('space-y-1.5', className)}>
-      <Progress
-        value={pct}
-        className={cn('h-2 bg-foreground/15', !hasGoal && 'invisible')}
-        aria-hidden={!hasGoal}
-      />
-      <div className="flex items-baseline justify-between gap-2 text-sm">
-        <span className="font-semibold">
+    <div className={cn('space-y-0.5', className)}>
+      {hasRaised ? (
+        <div className="text-xl font-bold leading-tight tracking-tight">
           {formatCampaignAmount(raisedSats, btcPrice)}
-          {!hasGoal && <span className="ml-1 font-normal text-muted-foreground">raised</span>}
-        </span>
-        {hasGoal && (
-          <span className="text-muted-foreground">of {formatUsdGoal(goalUsd!)} goal</span>
-        )}
-      </div>
+          <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+            {t('campaignsDetail.raised')}
+          </span>
+        </div>
+      ) : (
+        <div className="text-lg font-bold leading-tight text-primary">
+          {t('campaignsDetail.beFirstDonor')}
+        </div>
+      )}
+      {goalLabel && (
+        <div className="text-xs text-muted-foreground">
+          {hasRaised
+            ? t('campaignsDetail.ofGoal', { amount: goalLabel })
+            : t('campaignsDetail.goalAmount', { amount: goalLabel })}
+        </div>
+      )}
+      {hasSp && (
+        <div className="inline-flex items-center gap-1 pt-0.5 text-xs text-muted-foreground">
+          <ShieldCheck className="size-3.5 shrink-0" />
+          {t('campaignsDetail.privateMayAddMore')}
+        </div>
+      )}
     </div>
   );
 }
 
 /**
- * Replaces {@link CampaignProgress} for silent-payment campaigns, where
+ * Replaces {@link CampaignRaised} for silent-payment-only campaigns, where
  * on-chain totals are unobservable by design. Shows the goal as a target
- * (if set) but no progress bar or raised amount.
+ * (if set) but no raised amount.
  */
 function CampaignPrivateNotice({
   goalUsd,
@@ -112,21 +124,19 @@ function CampaignPrivateNotice({
   goalUsd?: number;
   className?: string;
 }) {
-  // Mirrors CampaignProgress's vertical footprint (invisible bar + one
-  // text row) so a silent-payment card lines up visually with a
-  // public-progress card alongside it.
+  const { t } = useTranslation();
+  const hasGoal = !!goalUsd && goalUsd > 0;
   return (
-    <div className={cn('space-y-1.5', className)}>
-      <Progress value={0} className="h-2 invisible" aria-hidden />
-      <div className="flex items-baseline justify-between gap-2 text-sm">
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-          <ShieldCheck className="size-3.5" />
-          Private campaign
-        </span>
-        {goalUsd && goalUsd > 0 && (
-          <span className="text-muted-foreground">Target: {formatUsdGoal(goalUsd)}</span>
-        )}
+    <div className={cn('space-y-0.5', className)}>
+      <div className="inline-flex items-center gap-1.5 text-base font-semibold">
+        <ShieldCheck className="size-4 shrink-0 text-primary" />
+        {t('campaignsDetail.privateCampaign')}
       </div>
+      {hasGoal && (
+        <div className="text-xs text-muted-foreground">
+          {t('campaignsDetail.target', { amount: formatUsdGoal(goalUsd!) })}
+        </div>
+      )}
     </div>
   );
 }
@@ -326,15 +336,16 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
           {isSilentPayment ? (
             <CampaignPrivateNotice goalUsd={campaign.goalUsd} />
           ) : (
-            <CampaignProgress
+            <CampaignRaised
               raisedSats={raisedSats}
               goalUsd={campaign.goalUsd}
               btcPrice={btcPrice}
+              hasSp={!!campaign.wallets.sp}
               isLoading={donationsLoading}
             />
           )}
 
-          <div className="flex items-center justify-between gap-3 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+          <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 pt-3 text-xs text-muted-foreground">
             <div className="flex min-w-0 items-center gap-2">
               <AuthorByline pubkey={campaign.pubkey} insideLink />
             </div>
@@ -381,8 +392,8 @@ export function CampaignCardSkeleton({
           <Skeleton className="h-4 w-4/5" />
         </div>
         <div className="flex-1" />
-        <Skeleton className="h-2 w-full" />
-        <Skeleton className="h-3 w-32" />
+        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-3 w-20" />
       </div>
     </Card>
   );

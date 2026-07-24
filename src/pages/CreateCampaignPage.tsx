@@ -193,7 +193,11 @@ export function CreateCampaignPage() {
    * campaign total. Only offered in the "Custom wallet" branch.
    */
   const [payUrl, setPayUrl] = useState('');
-  const [goalUsd, setGoalUsd] = useState('');
+  // Default new campaigns to a small, attainable $100 goal. Agora leans
+  // into microphilanthropy, where a reachable target makes early momentum
+  // feel like real progress instead of a rounding error against a $25k
+  // figure. Edits override this from the loaded campaign (see edit-prefill).
+  const [goalUsd, setGoalUsd] = useState('100');
   const [countryQuery, setCountryQuery] = useState('');
   const [countryCode, setCountryCode] = useState('');
   /**

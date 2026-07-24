@@ -17,7 +17,7 @@ import { getGeoDisplayName } from '@/lib/countries';
 import { parseCampaign, getCampaignCountryLabel, getCampaignUrl } from '@/lib/campaign';
 import { AGORA_HOST } from '@/lib/appUrls';
 import { parseCommunityEvent } from '@/lib/communityUtils';
-import { formatCampaignAmount, formatUsdGoal, satsToUsd } from '@/lib/formatCampaignAmount';
+import { formatCampaignAmount, formatUsdGoal } from '@/lib/formatCampaignAmount';
 import { formatCompactPledgeDeadline, formatPledgeAmount } from '@/lib/pledges';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
 import { cn } from '@/lib/utils';
@@ -58,6 +58,7 @@ function InlineShell({
 }
 
 export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
+  const { t } = useTranslation();
   const campaign = parseCampaign(event);
   const { data: btcPrice } = useBtcPrice();
   // Defer the Esplora-backed donation lookup until the preview scrolls into
@@ -84,13 +85,10 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
   });
   const countryLabel = getCampaignCountryLabel(campaign);
   const isSilentPayment = !campaign.wallets.onchain;
+  const hasSp = !!campaign.wallets.sp;
   const goalLabel = campaign.goalUsd && campaign.goalUsd > 0 ? formatUsdGoal(campaign.goalUsd) : undefined;
   const raisedSats = stats?.totalSats ?? 0;
-  const raisedLabel = isSilentPayment ? undefined : formatCampaignAmount(raisedSats, btcPrice);
-  const raisedUsd = isSilentPayment ? undefined : satsToUsd(raisedSats, btcPrice);
-  const progress = campaign.goalUsd && raisedUsd !== undefined
-    ? Math.min(100, Math.round((raisedUsd / campaign.goalUsd) * 100))
-    : 0;
+  const hasRaised = raisedSats > 0;
 
   return (
     <Link ref={previewRef} to={campaignUrl} onClick={(e) => e.stopPropagation()} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
@@ -100,29 +98,48 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
         title={campaign.title}
         description={campaign.story}
         meta={(
-          <div className="space-y-2 pt-1">
-            {campaign.goalUsd && !isSilentPayment ? (
-              <div className="h-1.5 overflow-hidden rounded-full bg-foreground/15">
-                <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
+          <div className="space-y-1 pt-1">
+            {isSilentPayment ? (
+              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <ShieldCheck className="size-3.5 shrink-0" />
+                {goalLabel
+                  ? t('campaignsDetail.target', { amount: goalLabel })
+                  : t('campaignsDetail.privateCampaign')}
               </div>
-            ) : null}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-              {isSilentPayment ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="size-3.5" />
-                  {goalLabel ?? 'Private campaign'}
-                </span>
-              ) : (
-                <span className="font-semibold text-foreground">
-                  {raisedLabel}<span className="font-normal text-muted-foreground"> {goalLabel ? `/ ${goalLabel}` : 'raised'}</span>
-                </span>
-              )}
-              {countryLabel && (
-                <span className="inline-flex items-center gap-1.5">
-                  {countryLabel}
-                </span>
-              )}
-            </div>
+            ) : (
+              <>
+                {hasRaised ? (
+                  <div className="text-base font-bold leading-tight tracking-tight text-foreground">
+                    {formatCampaignAmount(raisedSats, btcPrice)}
+                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                      {t('campaignsDetail.raised')}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-sm font-bold leading-tight text-primary">
+                    {t('campaignsDetail.beFirstDonor')}
+                  </div>
+                )}
+                {goalLabel && (
+                  <div className="text-xs text-muted-foreground">
+                    {hasRaised
+                      ? t('campaignsDetail.ofGoal', { amount: goalLabel })
+                      : t('campaignsDetail.goalAmount', { amount: goalLabel })}
+                  </div>
+                )}
+                {hasSp && (
+                  <div className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <ShieldCheck className="size-3 shrink-0" />
+                    {t('campaignsDetail.privateMayAddMore')}
+                  </div>
+                )}
+              </>
+            )}
+            {countryLabel && (
+              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                {countryLabel}
+              </div>
+            )}
           </div>
         )}
       />
