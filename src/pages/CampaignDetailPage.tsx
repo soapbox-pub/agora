@@ -1209,7 +1209,7 @@ function DonateColumn({
                   <CampaignRaisedAmount className="text-4xl text-primary">
                     {formatSatsFull(raisedSats, btcPrice)}
                   </CampaignRaisedAmount>
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">
+                  <span className="ml-3.5 text-sm font-normal text-muted-foreground">
                     {t('campaignsDetail.raised')}
                   </span>
                 </div>

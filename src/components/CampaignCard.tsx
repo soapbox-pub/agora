@@ -89,7 +89,7 @@ function CampaignRaised({
           <CampaignRaisedAmount className="text-2xl text-primary">
             {formatCampaignAmount(raisedSats, btcPrice)}
           </CampaignRaisedAmount>
-          <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+          <span className="ml-2.5 text-xs font-normal text-muted-foreground">
             {t('campaignsDetail.raised')}
           </span>
         </div>
