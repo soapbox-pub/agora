@@ -120,7 +120,7 @@ export const ONRAMPS: Onramp[] = [
     url: 'https://strike.me',
     descKey: 'descBitcoinApp',
     color: '#111827',
-    availability: { regions: ['NORTH_AMERICA', 'EUROPE', 'LATAM', 'AFRICA'] },
+    availability: { global: true },
   },
   {
     id: 'cashapp',
@@ -138,6 +138,23 @@ export const ONRAMPS: Onramp[] = [
     descKey: 'descLatam',
     color: '#12A594',
     availability: { onlyCountries: ['MX', 'AR', 'BR', 'CO'] },
+  },
+  {
+    id: 'bitnob',
+    name: 'Bitnob',
+    url: 'https://bitnob.com',
+    descKey: 'descAfrica',
+    color: '#00C48C',
+    availability: { regions: ['AFRICA'] },
+  },
+  {
+    id: 'vexl',
+    name: 'Vexl',
+    url: 'https://vexl.it',
+    descKey: 'descP2p',
+    color: '#F7C93E',
+    fg: '#1A1A1A',
+    availability: { regions: ['EUROPE'] },
   },
   {
     id: 'yellowcard',
