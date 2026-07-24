@@ -66,9 +66,9 @@ function CampaignRaised({
 
   if (isLoading) {
     return (
-      <div className={cn('space-y-1', className)}>
-        <Skeleton className="h-7 w-24" />
-        <Skeleton className="h-3 w-20" />
+      <div className={cn('space-y-0.5', className)}>
+        <Skeleton className="h-8 w-28" />
+        <Skeleton className="h-4 w-16" />
       </div>
     );
   }
@@ -79,37 +79,42 @@ function CampaignRaised({
 
   // No progress bar. Leading with the raised amount (or an invitation when
   // it's still zero) keeps a small on-chain total from reading as "barely
-  // started" against an ambitious goal — the goal drops to a quiet
-  // reference line beneath. The footer carries `mt-auto`, so a variable
-  // number of lines here never leaves cards misaligned.
+  // started" against an ambitious goal.
+  //
+  // Fixed two-row footprint so every card in a feed is exactly the same
+  // height: a constant-height amount/invitation row, then a goal row that
+  // falls back to a reserved blank line (`\u00A0`) when the campaign
+  // declares no goal.
   return (
     <div className={cn('space-y-0.5', className)}>
-      {hasRaised ? (
-        <div>
-          <CampaignRaisedAmount className="text-2xl text-primary">
-            {formatCampaignAmount(raisedSats, btcPrice)}
-          </CampaignRaisedAmount>
-          <span className="ml-2.5 text-xs font-normal text-muted-foreground">
-            {/* When the campaign also accepts silent payments, the shown
-                total is only the public on-chain slice — label it as such
-                so the number doesn't read as the whole story. The fuller
-                "private donations may add more" note lives on the detail
-                page's donate card. */}
-            {hasSp ? t('campaignsDetail.raisedPublicly') : t('campaignsDetail.raised')}
-          </span>
-        </div>
-      ) : (
-        <div className="text-lg font-bold leading-tight text-primary">
-          {t('campaignsDetail.beFirstDonor')}
-        </div>
-      )}
-      {goalLabel && (
-        <div className="text-xs text-muted-foreground">
-          {hasRaised
-            ? t('campaignsDetail.ofGoal', { amount: goalLabel })
-            : t('campaignsDetail.goalAmount', { amount: goalLabel })}
-        </div>
-      )}
+      <div className="flex min-h-[2rem] items-end">
+        {hasRaised ? (
+          <div>
+            <CampaignRaisedAmount className="text-2xl text-primary">
+              {formatCampaignAmount(raisedSats, btcPrice)}
+            </CampaignRaisedAmount>
+            <span className="ml-2.5 text-xs font-normal text-muted-foreground">
+              {/* When the campaign also accepts silent payments, the shown
+                  total is only the public on-chain slice — label it as such
+                  so the number doesn't read as the whole story. The fuller
+                  "private donations may add more" note lives on the detail
+                  page's donate card. */}
+              {hasSp ? t('campaignsDetail.raisedPublicly') : t('campaignsDetail.raised')}
+            </span>
+          </div>
+        ) : (
+          <div className="text-lg font-bold leading-tight text-primary">
+            {t('campaignsDetail.beFirstDonor')}
+          </div>
+        )}
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {goalLabel
+          ? (hasRaised
+              ? t('campaignsDetail.ofGoal', { amount: goalLabel })
+              : t('campaignsDetail.goalAmount', { amount: goalLabel }))
+          : '\u00A0'}
+      </div>
     </div>
   );
 }
@@ -128,17 +133,19 @@ function CampaignPrivateNotice({
 }) {
   const { t } = useTranslation();
   const hasGoal = !!goalUsd && goalUsd > 0;
+  // Mirror CampaignRaised's fixed two-row footprint so a silent-payment
+  // card is exactly the same height as a public one beside it in a feed.
   return (
     <div className={cn('space-y-0.5', className)}>
-      <div className="inline-flex items-center gap-1.5 text-base font-semibold">
-        <ShieldCheck className="size-4 shrink-0 text-primary" />
-        {t('campaignsDetail.privateCampaign')}
-      </div>
-      {hasGoal && (
-        <div className="text-xs text-muted-foreground">
-          {t('campaignsDetail.target', { amount: formatUsdGoal(goalUsd!) })}
+      <div className="flex min-h-[2rem] items-end">
+        <div className="inline-flex items-center gap-1.5 text-base font-semibold">
+          <ShieldCheck className="size-4 shrink-0 text-primary" />
+          {t('campaignsDetail.privateCampaign')}
         </div>
-      )}
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {hasGoal ? t('campaignsDetail.target', { amount: formatUsdGoal(goalUsd!) }) : '\u00A0'}
+      </div>
     </div>
   );
 }
@@ -394,8 +401,8 @@ export function CampaignCardSkeleton({
           <Skeleton className="h-4 w-4/5" />
         </div>
         <div className="flex-1" />
-        <Skeleton className="h-7 w-24" />
-        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-8 w-28" />
+        <Skeleton className="h-4 w-16" />
       </div>
     </Card>
   );
