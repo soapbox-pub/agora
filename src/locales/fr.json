@@ -1404,6 +1404,7 @@
     "share": "Partager",
     "target": "Objectif : {{amount}}",
     "raised": "récoltés",
+    "raisedPublicly": "récoltés publiquement",
     "ofGoal": "sur un objectif de {{amount}}",
     "goalAmount": "Objectif de {{amount}}",
     "beFirstDonor": "Soyez le premier donateur !",

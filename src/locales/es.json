@@ -848,6 +848,7 @@
     "share": "Compartir",
     "target": "Meta: {{amount}}",
     "raised": "recaudado",
+    "raisedPublicly": "recaudado públicamente",
     "ofGoal": "de la meta de {{amount}}",
     "goalAmount": "meta de {{amount}}",
     "beFirstDonor": "¡Sé la primera persona en donar!",

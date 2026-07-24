@@ -1363,6 +1363,7 @@
     "share": "Shiriki",
     "target": "Lengo: {{amount}}",
     "raised": "imechangwa",
+    "raisedPublicly": "imechangwa hadharani",
     "ofGoal": "kati ya lengo la {{amount}}",
     "goalAmount": "lengo la {{amount}}",
     "beFirstDonor": "Kuwa mfadhili wa kwanza!",

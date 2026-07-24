@@ -1363,6 +1363,7 @@
     "share": "Bagikan",
     "target": "Target: {{amount}}",
     "raised": "terkumpul",
+    "raisedPublicly": "terkumpul secara publik",
     "ofGoal": "dari target {{amount}}",
     "goalAmount": "target {{amount}}",
     "beFirstDonor": "Jadilah donatur pertama!",

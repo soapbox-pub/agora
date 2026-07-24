@@ -848,6 +848,7 @@
     "share": "شریکول",
     "target": "هدف: {{amount}}",
     "raised": "راټول‌شوي",
+    "raisedPublicly": "په ښکاره راټول‌شوي",
     "ofGoal": "د {{amount}} هدف څخه",
     "goalAmount": "د {{amount}} هدف",
     "beFirstDonor": "لومړی مرسته کوونکی شئ!",

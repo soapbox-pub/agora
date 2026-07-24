@@ -1363,6 +1363,7 @@
     "share": "शेयर करें",
     "target": "लक्ष्य: {{amount}}",
     "raised": "जुटाए",
+    "raisedPublicly": "सार्वजनिक रूप से जुटाए",
     "ofGoal": "{{amount}} के लक्ष्य में से",
     "goalAmount": "{{amount}} का लक्ष्य",
     "beFirstDonor": "पहले डोनर बनें!",

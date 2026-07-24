@@ -115,7 +115,7 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
                       {formatCampaignAmount(raisedSats, btcPrice)}
                     </CampaignRaisedAmount>
                     <span className="ml-2 text-xs font-normal text-muted-foreground">
-                      {t('campaignsDetail.raised')}
+                      {hasSp ? t('campaignsDetail.raisedPublicly') : t('campaignsDetail.raised')}
                     </span>
                   </div>
                 ) : (
@@ -128,12 +128,6 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
                     {hasRaised
                       ? t('campaignsDetail.ofGoal', { amount: goalLabel })
                       : t('campaignsDetail.goalAmount', { amount: goalLabel })}
-                  </div>
-                )}
-                {hasSp && (
-                  <div className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                    <ShieldCheck className="size-3 shrink-0" />
-                    {t('campaignsDetail.privateMayAddMore')}
                   </div>
                 )}
               </>

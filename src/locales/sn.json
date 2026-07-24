@@ -848,6 +848,7 @@
     "share": "Govera",
     "target": "Chinangwa: {{amount}}",
     "raised": "yakaunganidzwa",
+    "raisedPublicly": "yakaunganidzwa pachena",
     "ofGoal": "ye{{amount}} chinangwa",
     "goalAmount": "chinangwa che{{amount}}",
     "beFirstDonor": "Iva wokutanga kupa!",

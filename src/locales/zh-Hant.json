@@ -848,6 +848,7 @@
     "share": "分享",
     "target": "目標：{{amount}}",
     "raised": "已募",
+    "raisedPublicly": "公開募得",
     "ofGoal": "目標 {{amount}}",
     "goalAmount": "目標 {{amount}}",
     "beFirstDonor": "成為第一位捐贈者！",

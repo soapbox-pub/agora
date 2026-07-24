@@ -1363,6 +1363,7 @@
     "share": "Paylaş",
     "target": "Hedef: {{amount}}",
     "raised": "toplandı",
+    "raisedPublicly": "herkese açık toplandı",
     "ofGoal": "/ {{amount}} hedef",
     "goalAmount": "{{amount}} hedef",
     "beFirstDonor": "İlk bağışçı ol!",

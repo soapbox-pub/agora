@@ -848,6 +848,7 @@
     "share": "مشاركة",
     "target": "الهدف: {{amount}}",
     "raised": "مجموع",
+    "raisedPublicly": "مجموع علنًا",
     "ofGoal": "من هدف {{amount}}",
     "goalAmount": "هدف {{amount}}",
     "beFirstDonor": "كن أول متبرع!",

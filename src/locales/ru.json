@@ -1363,6 +1363,7 @@
     "share": "Поделиться",
     "target": "Цель: {{amount}}",
     "raised": "собрано",
+    "raisedPublicly": "собрано публично",
     "ofGoal": "из цели {{amount}}",
     "goalAmount": "Цель: {{amount}}",
     "beFirstDonor": "Станьте первым жертвователем!",

@@ -1405,6 +1405,7 @@
     "share": "Share",
     "target": "Target: {{amount}}",
     "raised": "raised",
+    "raisedPublicly": "raised publicly",
     "ofGoal": "of {{amount}} goal",
     "goalAmount": "{{amount}} goal",
     "beFirstDonor": "Be the first donor!",

@@ -848,6 +848,7 @@
     "share": "ចែករំលែក",
     "target": "គោលដៅ៖ {{amount}}",
     "raised": "បានរៃអង្គាស",
+    "raisedPublicly": "បានរៃអង្គាសជាសាធារណៈ",
     "ofGoal": "នៃគោលដៅ {{amount}}",
     "goalAmount": "គោលដៅ {{amount}}",
     "beFirstDonor": "ក្លាយជាអ្នកបរិច្ចាគដំបូង!",

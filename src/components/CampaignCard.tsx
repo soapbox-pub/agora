@@ -90,7 +90,12 @@ function CampaignRaised({
             {formatCampaignAmount(raisedSats, btcPrice)}
           </CampaignRaisedAmount>
           <span className="ml-2.5 text-xs font-normal text-muted-foreground">
-            {t('campaignsDetail.raised')}
+            {/* When the campaign also accepts silent payments, the shown
+                total is only the public on-chain slice — label it as such
+                so the number doesn't read as the whole story. The fuller
+                "private donations may add more" note lives on the detail
+                page's donate card. */}
+            {hasSp ? t('campaignsDetail.raisedPublicly') : t('campaignsDetail.raised')}
           </span>
         </div>
       ) : (
@@ -103,12 +108,6 @@ function CampaignRaised({
           {hasRaised
             ? t('campaignsDetail.ofGoal', { amount: goalLabel })
             : t('campaignsDetail.goalAmount', { amount: goalLabel })}
-        </div>
-      )}
-      {hasSp && (
-        <div className="inline-flex items-center gap-1 pt-0.5 text-xs text-muted-foreground">
-          <ShieldCheck className="size-3.5 shrink-0" />
-          {t('campaignsDetail.privateMayAddMore')}
         </div>
       )}
     </div>

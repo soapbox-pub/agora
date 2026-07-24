@@ -848,6 +848,7 @@
     "share": "هم‌رسانی",
     "target": "هدف: {{amount}}",
     "raised": "جمع‌آوری‌شده",
+    "raisedPublicly": "جمع‌آوری‌شده به‌صورت عمومی",
     "ofGoal": "از هدف {{amount}}",
     "goalAmount": "هدف {{amount}}",
     "beFirstDonor": "اولین اهداکننده باش!",
