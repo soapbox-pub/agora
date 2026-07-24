@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { CampaignRaisedAmount } from '@/components/CampaignRaisedAmount';
+import { ProxiedImage } from '@/components/ProxiedImage';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
 import { useAuthor } from '@/hooks/useAuthor';
@@ -40,7 +41,7 @@ function InlineShell({
     <div className="mt-3 space-y-3">
       <div className="overflow-hidden rounded-xl bg-gradient-to-br from-primary/15 via-primary/5 to-secondary">
         {image ? (
-          <img src={image} alt="" loading="lazy" className="aspect-[16/7] w-full object-cover" />
+          <ProxiedImage src={image} width={600} gated alt="" loading="lazy" className="aspect-[16/7] w-full object-cover" />
         ) : (
           <div className="flex aspect-[16/7] items-center justify-center text-primary/45">
             {fallbackIcon}

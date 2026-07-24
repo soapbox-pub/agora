@@ -163,6 +163,18 @@ export default defineConfig(({ mode }) => {
   },
   build: {
     target: 'esnext',
+    modulePreload: {
+      // Keep first paint lean on cheap phones / slow links: don't eagerly
+      // `modulepreload` heavy feature chunks that only appear behind an
+      // explicit user action (opening the emoji menu, the verification
+      // tutorial). Trimming a preload hint never breaks loading — the chunk
+      // still loads through its normal dynamic import, it's just fetched on
+      // demand instead of racing the entry bundle for bandwidth up front.
+      resolveDependencies(_filename, deps) {
+        const onDemand = /(?:^|\/)(?:EmojiPicker|VerifyTutorial)-[^/]*\.js$/;
+        return deps.filter((dep) => !onDemand.test(dep));
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

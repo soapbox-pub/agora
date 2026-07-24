@@ -8,6 +8,7 @@ import { AuthorByline } from '@/components/AuthorByline';
 import { CampaignRaisedAmount } from '@/components/CampaignRaisedAmount';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
 import { InlineMarkdown } from '@/components/InlineMarkdown';
+import { ProxiedImage } from '@/components/ProxiedImage';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ModerationOverlay } from '@/components/moderation';
@@ -251,8 +252,10 @@ export function CampaignCard({ campaign, variant = 'compact', className, footerB
           )}
         >
           {cover ? (
-            <img
+            <ProxiedImage
               src={cover}
+              width={600}
+              gated
               alt=""
               loading="lazy"
               className="absolute inset-0 size-full object-cover"

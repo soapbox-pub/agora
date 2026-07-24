@@ -69,6 +69,7 @@ import { useComments } from '@/hooks/useComments';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useDeleteEvent } from '@/hooks/useDeleteEvent';
 import { useHdWalletAccess } from '@/hooks/useHdWalletAccess';
+import { useImageProxy } from '@/hooks/useImageProxy';
 import { usePinnedEventComments } from '@/hooks/usePinnedEventComments';
 import { useShareOrigin } from '@/hooks/useShareOrigin';
 import { useNip05Verify } from '@/hooks/useNip05Verify';
@@ -783,6 +784,7 @@ function CampaignHero({
   onCoverClick,
 }: CampaignHeroProps) {
   const { t } = useTranslation();
+  const proxy = useImageProxy();
 
   return (
     <>
@@ -908,9 +910,10 @@ function CampaignHero({
                 `aria-hidden` because the foreground image already
                 conveys the content. */}
             <img
-              src={cover}
+              src={proxy(cover, 96)}
               alt=""
               aria-hidden
+              loading="lazy"
               className="absolute inset-0 size-full object-cover scale-110 blur-2xl brightness-75"
             />
             {/* Side vignette — soft horizontal shadow that darkens the
@@ -934,7 +937,7 @@ function CampaignHero({
               className="relative block w-full max-w-6xl max-h-[70vh] mx-auto cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
             >
               <img
-                src={cover}
+                src={proxy(cover, 1200)}
                 alt=""
                 className="block w-full max-h-[70vh] mx-auto object-contain"
               />

@@ -3,6 +3,7 @@ import type { NostrEvent } from '@nostrify/nostrify';
 import { CalendarDays, Clock, MapPin, Users } from 'lucide-react';
 
 import { NoteContent } from '@/components/NoteContent';
+import { ProxiedImage } from '@/components/ProxiedImage';
 import { RSVPAvatars } from '@/components/RSVPAvatars';
 import { Badge } from '@/components/ui/badge';
 import { sanitizeUrl } from '@/lib/sanitizeUrl';
@@ -149,7 +150,7 @@ export function CalendarEventContent({ event, compact, className }: CalendarEven
       <div className={cn('mt-3 space-y-3', className)}>
         {image && (
           <div className="relative -mx-4 aspect-[21/9] overflow-hidden">
-            <img src={image} alt={title ?? 'Calendar event'} className="w-full h-full object-cover" loading="lazy" />
+            <ProxiedImage src={image} width={600} gated alt={title ?? 'Calendar event'} className="w-full h-full object-cover" loading="lazy" />
             {participantPubkeys.length > 0 && (
               <div className="absolute bottom-2 left-3">
                 <RSVPAvatars pubkeys={participantPubkeys} maxVisible={4} size="md" />
@@ -226,7 +227,7 @@ export function CalendarEventContent({ event, compact, className }: CalendarEven
     <div className={cn('mt-2 rounded-xl border border-border overflow-hidden', className)}>
       {image ? (
         <div className="aspect-video rounded-lg overflow-hidden">
-          <img src={image} alt={title ?? 'Calendar event'} className="h-full w-full object-cover" loading="lazy" />
+          <ProxiedImage src={image} width={600} gated alt={title ?? 'Calendar event'} className="h-full w-full object-cover" loading="lazy" />
         </div>
       ) : (
         <div className="flex items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-transparent py-8">
