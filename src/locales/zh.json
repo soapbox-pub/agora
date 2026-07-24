@@ -869,9 +869,18 @@
   "noBitcoin": {
     "trigger": "没有比特币？",
     "title": "还没有比特币？",
-    "description": "在 Cash App 中购买比特币，然后将其发送到此活动。",
-    "getItOn": "下载于",
-    "getCashApp": "获取 Cash App"
+    "description": "从以下任一服务购买比特币，然后将其发送到此活动的地址。",
+    "buyOn": "购买于",
+    "mayBeUnavailable": "在您所在的地区可能无法使用",
+    "onramp": {
+      "descGlobalExchange": "全球交易所",
+      "descBitcoinApp": "比特币支付应用",
+      "descLatam": "拉丁美洲",
+      "descAfrica": "非洲",
+      "descIndia": "印度",
+      "descPhilippines": "菲律宾",
+      "descP2p": "点对点，无需注册"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "验证者",

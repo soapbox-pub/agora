@@ -869,9 +869,18 @@
   "noBitcoin": {
     "trigger": "ليس لديك بيتكوين؟",
     "title": "لا تملك بيتكوين بعد؟",
-    "description": "اشترِ بيتكوين عبر Cash App، ثم أرسله إلى هذه الحملة.",
-    "getItOn": "احصل عليه من",
-    "getCashApp": "الحصول على Cash App"
+    "description": "اشترِ بيتكوين من إحدى هذه الخدمات، ثم أرسله إلى عنوان هذه الحملة.",
+    "buyOn": "اشترِ من",
+    "mayBeUnavailable": "قد لا يكون متاحًا في منطقتك",
+    "onramp": {
+      "descGlobalExchange": "منصة تداول عالمية",
+      "descBitcoinApp": "تطبيق مدفوعات بيتكوين",
+      "descLatam": "أمريكا اللاتينية",
+      "descAfrica": "أفريقيا",
+      "descIndia": "الهند",
+      "descPhilippines": "الفلبين",
+      "descP2p": "نظير إلى نظير، دون تسجيل"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "موثّق من قبل",

@@ -1384,9 +1384,18 @@
   "noBitcoin": {
     "trigger": "Tidak punya Bitcoin?",
     "title": "Belum punya Bitcoin?",
-    "description": "Beli Bitcoin di Cash App, lalu kirimkan ke kampanye ini.",
-    "getItOn": "Dapatkan di",
-    "getCashApp": "Dapatkan Cash App"
+    "description": "Beli Bitcoin dari salah satu layanan ini, lalu kirimkan ke alamat kampanye ini.",
+    "buyOn": "Beli di",
+    "mayBeUnavailable": "Mungkin tidak tersedia di wilayah Anda",
+    "onramp": {
+      "descGlobalExchange": "Bursa global",
+      "descBitcoinApp": "Aplikasi pembayaran Bitcoin",
+      "descLatam": "Amerika Latin",
+      "descAfrica": "Afrika",
+      "descIndia": "India",
+      "descPhilippines": "Filipina",
+      "descP2p": "Peer-to-peer, tanpa pendaftaran"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Diverifikasi oleh",

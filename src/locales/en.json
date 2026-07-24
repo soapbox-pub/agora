@@ -1426,9 +1426,18 @@
   "noBitcoin": {
     "trigger": "Don't have Bitcoin?",
     "title": "No Bitcoin yet?",
-    "description": "Buy Bitcoin in Cash App, then send it to this campaign.",
-    "getItOn": "Get it on",
-    "getCashApp": "Get Cash App"
+    "description": "Buy Bitcoin from one of these services, then send it to this campaign's address.",
+    "buyOn": "Buy on",
+    "mayBeUnavailable": "May be unavailable in your region",
+    "onramp": {
+      "descGlobalExchange": "Global exchange",
+      "descBitcoinApp": "Bitcoin payments app",
+      "descLatam": "Latin America",
+      "descAfrica": "Africa",
+      "descIndia": "India",
+      "descPhilippines": "Philippines",
+      "descP2p": "Peer-to-peer, no signup"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Verified by",

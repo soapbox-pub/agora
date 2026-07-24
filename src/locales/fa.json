@@ -869,9 +869,18 @@
   "noBitcoin": {
     "trigger": "بیت‌کوین ندارید؟",
     "title": "هنوز بیت‌کوین ندارید؟",
-    "description": "بیت‌کوین را در Cash App بخرید، سپس آن را به این کارزار ارسال کنید.",
-    "getItOn": "دریافت از",
-    "getCashApp": "دریافت Cash App"
+    "description": "بیت‌کوین را از یکی از این سرویس‌ها بخرید، سپس آن را به آدرس این کارزار ارسال کنید.",
+    "buyOn": "خرید از",
+    "mayBeUnavailable": "ممکن است در منطقه شما در دسترس نباشد",
+    "onramp": {
+      "descGlobalExchange": "صرافی جهانی",
+      "descBitcoinApp": "برنامه پرداخت بیت‌کوین",
+      "descLatam": "آمریکای لاتین",
+      "descAfrica": "آفریقا",
+      "descIndia": "هند",
+      "descPhilippines": "فیلیپین",
+      "descP2p": "همتا‌به‌همتا، بدون ثبت‌نام"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "تأییدشده توسط",

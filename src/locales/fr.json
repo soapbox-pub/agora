@@ -1425,9 +1425,18 @@
   "noBitcoin": {
     "trigger": "Pas de Bitcoin ?",
     "title": "Pas encore de Bitcoin ?",
-    "description": "Achetez des Bitcoin dans Cash App, puis envoyez-les à cette campagne.",
-    "getItOn": "Disponible sur",
-    "getCashApp": "Obtenir Cash App"
+    "description": "Achetez des Bitcoin auprès de l'un de ces services, puis envoyez-les à l'adresse de cette campagne.",
+    "buyOn": "Acheter sur",
+    "mayBeUnavailable": "Peut être indisponible dans votre région",
+    "onramp": {
+      "descGlobalExchange": "Plateforme d'échange mondiale",
+      "descBitcoinApp": "Application de paiement Bitcoin",
+      "descLatam": "Amérique latine",
+      "descAfrica": "Afrique",
+      "descIndia": "Inde",
+      "descPhilippines": "Philippines",
+      "descP2p": "Pair à pair, sans inscription"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Vérifié par",

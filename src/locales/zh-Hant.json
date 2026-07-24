@@ -869,9 +869,18 @@
   "noBitcoin": {
     "trigger": "沒有比特幣？",
     "title": "還沒有比特幣？",
-    "description": "在 Cash App 中購買比特幣，然後將其傳送到此活動。",
-    "getItOn": "下載於",
-    "getCashApp": "取得 Cash App"
+    "description": "從以下其中一個服務購買比特幣，然後將其傳送到此活動的地址。",
+    "buyOn": "購買於",
+    "mayBeUnavailable": "你所在的地區可能無法使用",
+    "onramp": {
+      "descGlobalExchange": "全球交易所",
+      "descBitcoinApp": "比特幣支付應用程式",
+      "descLatam": "拉丁美洲",
+      "descAfrica": "非洲",
+      "descIndia": "印度",
+      "descPhilippines": "菲律賓",
+      "descP2p": "點對點，無需註冊"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "驗證者",

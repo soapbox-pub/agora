@@ -1384,9 +1384,18 @@
   "noBitcoin": {
     "trigger": "Huna Bitcoin?",
     "title": "Bado huna Bitcoin?",
-    "description": "Nunua Bitcoin katika Cash App, kisha uitume kwa kampeni hii.",
-    "getItOn": "Ipate kwenye",
-    "getCashApp": "Pata Cash App"
+    "description": "Nunua Bitcoin kutoka mojawapo ya huduma hizi, kisha uitume kwa anwani ya kampeni hii.",
+    "buyOn": "Nunua kwenye",
+    "mayBeUnavailable": "Huenda haipatikani katika eneo lako",
+    "onramp": {
+      "descGlobalExchange": "Soko la kimataifa",
+      "descBitcoinApp": "Programu ya malipo ya Bitcoin",
+      "descLatam": "Amerika ya Kusini",
+      "descAfrica": "Afrika",
+      "descIndia": "India",
+      "descPhilippines": "Ufilipino",
+      "descP2p": "Mtu kwa mtu, bila kujisajili"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Imethibitishwa na",

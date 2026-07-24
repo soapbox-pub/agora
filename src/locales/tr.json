@@ -1384,9 +1384,18 @@
   "noBitcoin": {
     "trigger": "Bitcoin'iniz yok mu?",
     "title": "Henüz Bitcoin'iniz yok mu?",
-    "description": "Cash App'ten Bitcoin satın alın, ardından bu kampanyaya gönderin.",
-    "getItOn": "Şuradan edinin:",
-    "getCashApp": "Cash App'i edinin"
+    "description": "Bu hizmetlerden birinden Bitcoin satın alın, ardından bu kampanyanın adresine gönderin.",
+    "buyOn": "Satın al:",
+    "mayBeUnavailable": "Bölgenizde kullanılamayabilir",
+    "onramp": {
+      "descGlobalExchange": "Küresel borsa",
+      "descBitcoinApp": "Bitcoin ödeme uygulaması",
+      "descLatam": "Latin Amerika",
+      "descAfrica": "Afrika",
+      "descIndia": "Hindistan",
+      "descPhilippines": "Filipinler",
+      "descP2p": "Eşler arası, kayıt gerektirmez"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Doğrulayan",

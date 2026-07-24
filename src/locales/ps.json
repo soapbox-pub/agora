@@ -869,9 +869,18 @@
   "noBitcoin": {
     "trigger": "Bitcoin نه لرئ؟",
     "title": "تر اوسه Bitcoin نه لرئ؟",
-    "description": "په Cash App کې Bitcoin واخلئ، بیا یې دې کمپاین ته ولېږئ.",
-    "getItOn": "ترلاسه یې کړئ په",
-    "getCashApp": "Cash App ترلاسه کړئ"
+    "description": "له دې خدماتو څخه له یوه څخه Bitcoin واخلئ، بیا یې د دې کمپاین پتې ته ولېږئ.",
+    "buyOn": "پیرود په",
+    "mayBeUnavailable": "ښایي ستاسو په سیمه کې شتون ونه لري",
+    "onramp": {
+      "descGlobalExchange": "نړیوال تبادله",
+      "descBitcoinApp": "د Bitcoin د تادیاتو اپلیکیشن",
+      "descLatam": "لاتینه امریکا",
+      "descAfrica": "افریقا",
+      "descIndia": "هند",
+      "descPhilippines": "فیلیپین",
+      "descP2p": "همغږی، بې له نوملیکنې"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "تصدیق شوی د",

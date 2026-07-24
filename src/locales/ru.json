@@ -1384,9 +1384,18 @@
   "noBitcoin": {
     "trigger": "Нет биткоина?",
     "title": "Ещё нет биткоина?",
-    "description": "Купите биткоин в Cash App, затем отправьте его этой кампании.",
-    "getItOn": "Загрузите в",
-    "getCashApp": "Установить Cash App"
+    "description": "Купите биткоин в одном из этих сервисов, затем отправьте его на адрес этой кампании.",
+    "buyOn": "Купить на",
+    "mayBeUnavailable": "Может быть недоступно в вашем регионе",
+    "onramp": {
+      "descGlobalExchange": "Глобальная биржа",
+      "descBitcoinApp": "Приложение для платежей в биткоине",
+      "descLatam": "Латинская Америка",
+      "descAfrica": "Африка",
+      "descIndia": "Индия",
+      "descPhilippines": "Филиппины",
+      "descP2p": "Напрямую между людьми, без регистрации"
+    }
   },
   "campaignVerification": {
     "verifiedBy": "Проверено",
