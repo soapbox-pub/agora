@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { HandHeart, ShieldCheck } from 'lucide-react';
 
 import { AuthorByline } from '@/components/AuthorByline';
+import { CampaignRaisedAmount } from '@/components/CampaignRaisedAmount';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
 import { InlineMarkdown } from '@/components/InlineMarkdown';
 import { Card } from '@/components/ui/card';
@@ -66,7 +67,7 @@ function CampaignRaised({
   if (isLoading) {
     return (
       <div className={cn('space-y-1', className)}>
-        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-7 w-24" />
         <Skeleton className="h-3 w-20" />
       </div>
     );
@@ -84,8 +85,10 @@ function CampaignRaised({
   return (
     <div className={cn('space-y-0.5', className)}>
       {hasRaised ? (
-        <div className="text-xl font-bold leading-tight tracking-tight">
-          {formatCampaignAmount(raisedSats, btcPrice)}
+        <div>
+          <CampaignRaisedAmount className="text-2xl text-primary">
+            {formatCampaignAmount(raisedSats, btcPrice)}
+          </CampaignRaisedAmount>
           <span className="ml-1.5 text-xs font-normal text-muted-foreground">
             {t('campaignsDetail.raised')}
           </span>
@@ -392,7 +395,7 @@ export function CampaignCardSkeleton({
           <Skeleton className="h-4 w-4/5" />
         </div>
         <div className="flex-1" />
-        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-7 w-24" />
         <Skeleton className="h-3 w-20" />
       </div>
     </Card>

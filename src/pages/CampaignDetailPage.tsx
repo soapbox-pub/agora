@@ -23,6 +23,7 @@ import {
   CampaignLedgerHeader,
   CampaignLedgerTransaction,
 } from '@/components/CampaignLedger';
+import { CampaignRaisedAmount } from '@/components/CampaignRaisedAmount';
 import { CampaignVerificationBadge } from '@/components/CampaignVerificationBadge';
 import { UnverifiedCampaignBanner } from '@/components/UnverifiedCampaignBanner';
 import { HiddenCampaignGate } from '@/components/HiddenCampaignGate';
@@ -1204,9 +1205,11 @@ function DonateColumn({
           <div className="space-y-2">
             <div className="space-y-1">
               {raisedSats > 0 ? (
-                <div className="text-3xl font-bold tracking-tight">
-                  {formatSatsFull(raisedSats, btcPrice)}
-                  <span className="ml-1.5 text-sm font-normal text-muted-foreground">
+                <div>
+                  <CampaignRaisedAmount className="text-4xl text-primary">
+                    {formatSatsFull(raisedSats, btcPrice)}
+                  </CampaignRaisedAmount>
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">
                     {t('campaignsDetail.raised')}
                   </span>
                 </div>

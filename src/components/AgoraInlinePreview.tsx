@@ -6,6 +6,7 @@ import { nip19 } from 'nostr-tools';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { CampaignRaisedAmount } from '@/components/CampaignRaisedAmount';
 import { useBtcPrice } from '@/hooks/useBtcPrice';
 import { useCampaignDonations } from '@/hooks/useCampaignDonations';
 import { useAuthor } from '@/hooks/useAuthor';
@@ -109,8 +110,10 @@ export function CampaignInlinePreview({ event }: { event: NostrEvent }) {
             ) : (
               <>
                 {hasRaised ? (
-                  <div className="text-base font-bold leading-tight tracking-tight text-foreground">
-                    {formatCampaignAmount(raisedSats, btcPrice)}
+                  <div>
+                    <CampaignRaisedAmount className="text-lg text-primary">
+                      {formatCampaignAmount(raisedSats, btcPrice)}
+                    </CampaignRaisedAmount>
                     <span className="ml-1 text-xs font-normal text-muted-foreground">
                       {t('campaignsDetail.raised')}
                     </span>
