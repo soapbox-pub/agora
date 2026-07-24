@@ -497,6 +497,7 @@ function formatTxDate(timestamp: number | undefined, t: (key: string, options?: 
 
 function TxRow({ tx, btcPrice }: { tx: HdTransaction; btcPrice?: number }) {
   const { t, i18n } = useTranslation();
+  const { hideBalance } = useHideWalletBalance();
   const isReceive = tx.type === 'receive';
   const isPending = !tx.confirmed;
   return (
@@ -533,9 +534,13 @@ function TxRow({ tx, btcPrice }: { tx: HdTransaction; btcPrice?: number }) {
           isReceive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
         }`}>
           {isReceive ? '+' : '-'}
-          {btcPrice ? satsToUSD(tx.amount, btcPrice) : `${formatBTC(tx.amount)} BTC`}
+          {hideBalance
+            ? (btcPrice ? HIDDEN_USD_LABEL : HIDDEN_BTC_LABEL)
+            : (btcPrice ? satsToUSD(tx.amount, btcPrice) : `${formatBTC(tx.amount)} BTC`)}
         </p>
-        <p className="text-xs text-muted-foreground">{formatBTC(tx.amount)} BTC</p>
+        <p className="text-xs text-muted-foreground">
+          {hideBalance ? HIDDEN_BTC_LABEL : `${formatBTC(tx.amount)} BTC`}
+        </p>
       </div>
     </Link>
   );
